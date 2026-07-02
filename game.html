@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JoyAI-Sim - Challenge</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+    background: #FAFBFD;
+    color: #0F172A;
+    height: 100vh; overflow: hidden;
+    user-select: none;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0; z-index: 500;
+    width: 56px;
+    background: #fff;
+    border-right: 1px solid rgba(15,23,42,0.06);
+    display: flex; flex-direction: column;
+    align-items: center;
+    padding: 16px 0;
+    gap: 4px;
+  }
+  .sb-logo {
+    font-size: 16px; font-weight: 800; color: #2563EB;
+    margin-bottom: 20px;
+    writing-mode: vertical-lr; text-orientation: mixed;
+    letter-spacing: -0.5px;
+  }
+  .sb-item {
+    width: 40px; height: 40px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: #94a3b8;
+    cursor: pointer; transition: all 0.15s;
+    text-decoration: none;
+    position: relative;
+  }
+  .sb-item:hover { background: #f1f5f9; color: #475569; }
+  .sb-item.active { background: rgba(37,99,235,0.08); color: #2563EB; }
+  .sb-item .sb-tooltip {
+    display: none; position: absolute; left: 52px; top: 50%;
+    transform: translateY(-50%);
+    padding: 5px 10px; border-radius: 6px;
+    background: #0F172A; color: #fff;
+    font-size: 11px; font-weight: 500; white-space: nowrap;
+  }
+  .sb-item:hover .sb-tooltip { display: block; }
+  .sb-divider { width: 28px; height: 1px; background: rgba(15,23,42,0.06); margin: 8px 0; }
+
+  /* Layout - offset by sidebar */
+  .game-layout {
+    display: grid;
+    grid-template-rows: auto 1fr 48px;
+    height: 100vh;
+    margin-left: 56px;
+  }
+
+  /* Header */
+  .header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 28px;
+    height: 56px;
+    border-bottom: 1px solid rgba(15,23,42,0.06);
+    background: #fff;
+  }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .header-title { font-size: 15px; font-weight: 700; color: #0F172A; }
+  .header-subtitle { font-size: 12px; color: #94a3b8; font-weight: 500; }
+
+  .score-area { display: flex; align-items: center; gap: 12px; }
+  .score-chip {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 14px; border-radius: 10px;
+    font-size: 13px; font-weight: 700;
+  }
+  .score-chip.you {
+    background: rgba(37,99,235,0.06);
+    border: 1px solid rgba(37,99,235,0.12);
+    color: #2563EB;
+  }
+  .score-chip.ai {
+    background: #f1f5f9;
+    border: 1px solid rgba(15,23,42,0.06);
+    color: #64748B;
+  }
+  .score-chip .label { font-weight: 500; opacity: 0.6; }
+  .score-vs { font-size: 11px; color: #cbd5e1; font-weight: 700; }
+
+  /* Skip task button */
+  .skip-task-btn {
+    position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 20;
+    padding: 12px 24px; border-radius: 14px;
+    background: #fff; border: 1px solid rgba(15,23,42,0.1);
+    font-size: 14px; font-weight: 600; color: #475569;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.1);
+    cursor: pointer; display: none;
+    transition: all 0.2s;
+  }
+  .skip-task-btn:hover { border-color: #2563EB; color: #2563EB; box-shadow: 0 8px 28px rgba(37,99,235,0.15); }
+  .skip-task-btn.visible { display: block; animation: fadeIn 0.5s ease-out; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* Demo panel */
+  .demo-panel {
+    position: fixed; top: 12px; right: 12px; z-index: 600;
+    width: 220px; background: #fff; border-radius: 14px;
+    padding: 14px; box-shadow: 0 12px 40px rgba(15,23,42,0.1);
+    border: 1px solid rgba(15,23,42,0.06);
+  }
+  .demo-panel-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .demo-panel-title { font-size: 10px; font-weight: 700; color: #ef4444; text-transform: uppercase; letter-spacing: 0.5px; }
+  .demo-panel-note { font-size: 10px; color: #94a3b8; }
+  .demo-btn {
+    display: block; width: 100%; padding: 8px 10px; border-radius: 8px;
+    background: #f8fafc; border: 1px solid rgba(15,23,42,0.06);
+    font-size: 11px; font-weight: 500; color: #475569;
+    cursor: pointer; margin-bottom: 6px; text-align: left;
+    transition: all 0.15s;
+  }
+  .demo-btn:last-child { margin-bottom: 0; }
+  .demo-btn:hover { background: rgba(37,99,235,0.04); border-color: rgba(37,99,235,0.15); color: #2563EB; }
+
+  /* Main game area */
+  .game-main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    min-height: 0; /* allow grid item to shrink below content size */
+  }
+  .game-panel {
+    position: relative;
+    overflow: hidden;
+    min-height: 0;
+  }
+  .game-panel.player-panel {
+    border-right: 1px solid rgba(15,23,42,0.04);
+    background: #fafbfd;
+  }
+  .game-panel.ai-panel {
+    background: #f8fafc;
+  }
+  .ai-demo-notice {
+    position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); z-index: 10;
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border-radius: 10px;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(15,23,42,0.06);
+    box-shadow: 0 4px 12px rgba(15,23,42,0.04);
+    font-size: 11px; font-weight: 500; color: #64748B;
+    white-space: nowrap;
+  }
+  .ai-demo-notice svg { flex-shrink: 0; color: #94a3b8; }
+  .panel-label {
+    position: absolute; top: 14px; left: 18px; z-index: 10;
+    font-size: 11px; font-weight: 600; color: #94a3b8;
+    text-transform: uppercase; letter-spacing: 1.5px;
+  }
+  canvas {
+    display: block; width: 100%; height: 100%;
+  }
+
+  /* Combo popup */
+  .combo-popup {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    font-size: 28px; font-weight: 800;
+    color: #2563EB;
+    opacity: 0; pointer-events: none;
+  }
+  .combo-popup.show {
+    animation: comboAnim 0.7s ease-out forwards;
+  }
+  @keyframes comboAnim {
+    0% { transform: translate(-50%,-50%) scale(0.6); opacity: 1; }
+    50% { transform: translate(-50%,-50%) scale(1.15); opacity: 1; }
+    100% { transform: translate(-50%,-50%) scale(1); opacity: 0; }
+  }
+
+  /* Footer */
+  .footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+    border-top: 1px solid rgba(15,23,42,0.06);
+    background: #fff;
+  }
+  .controls-info { display: flex; gap: 16px; }
+  .ctrl-item {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; color: #94a3b8;
+  }
+  .ctrl-key {
+    padding: 3px 8px; border-radius: 6px;
+    background: #f8fafc; border: 1px solid rgba(15,23,42,0.08);
+    font-size: 10px; font-weight: 700; color: #475569;
+  }
+  .combo-info { display: flex; align-items: center; gap: 12px; }
+  .combo-badge {
+    padding: 5px 12px; border-radius: 8px;
+    background: rgba(37,99,235,0.06);
+    border: 1px solid rgba(37,99,235,0.1);
+    font-size: 13px; font-weight: 700; color: #2563EB;
+  }
+  .placed-info { font-size: 13px; color: #64748B; font-weight: 600; }
+
+  /* Result overlay */
+  .result-overlay {
+    position: fixed; inset: 0; z-index: 100;
+    background: rgba(250,251,253,0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: none; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 40px;
+  }
+  .result-overlay.active { display: flex; }
+  .result-title {
+    font-size: 32px; font-weight: 800; color: #0F172A;
+    letter-spacing: -0.8px; margin-bottom: 6px;
+  }
+  .result-sub {
+    font-size: 15px; color: #64748B; margin-bottom: 40px;
+  }
+  .result-table {
+    width: 100%; max-width: 480px;
+    border-radius: 20px; overflow: hidden;
+    background: #fff;
+    border: 1px solid rgba(15,23,42,0.06);
+    box-shadow: 0 12px 40px rgba(15,23,42,0.06);
+    margin-bottom: 24px;
+  }
+  .result-table .rt-header {
+    display: grid; grid-template-columns: 1fr auto 1fr;
+    padding: 14px 28px;
+    background: #f8fafc;
+  }
+  .rt-header span {
+    font-size: 11px; font-weight: 700; color: #94a3b8;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .rt-header span:first-child { text-align: right; padding-right: 20px; }
+  .rt-header span:last-child { text-align: left; padding-left: 20px; }
+  .rt-row {
+    display: grid; grid-template-columns: 1fr auto 1fr;
+    padding: 16px 28px;
+    border-bottom: 1px solid rgba(15,23,42,0.04);
+    align-items: center;
+  }
+  .rt-row:last-child { border-bottom: none; }
+  .rt-dim { font-size: 13px; color: #94a3b8; font-weight: 500; text-align: center; }
+  .rt-val {
+    font-size: 18px; font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .rt-val.you-val { text-align: right; padding-right: 20px; color: #2563EB; }
+  .rt-val.ai-val { text-align: left; padding-left: 20px; color: #94a3b8; }
+  .rt-val.win { opacity: 1; }
+  .rt-val.lose { opacity: 0.35; }
+  .result-summary-line {
+    font-size: 14px; font-weight: 600; color: #2563EB;
+    padding: 10px 20px; border-radius: 12px;
+    background: rgba(37,99,235,0.04);
+    border: 1px solid rgba(37,99,235,0.08);
+    margin-bottom: 16px;
+  }
+  .result-hook-line {
+    font-size: 14px; color: #64748B;
+    margin-bottom: 28px;
+    text-align: center;
+  }
+  .result-btns { display: flex; gap: 12px; }
+  .rbtn {
+    padding: 14px 32px; border-radius: 14px;
+    font-size: 15px; font-weight: 600;
+    border: none; cursor: pointer; transition: all 0.2s;
+  }
+  .rbtn.primary {
+    background: #2563EB; color: #fff;
+    box-shadow: 0 4px 16px rgba(37,99,235,0.25);
+  }
+  .rbtn.primary:hover {
+    background: #1D4ED8;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 24px rgba(37,99,235,0.3);
+  }
+  .rbtn.ghost {
+    background: #f1f5f9; color: #475569;
+  }
+  .rbtn.ghost:hover { background: #e2e8f0; }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <a class="sb-item" href="landing.html" title="返回首页"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg><span class="sb-tooltip">返回首页</span></a>
+  <div class="sb-divider"></div>
+  <a class="sb-item" href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg><span class="sb-tooltip">视觉理解</span></a>
+  <a class="sb-item" href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span class="sb-tooltip">视觉生成</span></a>
+  <a class="sb-item active" href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg><span class="sb-tooltip">具身交互</span></a>
+  <a class="sb-item" href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><span class="sb-tooltip">数据看板</span></a>
+</div>
+
+<!-- Demo Panel -->
+<div class="demo-panel" id="demoPanel">
+  <div class="demo-panel-header">
+    <span class="demo-panel-title">Demo 模拟</span>
+    <span class="demo-panel-note">仅限演示</span>
+  </div>
+  <button class="demo-btn" onclick="simulateAllDone()">模拟：全部完成</button>
+  <button class="demo-btn" onclick="simulateTimeout()">模拟：时间到 → 出现跳过</button>
+</div>
+
+<div class="game-layout">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <div>
+        <div class="header-title">书桌整理挑战</div>
+        <div class="header-subtitle">将物体拖到对应目标区</div>
+      </div>
+    </div>
+    <div style="font-size:16px; font-weight:700; color:#0F172A; font-variant-numeric:tabular-nums;" id="countUpTimer">0:00</div>
+    <div class="score-area">
+      <div class="score-chip you"><span class="label">You</span> <span id="yourScore">0</span></div>
+      <div class="score-vs">VS</div>
+      <div class="score-chip ai"><span class="label">AI</span> <span id="aiScore">0</span></div>
+    </div>
+  </div>
+
+  <!-- Game panels -->
+  <div class="game-main">
+    <div class="game-panel player-panel">
+      <div class="panel-label">Your Control</div>
+      <canvas id="playerCanvas"></canvas>
+      <div class="combo-popup" id="comboPopup"></div>
+      <button class="skip-task-btn" id="skipTaskBtn" onclick="triggerEndGame()">看看结果？ &#8629;</button>
+    </div>
+    <div class="game-panel ai-panel">
+      <div class="panel-label">AI Opponent</div>
+      <div class="ai-demo-notice">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        <span>Demo 画面 · 正式版将展示仿真机器人预录制 / 实时操作画面</span>
+      </div>
+      <canvas id="aiCanvas"></canvas>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="controls-info">
+      <div class="ctrl-item"><span class="ctrl-key">Mouse</span> 移动夹爪</div>
+      <div class="ctrl-item"><span class="ctrl-key">Click</span> 下降抓取</div>
+      <div class="ctrl-item"><span class="ctrl-key">Space</span> 释放物体</div>
+    </div>
+    <div class="combo-info">
+      <div class="combo-badge" id="comboBadge">x0</div>
+      <div class="placed-info"><span id="placedCount">0</span>/5 已归位</div>
+    </div>
+  </div>
+</div>
+
+<!-- Result Overlay -->
+<div class="result-overlay" id="resultOverlay">
+  <div class="result-title" id="resultTitle">挑战完成！</div>
+  <div class="result-sub" id="resultSub"></div>
+  <div class="result-table">
+    <div class="rt-header">
+      <span style="text-align:right; padding-right:20px;">You</span>
+      <span></span>
+      <span style="text-align:left; padding-left:20px;">AI</span>
+    </div>
+    <div class="rt-row">
+      <div class="rt-val you-val" id="rYouPlaced">-</div>
+      <div class="rt-dim">完成数</div>
+      <div class="rt-val ai-val" id="rAiPlaced">-</div>
+    </div>
+    <div class="rt-row">
+      <div class="rt-val you-val" id="rYouTime">-</div>
+      <div class="rt-dim">用时</div>
+      <div class="rt-val ai-val" id="rAiTime">-</div>
+    </div>
+    <div class="rt-row">
+      <div class="rt-val you-val" id="rYouCombo">-</div>
+      <div class="rt-dim">最佳连击</div>
+      <div class="rt-val ai-val" id="rAiCombo">-</div>
+    </div>
+    <div class="rt-row">
+      <div class="rt-val you-val" id="rYouScore">-</div>
+      <div class="rt-dim">总分</div>
+      <div class="rt-val ai-val" id="rAiScore">-</div>
+    </div>
+  </div>
+  <div class="result-summary-line" id="resultSummary"></div>
+  <div class="result-hook-line" id="resultHook"></div>
+  <div class="result-btns">
+    <button class="rbtn primary" onclick="location.reload()">再来一局</button>
+    <button class="rbtn ghost">进阶挑战 &rarr;</button>
+  </div>
+</div>
+
+<script>
+// ==================== GAME ENGINE ====================
+const TOTAL_TIME = 300; // 5 minutes
+const TOTAL_OBJECTS = 5;
+
+// Colors
+const COLORS = {
+  bg: '#fafbfd',
+  desk: '#c9b99a',
+  deskEdge: '#a89070',
+  claw: '#475569',
+  clawArm: '#64748B',
+  cable: '#94a3b8',
+  target: 'rgba(37,99,235,0.08)',
+  targetBorder: 'rgba(37,99,235,0.4)',
+  success: '#22c55e',
+  objects: ['#3b82f6','#f87171','#fbbf24','#22c55e','#a78bfa'],
+  objectLabels: ['Cup','Book','Pen','Box','Ball'],
+};
+
+// Object shapes
+const SHAPES = ['rect','rect','rect','rect','circle'];
+const OBJ_SIZES = [[24,30],[34,22],[8,36],[26,26],[14,14]];
+const POINTS = [10, 10, 30, 20, 40];
+
+class ClawGame {
+  constructor(canvas, isAI = false) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.isAI = isAI;
+    this.resize();
+
+    // State
+    this.clawX = this.w / 2;
+    this.clawY = 40;
+    this.clawTargetX = this.w / 2;
+    this.clawState = 'idle'; // idle, descending, grabbing, ascending, carrying, dropping
+    this.clawOpen = true;
+    this.grabbedObj = null;
+    this.objects = [];
+    this.targets = [];
+    this.placed = 0;
+    this.score = 0;
+    this.combo = 0;
+    this.maxCombo = 0;
+    this.moves = 0;
+
+    this.initObjects();
+    this.initTargets();
+
+    // Tutorial state (player only, first 2 objects)
+    // Phases: 'move_to_obj', 'locked_grab', 'move_to_target', 'locked_drop', 'success', 'done'
+    this.tutorialPhase = isAI ? 'done' : 'move_to_obj';
+    this.tutorialObjIndex = 0; // which object we're guiding (0 = first, 1 = second)
+    this.tutorialSuccessTimer = 0;
+    this.tutorialClawLocked = false;
+
+    // AI difficulty
+    this.aiMoveSpeed = 1.0 + Math.random() * 2.0;
+    this.aiThinkDelay = Math.floor(40 - this.aiMoveSpeed * 8);
+    this.aiCurrentTarget = null;
+
+    if (!isAI) {
+      this.canvas.addEventListener('mousemove', e => this.onMouseMove(e));
+      this.canvas.addEventListener('click', e => this.onClick(e));
+      window.addEventListener('keydown', e => { if (e.code === 'Space') this.onSpace(); });
+    }
+  }
+
+  resize() {
+    const rect = this.canvas.getBoundingClientRect();
+    this.w = rect.width;
+    this.h = rect.height;
+    this.canvas.width = this.w * devicePixelRatio;
+    this.canvas.height = this.h * devicePixelRatio;
+    this.ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+  }
+
+  initObjects() {
+    const deskY = this.h * 0.65;
+    const spacing = this.w / (TOTAL_OBJECTS + 1);
+    for (let i = 0; i < TOTAL_OBJECTS; i++) {
+      const [sw, sh] = OBJ_SIZES[i];
+      this.objects.push({
+        x: spacing * (i + 1) + (Math.random() - 0.5) * 30,
+        y: deskY - sh / 2,
+        w: sw, h: sh,
+        color: COLORS.objects[i],
+        shape: SHAPES[i],
+        label: COLORS.objectLabels[i],
+        points: POINTS[i],
+        placed: false,
+        id: i
+      });
+    }
+  }
+
+  initTargets() {
+    const targetY = this.h * 0.88;
+    const spacing = this.w / (TOTAL_OBJECTS + 1);
+    // Shuffle target order
+    const order = [0,1,2,3,4].sort(() => Math.random() - 0.5);
+    for (let i = 0; i < TOTAL_OBJECTS; i++) {
+      const [sw, sh] = OBJ_SIZES[order[i]];
+      this.targets.push({
+        x: spacing * (i + 1),
+        y: targetY,
+        w: sw + 16, h: sh + 16,
+        forId: order[i],
+        filled: false
+      });
+    }
+  }
+
+  onMouseMove(e) {
+    if (this.tutorialClawLocked) return;
+    if (this.clawState === 'idle' || this.clawState === 'carrying') {
+      const rect = this.canvas.getBoundingClientRect();
+      this.clawTargetX = e.clientX - rect.left;
+    }
+  }
+
+  onClick(e) {
+    playerStarted = true;
+    // During tutorial 'locked_grab', click triggers descend
+    if (this.tutorialPhase === 'locked_grab') {
+      this.clawState = 'descending';
+      this.moves++;
+      this.tutorialPhase = 'move_to_target';
+      return;
+    }
+    if (this.tutorialPhase === 'move_to_obj' || this.tutorialPhase === 'locked_drop') return;
+    if (this.clawState === 'idle') {
+      this.clawState = 'descending';
+      this.moves++;
+    }
+  }
+
+  onSpace() {
+    if (this.clawState === 'carrying' && this.grabbedObj) {
+      this.clawState = 'dropping';
+    }
+  }
+
+  // Tutorial logic — called each frame
+  updateTutorial() {
+    if (this.tutorialPhase === 'done') return;
+    const tutObj = this.objects[this.tutorialObjIndex];
+    if (!tutObj || tutObj.placed) {
+      this.tutorialObjIndex++;
+      if (this.tutorialObjIndex >= 2) { this.tutorialPhase = 'done'; return; }
+      this.tutorialPhase = 'move_to_obj';
+      return;
+    }
+
+    if (this.tutorialPhase === 'move_to_obj') {
+      // Check if claw is near the target object
+      if (Math.abs(this.clawX - tutObj.x) < tutObj.w * 0.8 && this.clawState === 'idle') {
+        this.tutorialPhase = 'locked_grab';
+        this.tutorialClawLocked = true;
+        this.clawTargetX = tutObj.x;
+      }
+    } else if (this.tutorialPhase === 'move_to_target') {
+      this.tutorialClawLocked = false;
+      // After grabbing, wait until carrying
+      if (this.clawState === 'carrying') {
+        // Check if near matching target
+        const t = this.targets.find(t => t.forId === tutObj.id && !t.filled);
+        if (t && Math.abs(this.clawX - t.x) < t.w) {
+          this.tutorialPhase = 'locked_drop';
+          this.tutorialClawLocked = true;
+          this.clawTargetX = t.x;
+        }
+      }
+      if (this.clawState === 'idle' && !this.grabbedObj) {
+        // Failed grab, retry
+        this.tutorialPhase = 'move_to_obj';
+      }
+    } else if (this.tutorialPhase === 'locked_drop') {
+      // Wait for space press → dropping
+    } else if (this.tutorialPhase === 'success') {
+      this.tutorialSuccessTimer++;
+      if (this.tutorialSuccessTimer > 120) { // ~2 seconds
+        this.tutorialObjIndex++;
+        this.tutorialSuccessTimer = 0;
+        if (this.tutorialObjIndex >= 2) {
+          this.tutorialPhase = 'done';
+        } else {
+          this.tutorialPhase = 'move_to_obj';
+          this.tutorialClawLocked = false;
+        }
+      }
+    }
+  }
+
+  // Draw tutorial overlay
+  drawTutorial() {
+    if (this.isAI || this.tutorialPhase === 'done') return;
+    const ctx = this.ctx;
+    const tutObj = this.objects[this.tutorialObjIndex];
+    if (!tutObj) return;
+
+    // Yellow spotlight on target object (no darkening)
+    if (this.tutorialPhase === 'move_to_obj' || this.tutorialPhase === 'locked_grab') {
+      ctx.save();
+      // Warm yellow spotlight glow
+      const grad = ctx.createRadialGradient(tutObj.x, tutObj.y, 5, tutObj.x, tutObj.y, 55);
+      grad.addColorStop(0, 'rgba(255, 200, 50, 0.25)');
+      grad.addColorStop(0.5, 'rgba(255, 200, 50, 0.1)');
+      grad.addColorStop(1, 'rgba(255, 200, 50, 0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(tutObj.x, tutObj.y, 55, 0, Math.PI * 2);
+      ctx.fill();
+      // Thin ring
+      ctx.strokeStyle = 'rgba(255, 180, 30, 0.4)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(tutObj.x, tutObj.y, 35, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Tooltip near claw
+    const tooltipY = this.clawY + 50;
+    let text = '';
+    if (this.tutorialPhase === 'move_to_obj') {
+      text = '移动鼠标，将夹爪移到 ' + tutObj.label + ' 上方';
+    } else if (this.tutorialPhase === 'locked_grab') {
+      text = '就是现在！点击鼠标抓取';
+    } else if (this.tutorialPhase === 'move_to_target') {
+      text = '移到虚线框内';
+    } else if (this.tutorialPhase === 'locked_drop') {
+      text = '按空格释放物体';
+    } else if (this.tutorialPhase === 'success') {
+      const remaining = TOTAL_OBJECTS - this.placed;
+      text = '漂亮！还有 ' + remaining + ' 个物品等着你';
+    }
+
+    if (text) {
+      ctx.save();
+      ctx.font = '13px Inter, system-ui, sans-serif';
+      const tw = ctx.measureText(text).width;
+      const px = Math.max(10, Math.min(this.clawX - tw / 2 - 12, this.w - tw - 34));
+      const py = Math.min(tooltipY, this.h - 40);
+      // Background
+      ctx.fillStyle = '#0F172A';
+      ctx.beginPath();
+      ctx.roundRect(px, py, tw + 24, 32, 8);
+      ctx.fill();
+      // Text
+      ctx.fillStyle = '#fff';
+      ctx.textAlign = 'left';
+      ctx.fillText(text, px + 12, py + 21);
+      ctx.restore();
+    }
+  }
+
+  // AI logic
+  aiThink() {
+    if (this.clawState !== 'idle' && this.clawState !== 'carrying') return;
+
+    const unplaced = this.objects.filter(o => !o.placed);
+    if (unplaced.length === 0) return;
+
+    if (this.clawState === 'idle') {
+      // Pick random unplaced object, add some position wobble
+      if (!this.aiCurrentTarget || this.aiCurrentTarget.placed) {
+        this.aiCurrentTarget = unplaced[Math.floor(Math.random() * unplaced.length)];
+      }
+      const wobble = (Math.random() - 0.5) * 10;
+      this.clawTargetX = this.aiCurrentTarget.x + wobble;
+      // When close enough, descend
+      if (Math.abs(this.clawX - this.aiCurrentTarget.x) < 8) {
+        this.clawState = 'descending';
+        this.moves++;
+        this.aiCurrentTarget = null;
+      }
+    } else if (this.clawState === 'carrying' && this.grabbedObj) {
+      // Find matching target
+      const t = this.targets.find(t => t.forId === this.grabbedObj.id && !t.filled);
+      if (t) {
+        this.clawTargetX = t.x;
+        if (Math.abs(this.clawX - t.x) < 5) {
+          this.clawState = 'dropping';
+        }
+      }
+    }
+  }
+
+  update() {
+    // Smooth claw movement — AI speed varies per session
+    const speed = this.isAI ? this.aiMoveSpeed : 5;
+    this.clawX += (this.clawTargetX - this.clawX) * 0.08 * speed;
+
+    const deskY = this.h * 0.65;
+    const restY = 40;
+    const descendSpeed = this.isAI ? (1.5 + this.aiMoveSpeed * 0.3) : 4;
+    const ascendSpeed = this.isAI ? (1.2 + this.aiMoveSpeed * 0.3) : 3;
+
+    switch (this.clawState) {
+      case 'idle':
+        this.clawY += (restY - this.clawY) * 0.1;
+        this.clawOpen = true;
+        break;
+
+      case 'descending':
+        this.clawY += descendSpeed;
+        this.clawOpen = true;
+        if (this.clawY >= deskY - 15) {
+          this.clawState = 'grabbing';
+          this.clawOpen = false;
+          // Check if grabbed something
+          for (const obj of this.objects) {
+            if (!obj.placed && Math.abs(obj.x - this.clawX) < obj.w * 0.7) {
+              // AI sometimes misses (20% chance)
+              if (this.isAI && Math.random() < 0.15) break;
+              this.grabbedObj = obj;
+              break;
+            }
+          }
+          setTimeout(() => {
+            this.clawState = 'ascending';
+          }, this.isAI ? 300 + Math.random() * 200 : 200);
+        }
+        break;
+
+      case 'grabbing':
+        break;
+
+      case 'ascending':
+        this.clawY -= ascendSpeed;
+        if (this.grabbedObj) {
+          this.grabbedObj.x = this.clawX;
+          this.grabbedObj.y = this.clawY + 20;
+        }
+        if (this.clawY <= restY) {
+          if (this.grabbedObj) {
+            this.clawState = 'carrying';
+          } else {
+            this.clawState = 'idle';
+          }
+        }
+        break;
+
+      case 'carrying':
+        this.clawY = restY;
+        if (this.grabbedObj) {
+          this.grabbedObj.x = this.clawX;
+          this.grabbedObj.y = this.clawY + 20;
+          // AI: random mid-carry drop (15% chance per think tick)
+          if (this.isAI && Math.random() < 0.002) {
+            const obj = this.grabbedObj;
+            this.grabbedObj = null;
+            obj.y = deskY - obj.h / 2;
+            this.clawOpen = true;
+            this.clawState = 'idle';
+            this.combo = 0;
+          }
+        }
+        break;
+
+      case 'dropping':
+        this.clawOpen = true;
+        if (this.grabbedObj) {
+          const obj = this.grabbedObj;
+          this.grabbedObj = null;
+          const matchTarget = this.targets.find(t => t.forId === obj.id && !t.filled && Math.abs(t.x - obj.x) < t.w);
+          // AI: 25% chance to fumble the placement even when aligned
+          const fumble = this.isAI && Math.random() < 0.20;
+          if (matchTarget && !fumble) {
+            obj.placed = true;
+            obj.x = matchTarget.x;
+            obj.y = matchTarget.y;
+            matchTarget.filled = true;
+            this.placed++;
+            this.combo++;
+            if (this.combo > this.maxCombo) this.maxCombo = this.combo;
+            this.score += obj.points * (1 + (this.combo - 1) * 0.5);
+            if (!this.isAI) this.showCombo();
+            // Trigger tutorial success for first 2 objects
+            if (!this.isAI && this.tutorialPhase !== 'done' && this.placed <= 2) {
+              this.tutorialPhase = 'success';
+              this.tutorialSuccessTimer = 0;
+              this.tutorialClawLocked = false;
+            }
+          } else {
+            // Drop back to desk
+            obj.y = deskY - obj.h / 2;
+            this.combo = 0;
+          }
+        }
+        this.clawState = 'idle';
+        break;
+    }
+  }
+
+  showCombo() {
+    const el = document.getElementById('comboPopup');
+    el.textContent = `x${this.combo}`;
+    el.classList.remove('show');
+    void el.offsetWidth;
+    el.classList.add('show');
+  }
+
+  draw() {
+    const ctx = this.ctx;
+    ctx.clearRect(0, 0, this.w, this.h);
+
+    const deskY = this.h * 0.65;
+
+    // Desk surface
+    ctx.fillStyle = COLORS.desk;
+    ctx.beginPath();
+    ctx.roundRect(40, deskY, this.w - 80, 14, 6);
+    ctx.fill();
+    ctx.fillStyle = COLORS.deskEdge;
+    ctx.fillRect(60, deskY + 14, 8, 40);
+    ctx.fillRect(this.w - 68, deskY + 14, 8, 40);
+
+    // Target zones
+    for (const t of this.targets) {
+      ctx.strokeStyle = t.filled ? COLORS.success : COLORS.targetBorder;
+      ctx.fillStyle = t.filled ? 'rgba(52,199,123,0.08)' : COLORS.target;
+      ctx.lineWidth = 2;
+      ctx.setLineDash(t.filled ? [] : [4, 4]);
+      ctx.beginPath();
+      ctx.roundRect(t.x - t.w/2, t.y - t.h/2, t.w, t.h, 8);
+      ctx.fill();
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Label
+      if (!t.filled) {
+        const obj = this.objects[t.forId];
+        ctx.fillStyle = 'rgba(79,110,247,0.5)';
+        ctx.font = '10px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(obj.label, t.x, t.y + t.h/2 + 14);
+      }
+    }
+
+    // Objects
+    for (const obj of this.objects) {
+      if (obj === this.grabbedObj && this.clawState === 'grabbing') continue;
+      ctx.fillStyle = obj.color;
+      ctx.beginPath();
+      if (obj.shape === 'circle') {
+        ctx.arc(obj.x, obj.y, obj.w, 0, Math.PI * 2);
+      } else {
+        ctx.roundRect(obj.x - obj.w/2, obj.y - obj.h/2, obj.w, obj.h, 4);
+      }
+      ctx.fill();
+
+      // Points label
+      if (!obj.placed) {
+        ctx.fillStyle = 'rgba(0,0,0,0.4)';
+        ctx.font = 'bold 9px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(obj.points + 'pt', obj.x, obj.y - obj.h/2 - 6);
+      }
+    }
+
+    // Cable
+    ctx.strokeStyle = COLORS.cable;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(this.clawX, 0);
+    ctx.lineTo(this.clawX, this.clawY);
+    ctx.stroke();
+
+    // Claw arm
+    ctx.fillStyle = COLORS.clawArm;
+    ctx.beginPath();
+    ctx.roundRect(this.clawX - 18, this.clawY - 6, 36, 12, 4);
+    ctx.fill();
+
+    // Claw fingers
+    const openAngle = this.clawOpen ? 0.3 : 0.05;
+    ctx.strokeStyle = COLORS.claw;
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    // Left finger
+    ctx.beginPath();
+    ctx.moveTo(this.clawX - 8, this.clawY + 6);
+    ctx.lineTo(this.clawX - 8 - Math.sin(openAngle) * 16, this.clawY + 6 + Math.cos(openAngle) * 16);
+    ctx.stroke();
+    // Right finger
+    ctx.beginPath();
+    ctx.moveTo(this.clawX + 8, this.clawY + 6);
+    ctx.lineTo(this.clawX + 8 + Math.sin(openAngle) * 16, this.clawY + 6 + Math.cos(openAngle) * 16);
+    ctx.stroke();
+
+    // Draw grabbed object near claw
+    if (this.grabbedObj && (this.clawState === 'ascending' || this.clawState === 'carrying')) {
+      const obj = this.grabbedObj;
+      ctx.fillStyle = obj.color;
+      ctx.beginPath();
+      if (obj.shape === 'circle') {
+        ctx.arc(obj.x, obj.y, obj.w, 0, Math.PI * 2);
+      } else {
+        ctx.roundRect(obj.x - obj.w/2, obj.y - obj.h/2, obj.w, obj.h, 4);
+      }
+      ctx.fill();
+    }
+
+    // Rail at top
+    ctx.fillStyle = '#e8e8e8';
+    ctx.fillRect(0, 0, this.w, 4);
+
+    // Tutorial overlay
+    this.drawTutorial();
+  }
+}
+
+// ==================== INIT ====================
+let playerGame, aiGame, gameOver, aiCooldown;
+let silentElapsed = 0;
+const SILENT_LIMIT = 480;
+const SKIP_THRESHOLD = 300;
+let playerStarted = false;
+
+function init() {
+  const playerCanvas = document.getElementById('playerCanvas');
+  const aiCanvas = document.getElementById('aiCanvas');
+  const rect = playerCanvas.getBoundingClientRect();
+  if (rect.width === 0 || rect.height === 0) { requestAnimationFrame(init); return; }
+
+  playerGame = new ClawGame(playerCanvas, false);
+  aiGame = new ClawGame(aiCanvas, true);
+  gameOver = false;
+  aiCooldown = 60;
+
+  gameLoop();
+
+  // Silent timer
+  setInterval(() => {
+    if (gameOver) return;
+    silentElapsed++;
+    if (silentElapsed >= SKIP_THRESHOLD) {
+      document.getElementById('skipTaskBtn').classList.add('visible');
+    }
+    if (silentElapsed >= SILENT_LIMIT) {
+      triggerEndGame();
+    }
+  }, 1000);
+}
+
+requestAnimationFrame(init);
+
+// AI behavior
+function aiTick() {
+  if (gameOver || !playerStarted) return;
+  aiCooldown--;
+  if (aiCooldown <= 0) {
+    aiGame.aiThink();
+    aiCooldown = aiGame.aiThinkDelay + Math.floor(Math.random() * 20);
+  }
+}
+
+// Main loop
+function gameLoop() {
+  if (!gameOver) {
+    playerGame.update();
+    playerGame.updateTutorial();
+    if (playerStarted) {
+      aiGame.update();
+      aiTick();
+    }
+  }
+
+  playerGame.draw();
+  aiGame.draw();
+
+  document.getElementById('yourScore').textContent = Math.round(playerGame.score);
+  document.getElementById('aiScore').textContent = Math.round(aiGame.score);
+  document.getElementById('comboBadge').textContent = `x${playerGame.combo}`;
+  document.getElementById('placedCount').textContent = playerGame.placed;
+
+  // Count-up timer
+  const mins = Math.floor(silentElapsed / 60);
+  const secs = silentElapsed % 60;
+  document.getElementById('countUpTimer').textContent = `${mins}:${secs.toString().padStart(2,'0')}`;
+
+  if (!gameOver && (playerGame.placed >= TOTAL_OBJECTS || aiGame.placed >= TOTAL_OBJECTS)) {
+    triggerEndGame();
+  }
+
+  requestAnimationFrame(gameLoop);
+}
+
+function triggerEndGame() {
+  if (gameOver) return;
+  gameOver = true;
+
+  const robotTime = 45 + Math.floor(Math.random() * 30);
+
+  document.getElementById('rYouPlaced').textContent = playerGame.placed + '/' + TOTAL_OBJECTS;
+  document.getElementById('rAiPlaced').textContent = aiGame.placed + '/' + TOTAL_OBJECTS;
+  document.getElementById('rYouTime').textContent = formatTime(silentElapsed);
+  document.getElementById('rAiTime').textContent = formatTime(robotTime);
+  document.getElementById('rYouCombo').textContent = 'x' + playerGame.maxCombo;
+  document.getElementById('rAiCombo').textContent = 'x' + aiGame.maxCombo;
+  document.getElementById('rYouScore').textContent = Math.round(playerGame.score);
+  document.getElementById('rAiScore').textContent = Math.round(aiGame.score);
+
+  // Highlight winners
+  const rows = document.querySelectorAll('.rt-row');
+  const youVals = [playerGame.placed, -silentElapsed, playerGame.maxCombo, playerGame.score];
+  const aiVals = [aiGame.placed, -robotTime, aiGame.maxCombo, aiGame.score];
+  let youWins = 0;
+  rows.forEach((row, i) => {
+    const yv = row.querySelector('.you-val');
+    const av = row.querySelector('.ai-val');
+    if (youVals[i] >= aiVals[i]) { yv.classList.add('win'); av.classList.add('lose'); youWins++; }
+    else { av.classList.add('win'); yv.classList.add('lose'); }
+  });
+
+  document.getElementById('resultSummary').textContent = `你在 ${youWins}/4 项中超越了 AI`;
+  document.getElementById('resultSub').textContent = `用时 ${formatTime(silentElapsed)}，完成 ${playerGame.placed}/${TOTAL_OBJECTS} 个物体归位`;
+
+  // Result hook — 3 tiers based on score gap
+  const pScore = Math.round(playerGame.score);
+  const aScore = Math.round(aiGame.score);
+  const gap = (pScore - aScore) / Math.max(aScore, 1);
+  let hook, title;
+  if (gap > 0.2) {
+    title = '你赢了！';
+    hook = `你比机器人高了 ${pScore - aScore} 分 — 物体多了之后还能赢吗？`;
+  } else if (gap > -0.2) {
+    title = '不相上下！';
+    hook = '和机器人不相上下 — 进阶赛中一决高下？';
+  } else {
+    title = 'AI 这次赢了';
+    hook = '机器人这次赢了 — 再试一次还是直接挑战进阶？';
+  }
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultHook').textContent = hook;
+
+  setTimeout(() => {
+    document.getElementById('resultOverlay').classList.add('active');
+  }, 600);
+}
+
+// Demo simulation
+function simulateAllDone() {
+  if (gameOver) return;
+  // Randomly pick one of 3 scenarios
+  const scenario = Math.floor(Math.random() * 3);
+  playerGame.placed = TOTAL_OBJECTS;
+  aiGame.placed = TOTAL_OBJECTS;
+
+  if (scenario === 0) {
+    // Player wins by a lot (>20% faster)
+    silentElapsed = 90;
+    playerGame.score = 220;
+    playerGame.maxCombo = 5;
+    aiGame.score = 160;
+    aiGame.maxCombo = 3;
+  } else if (scenario === 1) {
+    // Roughly tied (±20%)
+    silentElapsed = 140;
+    playerGame.score = 175;
+    playerGame.maxCombo = 3;
+    aiGame.score = 170;
+    aiGame.maxCombo = 3;
+  } else {
+    // AI wins
+    silentElapsed = 250;
+    playerGame.score = 130;
+    playerGame.maxCombo = 2;
+    aiGame.score = 190;
+    aiGame.maxCombo = 4;
+  }
+  triggerEndGame();
+}
+function simulateTimeout() {
+  silentElapsed = SKIP_THRESHOLD;
+  document.getElementById('skipTaskBtn').classList.add('visible');
+}
+
+function formatTime(s) {
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  return `${m}:${sec.toString().padStart(2,'0')}`;
+}
+
+// Handle resize
+window.addEventListener('resize', () => {
+  if (playerGame && aiGame) { playerGame.resize(); aiGame.resize(); }
+});
+</script>
+</body>
+</html>

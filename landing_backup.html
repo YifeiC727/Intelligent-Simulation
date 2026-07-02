@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JoyAI-Sim</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+    background: #FAFBFD;
+    color: #0F172A;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== SIDEBAR ===== */
+  .sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0; z-index: 1100;
+    width: 56px; background: #fff;
+    border-right: 1px solid rgba(15,23,42,0.06);
+    display: flex; flex-direction: column; align-items: center;
+    padding: 16px 0; gap: 4px;
+  }
+  .sb-logo { font-size: 16px; font-weight: 800; color: #2563EB; margin-bottom: 20px; }
+  .sb-item {
+    width: 40px; height: 40px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: #94a3b8; cursor: pointer;
+    transition: all 0.15s; text-decoration: none; position: relative;
+  }
+  .sb-item:hover { background: #f1f5f9; color: #475569; }
+  .sb-item.active { background: rgba(37,99,235,0.08); color: #2563EB; }
+  .sb-item .sb-tooltip {
+    display: none; position: absolute; left: 52px; top: 50%; transform: translateY(-50%);
+    padding: 5px 10px; border-radius: 6px; background: #0F172A; color: #fff;
+    font-size: 11px; font-weight: 500; white-space: nowrap;
+  }
+  .sb-item:hover .sb-tooltip { display: block; }
+  .sb-divider { width: 28px; height: 1px; background: rgba(15,23,42,0.06); margin: 8px 0; }
+
+  /* ===== NAV ===== */
+  nav {
+    position: fixed; top: 0; left: 56px; right: 0; z-index: 1000;
+    height: 80px;
+    background: rgba(250, 251, 253, 0.72);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 64px;
+    max-width: 100%;
+  }
+  .nav-logo {
+    font-size: 18px; font-weight: 700; color: #0F172A;
+    letter-spacing: -0.3px;
+  }
+  .nav-btn {
+    padding: 10px 24px; border-radius: 16px;
+    background: #2563EB; color: #fff;
+    font-size: 14px; font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+  }
+  .nav-btn:hover {
+    background: #1D4ED8;
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 90vh;
+    max-width: 1440px; margin: 0 auto;
+    padding: 80px 120px 0;
+    padding-left: 80px; /* account for sidebar */
+    display: grid;
+    grid-template-columns: 40% 60%;
+    align-items: center;
+    gap: 48px;
+    position: relative;
+  }
+
+  /* Subtle background */
+  .hero::before {
+    content: '';
+    position: absolute; top: 0; right: 0;
+    width: 70%; height: 100%;
+    background: radial-gradient(ellipse at 70% 40%, rgba(37, 99, 235, 0.04), transparent 60%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(15, 23, 42, 0.03) 1px, transparent 1px);
+    background-size: 32px 32px;
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  .hero-left { position: relative; z-index: 2; }
+
+  .hero-badge {
+    display: inline-block;
+    padding: 6px 14px; border-radius: 8px;
+    background: rgba(37, 99, 235, 0.06);
+    font-size: 12px; font-weight: 600; color: #2563EB;
+    letter-spacing: 0.3px;
+    margin-bottom: 32px;
+  }
+
+  .hero-title {
+    font-size: 72px; font-weight: 800;
+    line-height: 1.05; letter-spacing: -2px;
+    color: #0F172A;
+    margin-bottom: 28px;
+  }
+  .hero-title .blue { color: #2563EB; }
+
+  .hero-sub {
+    font-size: 22px; font-weight: 400;
+    color: #475569;
+    line-height: 1.6;
+    max-width: 420px;
+    margin-bottom: 48px;
+  }
+
+  .hero-buttons { display: flex; gap: 16px; align-items: center; }
+  .btn-primary {
+    padding: 16px 36px; border-radius: 16px;
+    background: #2563EB; color: #fff;
+    font-size: 16px; font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s;
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.25);
+  }
+  .btn-primary:hover {
+    background: #1D4ED8;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(37, 99, 235, 0.35);
+  }
+  .btn-ghost {
+    padding: 16px 28px; border-radius: 16px;
+    background: transparent;
+    border: 1px solid rgba(15, 23, 42, 0.12);
+    color: #475569;
+    font-size: 16px; font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .btn-ghost:hover {
+    border-color: rgba(15, 23, 42, 0.2);
+    background: rgba(15, 23, 42, 0.02);
+  }
+
+  /* Hero right: scene */
+  .hero-right {
+    position: relative; z-index: 2;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hero-scene {
+    width: 100%; aspect-ratio: 4/3;
+    border-radius: 32px;
+    background: linear-gradient(145deg, #f1f5f9, #e2e8f0);
+    position: relative; overflow: hidden;
+    box-shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+    border: 1px solid rgba(15, 23, 42, 0.06);
+  }
+  .hero-scene::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 60%, rgba(37, 99, 235, 0.06), transparent 70%);
+  }
+
+  /* Desk scene SVG illustration */
+  .scene-content {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .scene-desk {
+    position: absolute; bottom: 18%; left: 10%; right: 10%;
+    height: 8px; background: #c4a882;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  .scene-desk::after {
+    content: ''; position: absolute; top: 8px;
+    left: 8%; width: 6px; height: 28px;
+    background: #b8976e; border-radius: 0 0 3px 3px;
+    box-shadow: 350px 0 0 0 #b8976e;
+  }
+
+  /* Objects on desk */
+  .scene-obj {
+    position: absolute; bottom: calc(18% + 8px);
+    border-radius: 4px;
+  }
+  .scene-mug {
+    left: 22%; width: 28px; height: 34px;
+    background: linear-gradient(to bottom, #dbeafe, #93c5fd);
+    border-radius: 4px 4px 6px 6px;
+    box-shadow: 0 3px 8px rgba(37, 99, 235, 0.15);
+  }
+  .scene-book {
+    left: 42%; width: 44px; height: 28px;
+    background: linear-gradient(to bottom, #fef3c7, #fbbf24);
+    border-radius: 3px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+  }
+  .scene-plant {
+    right: 18%; width: 24px; height: 40px;
+    background: linear-gradient(to top, #6b4c2a 30%, #4ade80 30%);
+    border-radius: 3px 3px 12px 12px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+  }
+
+  /* Robot arm */
+  .scene-arm {
+    position: absolute; top: 8%; left: 50%;
+    transform: translateX(-50%);
+    width: 4px; height: 38%;
+    background: linear-gradient(to bottom, #94a3b8, #64748b);
+    border-radius: 2px;
+    animation: armBreathe 4s ease-in-out infinite;
+  }
+  .scene-arm::after {
+    content: ''; position: absolute; bottom: -4px; left: 50%;
+    transform: translateX(-50%);
+    width: 32px; height: 14px;
+    background: #475569;
+    border-radius: 4px 4px 8px 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  }
+  .arm-gripper {
+    position: absolute; bottom: -18px; left: 50%;
+    transform: translateX(-50%);
+    width: 28px; height: 14px;
+    display: flex; justify-content: space-between;
+  }
+  .arm-gripper::before, .arm-gripper::after {
+    content: ''; width: 4px; height: 14px;
+    background: #334155; border-radius: 2px;
+  }
+  @keyframes armBreathe {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(6px); }
+  }
+
+  /* Glow under arm */
+  .scene-glow {
+    position: absolute; top: 45%; left: 45%;
+    width: 80px; height: 80px;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.15), transparent 70%);
+    border-radius: 50%;
+    animation: glowPulse 3s ease-in-out infinite;
+  }
+  @keyframes glowPulse {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.1); }
+  }
+
+  /* Floating HUD */
+  .hero-hud {
+    position: absolute; bottom: -40px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; gap: 12px; z-index: 10;
+  }
+  .hud-card {
+    padding: 14px 22px; border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 12px 40px rgba(15, 23, 42, 0.08);
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; font-weight: 600; color: #0F172A;
+    white-space: nowrap;
+  }
+  .hud-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+  }
+  .hud-dot.blue { background: #2563EB; }
+  .hud-dot.slate { background: #94a3b8; }
+  .hud-score {
+    font-size: 18px; font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .hud-label { color: #94a3b8; font-weight: 500; }
+
+  /* Scroll indicator */
+  .scroll-indicator {
+    position: absolute; bottom: 40px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    z-index: 10;
+  }
+  .scroll-mouse {
+    width: 22px; height: 34px;
+    border: 2px solid rgba(15, 23, 42, 0.15);
+    border-radius: 11px;
+    position: relative;
+  }
+  .scroll-mouse::after {
+    content: ''; position: absolute; top: 6px; left: 50%;
+    transform: translateX(-50%);
+    width: 3px; height: 8px;
+    background: rgba(15, 23, 42, 0.2);
+    border-radius: 2px;
+    animation: scrollDot 2s ease-in-out infinite;
+  }
+  @keyframes scrollDot {
+    0%, 100% { transform: translateX(-50%) translateY(0); opacity: 1; }
+    100% { transform: translateX(-50%) translateY(10px); opacity: 0; }
+  }
+
+  /* ===== SECTION SPACING ===== */
+  section {
+    max-width: 1440px; margin: 0 auto;
+    padding: 80px 120px;
+  }
+
+  .section-title {
+    font-size: 36px; font-weight: 700;
+    line-height: 1.15; letter-spacing: -0.8px;
+    color: #0F172A;
+    margin-bottom: 40px;
+  }
+
+  /* ===== WHY IT'S FUN ===== */
+  .fun-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+  .fun-card {
+    background: #fff;
+    border-radius: 24px;
+    padding: 48px 36px;
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    box-shadow: 0 12px 40px rgba(15, 23, 42, 0.04);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .fun-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(15, 23, 42, 0.1);
+  }
+  .fun-card h3 {
+    font-size: 22px; font-weight: 700; color: #0F172A;
+    margin-bottom: 14px;
+  }
+  .fun-card p {
+    font-size: 16px; color: #64748B; line-height: 1.7;
+  }
+  .fun-flow {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 28px;
+    font-size: 14px; font-weight: 600; color: #475569;
+  }
+  .fun-flow .step {
+    padding: 8px 14px; border-radius: 10px;
+    background: #f1f5f9;
+  }
+  .fun-flow .arrow { color: #cbd5e1; }
+
+  /* ===== VIDEO ===== */
+  .video-section {
+    max-width: 1440px; margin: 0 auto;
+    padding: 0 120px 80px;
+  }
+  .video-wrap {
+    width: 100%; aspect-ratio: 16/9;
+    border-radius: 32px;
+    background: linear-gradient(145deg, #0f172a, #1e293b);
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 20px 60px rgba(15, 23, 42, 0.15);
+  }
+  .video-play {
+    width: 88px; height: 88px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.3s;
+    backdrop-filter: blur(8px);
+  }
+  .video-wrap:hover .video-play {
+    transform: scale(1.08);
+    background: rgba(255, 255, 255, 0.15);
+  }
+  .video-play svg { width: 28px; height: 28px; fill: #fff; margin-left: 4px; }
+  .video-label {
+    position: absolute; bottom: 32px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 15px; font-weight: 500; color: rgba(255,255,255,0.6);
+    white-space: nowrap;
+  }
+  .demo-tag {
+    position: absolute; top: 16px; right: 16px; z-index: 10;
+    padding: 5px 12px; border-radius: 8px;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    font-size: 11px; font-weight: 500; color: rgba(255,255,255,0.8);
+  }
+  .demo-tag-light {
+    position: absolute; top: 16px; right: 16px; z-index: 10;
+    padding: 5px 12px; border-radius: 8px;
+    background: rgba(255,255,255, 0.8);
+    backdrop-filter: blur(4px);
+    font-size: 11px; font-weight: 500; color: #64748B;
+    border: 1px solid rgba(15,23,42,0.06);
+  }
+
+  /* ===== METRICS ===== */
+  .metrics-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .metric-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 36px 32px;
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    box-shadow: 0 12px 40px rgba(15, 23, 42, 0.04);
+    display: flex; align-items: center; gap: 24px;
+    transition: all 0.3s;
+  }
+  .metric-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+  }
+  .metric-value {
+    font-size: 40px; font-weight: 800; color: #0F172A;
+    letter-spacing: -1px;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+  }
+  .metric-text {
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .metric-label {
+    font-size: 15px; font-weight: 600; color: #0F172A;
+  }
+  .metric-desc {
+    font-size: 13px; color: #94a3b8; line-height: 1.5;
+  }
+
+  /* ===== ABOUT ===== */
+  .about-layout {
+    max-width: 680px;
+  }
+  .about-layout p {
+    font-size: 18px; color: #64748B;
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+  .about-meta {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    margin-top: 36px;
+  }
+  .about-tag {
+    padding: 8px 16px; border-radius: 12px;
+    background: #fff;
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    font-size: 13px; font-weight: 500; color: #64748B;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+  }
+
+  /* ===== FINAL CTA ===== */
+  .final-cta {
+    background: #020617;
+    padding: 160px 120px;
+    text-align: center;
+    position: relative; overflow: hidden;
+    max-width: 100%; margin: 0;
+  }
+  .final-cta::before {
+    content: '';
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.08), transparent 60%);
+    pointer-events: none;
+  }
+  .final-cta .cta-overline {
+    font-size: 16px; font-weight: 500;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 24px;
+    position: relative; z-index: 1;
+  }
+  .final-cta h2 {
+    font-size: 64px; font-weight: 800;
+    line-height: 1.1; letter-spacing: -2px;
+    color: #fff;
+    margin-bottom: 16px;
+    position: relative; z-index: 1;
+  }
+  .final-cta h2 .blue { color: #2563EB; }
+  .final-cta .cta-sub {
+    font-size: 18px; color: rgba(255,255,255,0.4);
+    margin-bottom: 52px;
+    position: relative; z-index: 1;
+  }
+  .final-cta .btn-primary {
+    padding: 18px 44px; font-size: 17px;
+    position: relative; z-index: 1;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 1024px) {
+    nav { padding: 0 32px; }
+    .hero { grid-template-columns: 1fr; padding: 120px 32px 80px; gap: 48px; }
+    .hero-title { font-size: 48px; }
+    .hero-sub { font-size: 18px; }
+    section { padding: 60px 32px; }
+    .section-title { font-size: 36px; }
+    .fun-grid { grid-template-columns: 1fr; }
+    .metrics-grid { grid-template-columns: 1fr; }
+    .video-section { padding: 0 32px 100px; }
+    .final-cta { padding: 100px 32px; }
+    .final-cta h2 { font-size: 40px; }
+    .hero-hud { bottom: -30px; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  }
+  @media (max-width: 640px) {
+    .hero-title { font-size: 38px; }
+    .metrics-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <a class="sb-item" href="landing.html" title="返回首页"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg><span class="sb-tooltip">返回首页</span></a>
+  <div class="sb-divider"></div>
+  <a class="sb-item" href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg><span class="sb-tooltip">视觉理解</span></a>
+  <a class="sb-item" href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span class="sb-tooltip">视觉生成</span></a>
+  <a class="sb-item active" href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg><span class="sb-tooltip">具身交互</span></a>
+  <a class="sb-item" href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><span class="sb-tooltip">数据看板</span></a>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">JoyAI-Sim</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-badge">JoyAI-Sim Interactive Platform</div>
+    <h1 class="hero-title">操控机械臂<br><span class="blue">挑战 AI 对手</span></h1>
+    <p class="hero-sub">在浏览器中操控机器人，与 AI 实时竞技，看看人类直觉是否胜过机器算法。</p>
+    <div class="hero-buttons">
+      <a href="onboarding.html" class="btn-primary">立即挑战 &rarr;</a>
+      <a href="#video" class="btn-ghost">Watch Demo</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-scene">
+      <div class="demo-tag-light">Demo 占位 · 实际使用仿真画面</div>
+      <div class="scene-content">
+        <div class="scene-glow"></div>
+        <div class="scene-arm">
+          <div class="arm-gripper"></div>
+        </div>
+        <div class="scene-desk"></div>
+        <div class="scene-obj scene-mug"></div>
+        <div class="scene-obj scene-book"></div>
+        <div class="scene-obj scene-plant"></div>
+      </div>
+    </div>
+    <!-- Floating HUD -->
+    <div class="hero-hud">
+      <div class="hud-card">
+        <div class="hud-dot blue"></div>
+        <span class="hud-label">Human</span>
+        <span class="hud-score">6 / 8</span>
+      </div>
+      <div class="hud-card">
+        <div class="hud-dot slate"></div>
+        <span class="hud-label">Robot</span>
+        <span class="hud-score">5 / 8</span>
+      </div>
+      <div class="hud-card">
+        <span class="hud-label">Combo</span>
+        <span class="hud-score" style="color:#2563EB;">x4</span>
+      </div>
+      <div class="hud-card" style="font-size:10px; color:#94a3b8; font-weight:400;">
+        Demo 数据
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-indicator">
+    <div class="scroll-mouse"></div>
+  </div>
+</section>
+
+<!-- WHY IT'S FUN -->
+<section id="fun">
+  <h2 class="section-title">Why It's Fun</h2>
+  <div class="fun-grid">
+    <div class="fun-card">
+      <div class="fun-flow">
+        <span class="step">Mouse</span>
+        <span class="arrow">&rarr;</span>
+        <span class="step">Grab</span>
+        <span class="arrow">&rarr;</span>
+        <span class="step">Drop</span>
+      </div>
+      <h3>30 秒上手</h3>
+      <p>鼠标控制移动，点击抓取，空格释放。没有复杂教程，像抓娃娃一样直觉。</p>
+    </div>
+    <div class="fun-card">
+      <div class="fun-flow">
+        <span class="step" style="background:rgba(37,99,235,0.08); color:#2563EB;">Human</span>
+        <span class="arrow">VS</span>
+        <span class="step">Robot</span>
+      </div>
+      <h3>实时人机对决</h3>
+      <p>左右分屏同步竞赛。精准度、流畅度、连击数逐项对比，看谁更快更准。</p>
+    </div>
+    <div class="fun-card">
+      <div class="fun-flow">
+        <span class="step">Desk</span>
+        <span class="arrow">&rarr;</span>
+        <span class="step">Kitchen</span>
+        <span class="arrow">&rarr;</span>
+        <span class="step">Warehouse</span>
+      </div>
+      <h3>持续进阶</h3>
+      <p>从 3 个物体到 12 个，从宽松区域到精确归位。难度递增，排行榜记录突破。</p>
+    </div>
+  </div>
+</section>
+
+<!-- VIDEO -->
+<div class="video-section" id="video">
+  <div class="video-wrap">
+    <div class="demo-tag">Demo 占位 · 实际使用真机操作场景</div>
+    <div class="video-play">
+      <svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg>
+    </div>
+    <div class="video-label">Watch Robot in Action</div>
+  </div>
+</div>
+
+<!-- BEHIND THE EXPERIENCE -->
+<section id="tech">
+  <h2 class="section-title">Behind the Experience</h2>
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-value">53K+</div>
+      <div class="metric-text">
+        <div class="metric-label">3D Assets</div>
+        <div class="metric-desc">日常物品 3D 资产实例，覆盖家庭与物流场景</div>
+      </div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value">300+</div>
+      <div class="metric-text">
+        <div class="metric-label">Object Categories</div>
+        <div class="metric-desc">细粒度物体类别，从杯子到工具全覆盖</div>
+      </div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value">GS</div>
+      <div class="metric-text">
+        <div class="metric-label">Gaussian Splatting</div>
+        <div class="metric-desc">高斯泼溅实时渲染，构建逼真 3D 交互场景</div>
+      </div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value">RT</div>
+      <div class="metric-text">
+        <div class="metric-label">Physics Simulation</div>
+        <div class="metric-desc">高精度物理引擎，真实碰撞与抓取反馈</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <h2 class="section-title">About JoyAI-Sim</h2>
+  <div class="about-layout">
+    <div class="about-text">
+      <p>JoyAI-Sim 是京东打造的具身智能仿真平台。</p>
+      <p>基于高精度物理引擎与高斯泼溅实时渲染，构建逼真的 3D 交互场景，让任何人在浏览器中即可体验操控机器人。</p>
+      <p>平台拥有覆盖 300+ 细粒度类别、53,000+ 实例的日常物品 3D 资产库，支持家庭整理、物流分拣等多种场景。</p>
+    </div>
+    <div class="about-meta">
+      <span class="about-tag">Gaussian Splatting</span>
+      <span class="about-tag">Physics Engine</span>
+      <span class="about-tag">JoyBuilder</span>
+      <span class="about-tag">WebGL2</span>
+      <span class="about-tag">Real-time Rendering</span>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<div class="final-cta">
+  <div class="cta-overline">The challenge awaits</div>
+  <h2>Human <span class="blue">or</span> AI<br>Who wins today?</h2>
+  <p class="cta-sub">操控机械臂，与 AI 一决高下。</p>
+  <a href="onboarding.html" class="btn-primary">Start Challenge &rarr;</a>
+</div>
+
+</body>
+</html>
