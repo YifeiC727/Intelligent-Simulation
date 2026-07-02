@@ -479,6 +479,8 @@ class ClawGame {
 
     this.initObjects();
     this.initTargets();
+    this.obstacles = [];
+    if (LEVEL_CONFIG.obstacles) this.initObstacles();
 
     // Tutorial state (player only, first 2 objects)
     // Phases: 'move_to_obj', 'locked_grab', 'move_to_target', 'locked_drop', 'success', 'done'
@@ -540,6 +542,20 @@ class ClawGame {
         w: sw + 16, h: sh + 16,
         forId: order[i],
         filled: false
+      });
+    }
+  }
+
+  initObstacles() {
+    const deskY = this.h * 0.65;
+    const count = 1 + Math.floor(Math.random() * 2); // 1-2 obstacles
+    for (let i = 0; i < count; i++) {
+      const w = 30 + Math.random() * 20;
+      const h = 20 + Math.random() * 15;
+      const x = this.w * 0.2 + Math.random() * (this.w * 0.6);
+      this.obstacles.push({
+        x: x, y: deskY - h / 2,
+        w: w, h: h
       });
     }
   }
@@ -870,6 +886,27 @@ class ClawGame {
         ctx.textAlign = 'center';
         ctx.fillText(obj.label, t.x, t.y + t.h/2 + 14);
       }
+    }
+
+    // Obstacles (red-ish blocks on desk)
+    for (const obs of this.obstacles) {
+      ctx.fillStyle = '#fecaca';
+      ctx.strokeStyle = '#ef4444';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(obs.x - obs.w/2, obs.y - obs.h/2, obs.w, obs.h, 6);
+      ctx.fill();
+      ctx.stroke();
+      // Warning stripes
+      ctx.fillStyle = 'rgba(239,68,68,0.15)';
+      ctx.beginPath();
+      ctx.roundRect(obs.x - obs.w/2, obs.y - obs.h/2, obs.w, obs.h, 6);
+      ctx.fill();
+      // Label
+      ctx.fillStyle = '#dc2626';
+      ctx.font = 'bold 9px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('OBSTACLE', obs.x, obs.y + 3);
     }
 
     // Objects
