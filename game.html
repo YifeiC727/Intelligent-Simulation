@@ -19,46 +19,31 @@
   /* Sidebar */
   .sidebar {
     position: fixed; top: 0; left: 0; bottom: 0; z-index: 500;
-    width: 56px;
-    background: #fff;
+    width: 240px; background: #fff;
     border-right: 1px solid rgba(15,23,42,0.06);
     display: flex; flex-direction: column;
-    align-items: center;
-    padding: 16px 0;
-    gap: 4px;
+    padding: 24px 16px; gap: 2px;
   }
-  .sb-logo {
-    font-size: 16px; font-weight: 800; color: #2563EB;
-    margin-bottom: 20px;
-    writing-mode: vertical-lr; text-orientation: mixed;
-    letter-spacing: -0.5px;
-  }
+  .sb-brand { font-size: 17px; font-weight: 700; color: #0F172A; letter-spacing: -0.3px; padding: 0 12px 20px; }
+  .sb-brand span { color: #2563EB; }
   .sb-item {
-    width: 40px; height: 40px; border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px; color: #94a3b8;
-    cursor: pointer; transition: all 0.15s;
-    text-decoration: none;
-    position: relative;
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 12px; border-radius: 10px;
+    font-size: 14px; font-weight: 500; color: #64748B;
+    cursor: pointer; transition: all 0.15s; text-decoration: none;
   }
-  .sb-item:hover { background: #f1f5f9; color: #475569; }
-  .sb-item.active { background: rgba(37,99,235,0.08); color: #2563EB; }
-  .sb-item .sb-tooltip {
-    display: none; position: absolute; left: 52px; top: 50%;
-    transform: translateY(-50%);
-    padding: 5px 10px; border-radius: 6px;
-    background: #0F172A; color: #fff;
-    font-size: 11px; font-weight: 500; white-space: nowrap;
-  }
-  .sb-item:hover .sb-tooltip { display: block; }
-  .sb-divider { width: 28px; height: 1px; background: rgba(15,23,42,0.06); margin: 8px 0; }
+  .sb-item:hover { background: #f1f5f9; color: #0F172A; }
+  .sb-item.active { background: rgba(37,99,235,0.06); color: #2563EB; font-weight: 600; }
+  .sb-item svg { flex-shrink: 0; }
+  .sb-divider { height: 1px; background: rgba(15,23,42,0.06); margin: 10px 12px; }
+  .sb-section-label { font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; padding: 12px 12px 6px; }
 
   /* Layout - offset by sidebar */
   .game-layout {
     display: grid;
     grid-template-rows: auto 1fr 48px;
     height: 100vh;
-    margin-left: 56px;
+    margin-left: 240px;
   }
 
   /* Header */
@@ -302,12 +287,15 @@
 
 <!-- Sidebar -->
 <div class="sidebar">
-  <a class="sb-item" href="landing.html" title="返回首页"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg><span class="sb-tooltip">返回首页</span></a>
-  <div class="sb-divider"></div>
-  <a class="sb-item" href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg><span class="sb-tooltip">视觉理解</span></a>
-  <a class="sb-item" href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span class="sb-tooltip">视觉生成</span></a>
-  <a class="sb-item active" href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg><span class="sb-tooltip">具身交互</span></a>
-  <a class="sb-item" href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><span class="sb-tooltip">数据看板</span></a>
+  <div class="sb-brand">Joy<span>AI</span>-Sim</div>
+  <a class="sb-item" href="landing.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Home</a>
+  <div class="sb-section-label">AI Models</div>
+  <a class="sb-item" href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>视觉理解</a>
+  <a class="sb-item" href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>视觉生成</a>
+  <a class="sb-item active" href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>具身交互</a>
+  <div class="sb-section-label">Tools</div>
+  <a class="sb-item" href="leaderboard.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>排行榜</a>
+  <a class="sb-item" href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>数据看板</a>
 </div>
 
 <!-- Demo Panel -->
@@ -329,7 +317,7 @@
         <div class="header-subtitle">将物体拖到对应目标区</div>
       </div>
     </div>
-    <div style="font-size:16px; font-weight:700; color:#0F172A; font-variant-numeric:tabular-nums;" id="countUpTimer">0:00</div>
+    <div style="font-size:16px; font-weight:700; color:#0F172A; font-variant-numeric:tabular-nums;" id="countdownTimer">--:--</div>
     <div class="score-area">
       <div class="score-chip you"><span class="label">You</span> <span id="yourScore">0</span></div>
       <div class="score-vs">VS</div>
@@ -339,12 +327,6 @@
 
   <!-- Game panels -->
   <div class="game-main">
-    <div class="game-panel player-panel">
-      <div class="panel-label">Your Control</div>
-      <canvas id="playerCanvas"></canvas>
-      <div class="combo-popup" id="comboPopup"></div>
-      <button class="skip-task-btn" id="skipTaskBtn" onclick="triggerEndGame()">看看结果？ &#8629;</button>
-    </div>
     <div class="game-panel ai-panel">
       <div class="panel-label">AI Opponent</div>
       <div class="ai-demo-notice">
@@ -352,6 +334,12 @@
         <span>Demo 画面 · 正式版将展示仿真机器人预录制 / 实时操作画面</span>
       </div>
       <canvas id="aiCanvas"></canvas>
+    </div>
+    <div class="game-panel player-panel">
+      <div class="panel-label">Your Control</div>
+      <canvas id="playerCanvas"></canvas>
+      <div class="combo-popup" id="comboPopup"></div>
+      <button class="skip-task-btn" id="skipTaskBtn" onclick="triggerEndGame()">看看结果？ &#8629;</button>
     </div>
   </div>
 
@@ -373,12 +361,22 @@
 <div class="result-overlay" id="resultOverlay">
   <div class="result-title" id="resultTitle">挑战完成！</div>
   <div class="result-sub" id="resultSub"></div>
-  <div class="result-table">
-    <div class="rt-header">
-      <span style="text-align:right; padding-right:20px;">You</span>
-      <span></span>
-      <span style="text-align:left; padding-left:20px;">AI</span>
+
+  <!-- Total Score — prominent -->
+  <div style="display:flex; align-items:center; justify-content:center; gap:32px; margin-bottom:28px;">
+    <div style="text-align:center;">
+      <div style="font-size:11px; font-weight:600; color:#2563EB; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">You</div>
+      <div style="font-size:36px; font-weight:800; color:#0F172A;" id="rYouScore">-</div>
     </div>
+    <div style="font-size:14px; font-weight:700; color:#cbd5e1;">VS</div>
+    <div style="text-align:center;">
+      <div style="font-size:11px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">AI</div>
+      <div style="font-size:36px; font-weight:800; color:#94a3b8;" id="rAiScore">-</div>
+    </div>
+  </div>
+
+  <!-- Secondary metrics -->
+  <div class="result-table">
     <div class="rt-row">
       <div class="rt-val you-val" id="rYouPlaced">-</div>
       <div class="rt-dim">完成数</div>
@@ -394,44 +392,68 @@
       <div class="rt-dim">最佳连击</div>
       <div class="rt-val ai-val" id="rAiCombo">-</div>
     </div>
-    <div class="rt-row">
-      <div class="rt-val you-val" id="rYouScore">-</div>
-      <div class="rt-dim">总分</div>
-      <div class="rt-val ai-val" id="rAiScore">-</div>
-    </div>
   </div>
   <div class="result-summary-line" id="resultSummary"></div>
   <div class="result-hook-line" id="resultHook"></div>
   <div class="result-btns">
     <button class="rbtn primary" onclick="location.reload()">再来一局</button>
-    <button class="rbtn ghost">进阶挑战 &rarr;</button>
+    <a class="rbtn ghost" href="leaderboard.html">排行榜</a>
+    <a class="rbtn ghost" href="level-select.html">返回关卡</a>
   </div>
 </div>
 
 <script>
-// ==================== GAME ENGINE ====================
-const TOTAL_TIME = 300; // 5 minutes
-const TOTAL_OBJECTS = 5;
-
-// Colors
-const COLORS = {
-  bg: '#fafbfd',
-  desk: '#c9b99a',
-  deskEdge: '#a89070',
-  claw: '#475569',
-  clawArm: '#64748B',
-  cable: '#94a3b8',
-  target: 'rgba(37,99,235,0.08)',
-  targetBorder: 'rgba(37,99,235,0.4)',
-  success: '#22c55e',
-  objects: ['#3b82f6','#f87171','#fbbf24','#22c55e','#a78bfa'],
-  objectLabels: ['Cup','Book','Pen','Box','Ball'],
+// ==================== LEVEL CONFIG FROM URL ====================
+const urlParams = new URLSearchParams(window.location.search);
+const LEVEL_CONFIG = {
+  level: urlParams.get('level') || 'desk-1',
+  name: decodeURIComponent(urlParams.get('name') || '书桌·初级'),
+  objects: parseInt(urlParams.get('objects')) || 5,
+  time: parseInt(urlParams.get('time')) || 720,
+  shuffle: urlParams.get('shuffle') === '1',
+  obstacles: urlParams.get('obstacles') === '1',
 };
 
-// Object shapes
-const SHAPES = ['rect','rect','rect','rect','circle'];
-const OBJ_SIZES = [[24,30],[34,22],[8,36],[26,26],[14,14]];
-const POINTS = [10, 10, 30, 20, 40];
+// ==================== GAME ENGINE ====================
+// Randomize object count within range based on level
+let TOTAL_TIME = LEVEL_CONFIG.time || 720;
+if (LEVEL_CONFIG.level === 'tutorial') TOTAL_TIME = 480; // 8 min for tutorial
+let TOTAL_OBJECTS;
+if (LEVEL_CONFIG.level === 'tutorial') {
+  TOTAL_OBJECTS = 3;
+} else if (LEVEL_CONFIG.objects <= 5) {
+  TOTAL_OBJECTS = 3 + Math.floor(Math.random() * 3); // 3-5
+} else {
+  TOTAL_OBJECTS = 8 + Math.floor(Math.random() * 5); // 8-12
+}
+
+// Dynamic object config based on TOTAL_OBJECTS
+const BASE_COLORS = ['#3b82f6','#f87171','#fbbf24','#22c55e','#a78bfa','#f472b6','#fb923c','#34d399','#818cf8','#fca5a5','#a3e635','#67e8f9'];
+const BASE_LABELS = ['Cup','Book','Pen','Box','Ball','Bottle','Phone','Clip','Key','Tape','Eraser','Card'];
+const BASE_SHAPES = ['rect','rect','rect','rect','circle','rect','rect','rect','rect','rect','rect','rect'];
+const BASE_SIZES = [[24,30],[34,22],[8,36],[26,26],[14,14],[16,32],[32,18],[6,24],[12,20],[22,12],[18,14],[28,16]];
+const BASE_POINTS = [10,15,30,20,40,25,10,35,45,20,30,15];
+
+const OBJ_SIZES = BASE_SIZES.slice(0, TOTAL_OBJECTS);
+const SHAPES = BASE_SHAPES.slice(0, TOTAL_OBJECTS);
+const POINTS = BASE_POINTS.slice(0, TOTAL_OBJECTS);
+
+// Shuffle points each round if level has shuffle enabled
+if (LEVEL_CONFIG.shuffle) {
+  for (let i = POINTS.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [POINTS[i], POINTS[j]] = [POINTS[j], POINTS[i]];
+  }
+}
+
+const COLORS = {
+  bg: '#fafbfd', desk: '#c9b99a', deskEdge: '#a89070',
+  claw: '#475569', clawArm: '#64748B', cable: '#94a3b8',
+  target: 'rgba(37,99,235,0.08)', targetBorder: 'rgba(37,99,235,0.4)',
+  success: '#22c55e',
+  objects: BASE_COLORS.slice(0, TOTAL_OBJECTS),
+  objectLabels: BASE_LABELS.slice(0, TOTAL_OBJECTS),
+};
 
 class ClawGame {
   constructor(canvas, isAI = false) {
@@ -509,7 +531,7 @@ class ClawGame {
     const targetY = this.h * 0.88;
     const spacing = this.w / (TOTAL_OBJECTS + 1);
     // Shuffle target order
-    const order = [0,1,2,3,4].sort(() => Math.random() - 0.5);
+    const order = Array.from({length: TOTAL_OBJECTS}, (_, i) => i).sort(() => Math.random() - 0.5);
     for (let i = 0; i < TOTAL_OBJECTS; i++) {
       const [sw, sh] = OBJ_SIZES[order[i]];
       this.targets.push({
@@ -864,10 +886,10 @@ class ClawGame {
 
       // Points label
       if (!obj.placed) {
-        ctx.fillStyle = 'rgba(0,0,0,0.4)';
-        ctx.font = 'bold 9px Inter, system-ui, sans-serif';
+        ctx.fillStyle = '#0F172A';
+        ctx.font = 'bold 13px Inter, system-ui, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText(obj.points + 'pt', obj.x, obj.y - obj.h/2 - 6);
+        ctx.fillText(obj.points + 'pt', obj.x, obj.y - obj.h/2 - 8);
       }
     }
 
@@ -925,9 +947,8 @@ class ClawGame {
 
 // ==================== INIT ====================
 let playerGame, aiGame, gameOver, aiCooldown;
-let silentElapsed = 0;
-const SILENT_LIMIT = 480;
-const SKIP_THRESHOLD = 300;
+let elapsedSeconds = 0;
+let remainingTime = TOTAL_TIME;
 let playerStarted = false;
 
 function init() {
@@ -941,17 +962,34 @@ function init() {
   gameOver = false;
   aiCooldown = 60;
 
+  // Level design sticky note
+  const noteHtml = buildLevelNote();
+  if (noteHtml) {
+    const noteEl = document.createElement('div');
+    noteEl.id = 'levelNote';
+    noteEl.innerHTML = noteHtml;
+    document.body.appendChild(noteEl);
+  }
+
   gameLoop();
 
-  // Silent timer
+  // Countdown timer
+  const timerEl = document.getElementById('countdownTimer');
+  const initMins = Math.floor(TOTAL_TIME / 60);
+  const initSecs = TOTAL_TIME % 60;
+  timerEl.textContent = `${initMins}:${initSecs.toString().padStart(2,'0')}`;
+
   setInterval(() => {
-    if (gameOver) return;
-    silentElapsed++;
-    if (silentElapsed >= SKIP_THRESHOLD) {
+    if (gameOver || !playerStarted) return;
+    elapsedSeconds++;
+    remainingTime = TOTAL_TIME - elapsedSeconds;
+    const m = Math.floor(remainingTime / 60);
+    const s = remainingTime % 60;
+    timerEl.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+    if (remainingTime <= 60) timerEl.style.color = '#DC2626';
+    if (remainingTime <= 0) {
+      document.getElementById('countdownTimer').textContent = '0:00';
       document.getElementById('skipTaskBtn').classList.add('visible');
-    }
-    if (silentElapsed >= SILENT_LIMIT) {
-      triggerEndGame();
     }
   }, 1000);
 }
@@ -987,11 +1025,6 @@ function gameLoop() {
   document.getElementById('comboBadge').textContent = `x${playerGame.combo}`;
   document.getElementById('placedCount').textContent = playerGame.placed;
 
-  // Count-up timer
-  const mins = Math.floor(silentElapsed / 60);
-  const secs = silentElapsed % 60;
-  document.getElementById('countUpTimer').textContent = `${mins}:${secs.toString().padStart(2,'0')}`;
-
   if (!gameOver && (playerGame.placed >= TOTAL_OBJECTS || aiGame.placed >= TOTAL_OBJECTS)) {
     triggerEndGame();
   }
@@ -1007,7 +1040,7 @@ function triggerEndGame() {
 
   document.getElementById('rYouPlaced').textContent = playerGame.placed + '/' + TOTAL_OBJECTS;
   document.getElementById('rAiPlaced').textContent = aiGame.placed + '/' + TOTAL_OBJECTS;
-  document.getElementById('rYouTime').textContent = formatTime(silentElapsed);
+  document.getElementById('rYouTime').textContent = formatTime(elapsedSeconds);
   document.getElementById('rAiTime').textContent = formatTime(robotTime);
   document.getElementById('rYouCombo').textContent = 'x' + playerGame.maxCombo;
   document.getElementById('rAiCombo').textContent = 'x' + aiGame.maxCombo;
@@ -1016,7 +1049,7 @@ function triggerEndGame() {
 
   // Highlight winners
   const rows = document.querySelectorAll('.rt-row');
-  const youVals = [playerGame.placed, -silentElapsed, playerGame.maxCombo, playerGame.score];
+  const youVals = [playerGame.placed, -elapsedSeconds, playerGame.maxCombo, playerGame.score];
   const aiVals = [aiGame.placed, -robotTime, aiGame.maxCombo, aiGame.score];
   let youWins = 0;
   rows.forEach((row, i) => {
@@ -1027,7 +1060,7 @@ function triggerEndGame() {
   });
 
   document.getElementById('resultSummary').textContent = `你在 ${youWins}/4 项中超越了 AI`;
-  document.getElementById('resultSub').textContent = `用时 ${formatTime(silentElapsed)}，完成 ${playerGame.placed}/${TOTAL_OBJECTS} 个物体归位`;
+  document.getElementById('resultSub').textContent = `用时 ${formatTime(elapsedSeconds)}，完成 ${playerGame.placed}/${TOTAL_OBJECTS} 个物体归位`;
 
   // Result hook — 3 tiers based on score gap
   const pScore = Math.round(playerGame.score);
@@ -1062,21 +1095,21 @@ function simulateAllDone() {
 
   if (scenario === 0) {
     // Player wins by a lot (>20% faster)
-    silentElapsed = 90;
+    elapsedSeconds = 90;
     playerGame.score = 220;
     playerGame.maxCombo = 5;
     aiGame.score = 160;
     aiGame.maxCombo = 3;
   } else if (scenario === 1) {
     // Roughly tied (±20%)
-    silentElapsed = 140;
+    elapsedSeconds = 140;
     playerGame.score = 175;
     playerGame.maxCombo = 3;
     aiGame.score = 170;
     aiGame.maxCombo = 3;
   } else {
     // AI wins
-    silentElapsed = 250;
+    elapsedSeconds = 250;
     playerGame.score = 130;
     playerGame.maxCombo = 2;
     aiGame.score = 190;
@@ -1085,7 +1118,10 @@ function simulateAllDone() {
   triggerEndGame();
 }
 function simulateTimeout() {
-  silentElapsed = SKIP_THRESHOLD;
+  elapsedSeconds = TOTAL_TIME;
+  remainingTime = 0;
+  document.getElementById('countdownTimer').textContent = '0:00';
+  document.getElementById('countdownTimer').style.color = '#DC2626';
   document.getElementById('skipTaskBtn').classList.add('visible');
 }
 
@@ -1093,6 +1129,40 @@ function formatTime(s) {
   const m = Math.floor(s / 60);
   const sec = s % 60;
   return `${m}:${sec.toString().padStart(2,'0')}`;
+}
+
+// Level design sticky note
+function buildLevelNote() {
+  const features = [];
+  const dataGoals = [];
+
+  if (LEVEL_CONFIG.level === 'tutorial') return '';
+
+  features.push('每局物体位置随机');
+  dataGoals.push('同物体不同位置的抓取轨迹');
+
+  if (LEVEL_CONFIG.shuffle) {
+    features.push('每局物体分值不同，高分物体随机变化');
+    dataGoals.push('不同抓取顺序（策略分化）');
+  }
+
+  if (LEVEL_CONFIG.obstacles) {
+    features.push('场景含随机障碍物');
+    dataGoals.push('障碍物规避路径数据');
+  }
+
+  features.push('重复游玩同一关卡，每次操作自然有差异');
+  dataGoals.push('同物体不同抓取轨迹');
+
+  return `
+    <div style="position:fixed;bottom:20px;left:260px;z-index:800;width:280px;background:#FFFBEB;border:1px solid #FDE68A;border-radius:14px;padding:14px 16px;box-shadow:0 6px 20px rgba(0,0,0,0.05);font-size:12px;color:#92400E;line-height:1.6;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-size:11px;font-weight:700;color:#B45309;text-transform:uppercase;letter-spacing:0.5px;">关卡设计说明</span>
+        <button onclick="document.getElementById('levelNote').remove()" style="width:20px;height:20px;border-radius:5px;border:none;background:rgba(180,83,9,0.08);color:#B45309;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&times;</button>
+      </div>
+      <div style="margin-bottom:8px;"><strong>本关特色：</strong><br>${features.join('<br>')}</div>
+      <div><strong>数据收集目标：</strong><br>${dataGoals.join('<br>')}</div>
+    </div>`;
 }
 
 // Handle resize

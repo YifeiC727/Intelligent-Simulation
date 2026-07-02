@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>排行榜 - JoyAI-Sim</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+    background: #FAFBFD;
+    color: #0F172A;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  /* ===== SIDEBAR ===== */
+  .sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0; z-index: 1100;
+    width: 240px; background: #fff;
+    border-right: 1px solid rgba(15,23,42,0.06);
+    display: flex; flex-direction: column;
+    padding: 24px 16px; gap: 2px;
+  }
+  .sb-brand { font-size: 17px; font-weight: 700; color: #0F172A; letter-spacing: -0.3px; padding: 0 12px 20px; }
+  .sb-brand span { color: #2563EB; }
+  .sb-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 12px; border-radius: 10px;
+    font-size: 14px; font-weight: 500; color: #64748B;
+    cursor: pointer; transition: all 0.15s; text-decoration: none;
+  }
+  .sb-item:hover { background: #f1f5f9; color: #0F172A; }
+  .sb-item.active { background: rgba(37,99,235,0.06); color: #2563EB; font-weight: 600; }
+  .sb-item svg { flex-shrink: 0; }
+  .sb-divider { height: 1px; background: rgba(15,23,42,0.06); margin: 10px 12px; }
+  .sb-section-label { font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; padding: 12px 12px 6px; }
+
+  /* ===== MAIN CONTENT ===== */
+  .main-content {
+    margin-left: 240px;
+    height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+    padding: 48px 32px 120px;
+  }
+
+  .content-wrapper {
+    width: 100%;
+    max-width: 720px;
+  }
+
+  /* ===== PAGE TITLE ===== */
+  .page-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #0F172A;
+    letter-spacing: -0.5px;
+    margin-bottom: 32px;
+  }
+
+  /* ===== FILTER TABS ===== */
+  .filter-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 36px;
+  }
+  .filter-tab {
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #64748B;
+    background: #fff;
+    border: 1px solid rgba(15,23,42,0.08);
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .filter-tab:hover {
+    background: #f8fafc;
+    border-color: rgba(15,23,42,0.12);
+  }
+  .filter-tab.active {
+    background: #2563EB;
+    color: #fff;
+    border-color: #2563EB;
+  }
+
+  /* ===== PODIUM ===== */
+  .podium {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
+    align-items: end;
+  }
+  .podium-card {
+    background: #fff;
+    border-radius: 20px;
+    border: 1px solid rgba(15,23,42,0.06);
+    box-shadow: 0 12px 40px rgba(15,23,42,0.06);
+    padding: 28px 20px;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+  }
+  .podium-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 48px rgba(15,23,42,0.1);
+  }
+  .podium-card.first {
+    padding: 36px 20px;
+    box-shadow: 0 16px 48px rgba(245,158,11,0.12);
+    border-color: rgba(245,158,11,0.2);
+  }
+  .podium-rank {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700;
+    color: #fff;
+    margin: 0 auto 14px;
+  }
+  .podium-card.first .podium-rank {
+    width: 42px; height: 42px;
+    font-size: 16px;
+    background: #F59E0B;
+    box-shadow: 0 4px 12px rgba(245,158,11,0.3);
+  }
+  .podium-card.second .podium-rank {
+    background: #94A3B8;
+    box-shadow: 0 4px 12px rgba(148,163,184,0.3);
+  }
+  .podium-card.third .podium-rank {
+    background: #CD7F32;
+    box-shadow: 0 4px 12px rgba(205,127,50,0.3);
+  }
+  .podium-medal {
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+  .podium-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #0F172A;
+    margin-bottom: 6px;
+  }
+  .podium-score {
+    font-size: 22px;
+    font-weight: 700;
+    color: #0F172A;
+    letter-spacing: -0.5px;
+  }
+  .podium-card.first .podium-score { color: #F59E0B; }
+  .podium-card.second .podium-score { color: #64748B; }
+  .podium-card.third .podium-score { color: #CD7F32; }
+  .podium-label {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  /* ===== RANKINGS TABLE ===== */
+  .rankings-table {
+    background: #fff;
+    border-radius: 20px;
+    border: 1px solid rgba(15,23,42,0.06);
+    box-shadow: 0 12px 40px rgba(15,23,42,0.06);
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .table-header {
+    display: grid;
+    grid-template-columns: 56px 1fr 100px 120px 100px;
+    padding: 14px 24px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid rgba(15,23,42,0.06);
+  }
+  .table-row {
+    display: grid;
+    grid-template-columns: 56px 1fr 100px 120px 100px;
+    padding: 16px 24px;
+    align-items: center;
+    border-bottom: 1px solid rgba(15,23,42,0.04);
+    transition: background 0.15s;
+    cursor: default;
+  }
+  .table-row:last-child { border-bottom: none; }
+  .table-row:hover { background: #f8fafc; }
+  .table-row.current-user {
+    border-left: 3px solid #2563EB;
+    background: rgba(37,99,235,0.02);
+    padding-left: 21px;
+  }
+  .table-row.current-user:hover {
+    background: rgba(37,99,235,0.04);
+  }
+  .row-rank {
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748B;
+  }
+  .row-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #0F172A;
+  }
+  .row-score {
+    font-size: 14px;
+    font-weight: 600;
+    color: #0F172A;
+  }
+  .row-level {
+    font-size: 13px;
+    color: #64748B;
+  }
+  .row-date {
+    font-size: 13px;
+    color: #94a3b8;
+  }
+
+  /* ===== YOUR STATS CARD ===== */
+  .stats-card {
+    background: #fff;
+    border-radius: 20px;
+    border: 1px solid rgba(15,23,42,0.06);
+    box-shadow: 0 12px 40px rgba(15,23,42,0.06);
+    padding: 28px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .stats-info {
+    display: flex;
+    gap: 32px;
+  }
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .stat-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #94a3b8;
+  }
+  .stat-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0F172A;
+    letter-spacing: -0.3px;
+  }
+  .stat-value.highlight {
+    color: #2563EB;
+  }
+  .stats-btn {
+    padding: 12px 24px;
+    border-radius: 14px;
+    background: #2563EB;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.2);
+    white-space: nowrap;
+  }
+  .stats-btn:hover {
+    background: #1D4ED8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(37,99,235,0.3);
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .podium { grid-template-columns: 1fr; gap: 12px; }
+    .podium-card.first { order: -1; }
+    .table-header, .table-row {
+      grid-template-columns: 40px 1fr 80px;
+    }
+    .row-level, .row-date, .table-header span:nth-child(4), .table-header span:nth-child(5) {
+      display: none;
+    }
+    .stats-card { flex-direction: column; align-items: flex-start; }
+    .stats-info { flex-wrap: wrap; gap: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-brand">Joy<span>AI</span>-Sim</div>
+  <a class="sb-item" href="landing.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Home</a>
+  <div class="sb-section-label">AI Models</div>
+  <a class="sb-item" href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>视觉理解</a>
+  <a class="sb-item" href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>视觉生成</a>
+  <a class="sb-item active" href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>具身交互</a>
+  <div class="sb-section-label">Tools</div>
+  <a class="sb-item" href="leaderboard.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>排行榜</a>
+  <a class="sb-item" href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>数据看板</a>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+  <div class="content-wrapper">
+
+    <!-- Back Navigation -->
+    <a onclick="history.back()" style="display:inline-flex; align-items:center; gap:6px; font-size:14px; font-weight:500; color:#64748B; text-decoration:none; margin-bottom:20px; cursor:pointer;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+      返回
+    </a>
+
+    <!-- Page Title -->
+    <h1 class="page-title">排行榜</h1>
+
+    <!-- Filter Tabs -->
+    <div class="filter-tabs">
+      <div class="filter-tab active" data-filter="all">综合排名</div>
+      <div class="filter-tab" data-filter="desk-beginner">书桌·初级</div>
+      <div class="filter-tab" data-filter="desk-intermediate">书桌·中级</div>
+      <div class="filter-tab" data-filter="table-beginner">茶几·初级</div>
+    </div>
+
+    <!-- Top 3 Podium -->
+    <div class="podium">
+      <div class="podium-card second">
+        <div class="podium-medal">🥈</div>
+        <div class="podium-rank">2</div>
+        <div class="podium-name">抓取高手</div>
+        <div class="podium-score">820</div>
+        <div class="podium-label">分</div>
+      </div>
+      <div class="podium-card first">
+        <div class="podium-medal">🥇</div>
+        <div class="podium-rank">1</div>
+        <div class="podium-name">机械臂达人</div>
+        <div class="podium-score">890</div>
+        <div class="podium-label">分</div>
+      </div>
+      <div class="podium-card third">
+        <div class="podium-medal">🥉</div>
+        <div class="podium-rank">3</div>
+        <div class="podium-name">桌面整理王</div>
+        <div class="podium-score">755</div>
+        <div class="podium-label">分</div>
+      </div>
+    </div>
+
+    <!-- Rankings Table -->
+    <div class="rankings-table">
+      <div class="table-header">
+        <span>排名</span>
+        <span>玩家</span>
+        <span>分数</span>
+        <span>关卡</span>
+        <span>日期</span>
+      </div>
+      <div class="table-row">
+        <span class="row-rank">4</span>
+        <span class="row-name">码力全开</span>
+        <span class="row-score">710</span>
+        <span class="row-level">书桌·中级</span>
+        <span class="row-date">06-28</span>
+      </div>
+      <div class="table-row">
+        <span class="row-rank">5</span>
+        <span class="row-name">灵巧操控者</span>
+        <span class="row-score">685</span>
+        <span class="row-level">书桌·初级</span>
+        <span class="row-date">06-27</span>
+      </div>
+      <div class="table-row">
+        <span class="row-rank">6</span>
+        <span class="row-name">AI搬运工</span>
+        <span class="row-score">640</span>
+        <span class="row-level">茶几·初级</span>
+        <span class="row-date">06-30</span>
+      </div>
+      <div class="table-row current-user">
+        <span class="row-rank">7</span>
+        <span class="row-name">我</span>
+        <span class="row-score">520</span>
+        <span class="row-level">书桌·初级</span>
+        <span class="row-date">07-01</span>
+      </div>
+      <div class="table-row">
+        <span class="row-rank">8</span>
+        <span class="row-name">物体归位师</span>
+        <span class="row-score">495</span>
+        <span class="row-level">书桌·中级</span>
+        <span class="row-date">06-25</span>
+      </div>
+      <div class="table-row">
+        <span class="row-rank">9</span>
+        <span class="row-name">精准定位</span>
+        <span class="row-score">430</span>
+        <span class="row-level">茶几·初级</span>
+        <span class="row-date">06-29</span>
+      </div>
+      <div class="table-row">
+        <span class="row-rank">10</span>
+        <span class="row-name">新手上路</span>
+        <span class="row-score">380</span>
+        <span class="row-level">书桌·初级</span>
+        <span class="row-date">06-26</span>
+      </div>
+    </div>
+
+    <!-- Your Stats Card -->
+    <div class="stats-card">
+      <div class="stats-info">
+        <div class="stat-item">
+          <span class="stat-label">你的排名</span>
+          <span class="stat-value highlight">#58</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">最高分</span>
+          <span class="stat-value">520</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">总游戏次数</span>
+          <span class="stat-value">12</span>
+        </div>
+      </div>
+      <a href="level-select.html" class="stats-btn">挑战更高分 →</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Filter tab switching
+  const tabs = document.querySelectorAll('.filter-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>

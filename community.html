@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JoyAI-Sim - 社区</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #FAFBFD; color: #0F172A; min-height: 100vh; }
+
+.sidebar { position: fixed; top: 0; left: 0; bottom: 0; z-index: 1100; width: 240px; background: #fff; border-right: 1px solid rgba(15,23,42,0.06); display: flex; flex-direction: column; padding: 24px 16px; gap: 2px; }
+.sb-brand { font-size: 17px; font-weight: 700; color: #0F172A; letter-spacing: -0.3px; padding: 0 12px 20px; }
+.sb-brand span { color: #2563EB; }
+.sb-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; font-size: 14px; font-weight: 500; color: #64748B; cursor: pointer; transition: all 0.15s; text-decoration: none; }
+.sb-item:hover { background: #f1f5f9; color: #0F172A; }
+.sb-item.active { background: rgba(37,99,235,0.06); color: #2563EB; font-weight: 600; }
+.sb-item svg { flex-shrink: 0; }
+.sb-divider { height: 1px; background: rgba(15,23,42,0.06); margin: 10px 12px; }
+.sb-section-label { font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; padding: 12px 12px 6px; }
+
+.main-content { margin-left: 240px; padding: 48px 56px; min-height: 100vh; overflow-y: auto; }
+
+.section-title { font-size: 24px; font-weight: 700; color: #0F172A; letter-spacing: -0.5px; }
+.section-subtitle { font-size: 14px; color: #64748B; margin-top: 6px; font-weight: 400; }
+
+.creation-section { margin-bottom: 56px; }
+.creation-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 28px; }
+
+.creation-card { background: #fff; border-radius: 20px; border: 1px solid rgba(15,23,42,0.06); box-shadow: 0 12px 40px rgba(15,23,42,0.06); padding: 36px; display: flex; flex-direction: column; gap: 16px; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.creation-card:hover { transform: translateY(-2px); box-shadow: 0 16px 48px rgba(15,23,42,0.09); }
+
+.creation-card-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; background: rgba(37,99,235,0.06); }
+.creation-card-icon svg { color: #2563EB; }
+
+.creation-card-title { font-size: 18px; font-weight: 600; color: #0F172A; letter-spacing: -0.3px; }
+.creation-card-desc { font-size: 14px; color: #64748B; line-height: 1.6; }
+
+.btn-primary { display: inline-flex; align-items: center; justify-content: center; padding: 10px 20px; background: #2563EB; color: #fff; border: none; border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.15s; text-decoration: none; margin-top: auto; align-self: flex-start; }
+.btn-primary:hover { background: #1d4ed8; }
+
+.community-section { margin-bottom: 48px; }
+
+.masonry-grid { columns: 3; column-gap: 20px; margin-top: 28px; }
+
+.scene-card { break-inside: avoid; background: #fff; border-radius: 20px; border: 1px solid rgba(15,23,42,0.06); box-shadow: 0 12px 40px rgba(15,23,42,0.06); margin-bottom: 20px; overflow: hidden; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.scene-card:hover { transform: translateY(-3px); box-shadow: 0 16px 48px rgba(15,23,42,0.1); }
+
+.scene-thumbnail { width: 100%; aspect-ratio: auto; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.scene-thumbnail svg { opacity: 0.7; }
+
+.scene-info { padding: 18px 20px; }
+.scene-name { font-size: 15px; font-weight: 600; color: #0F172A; margin-bottom: 6px; }
+.scene-creator { font-size: 13px; color: #64748B; margin-bottom: 14px; }
+
+.scene-actions { display: flex; align-items: center; gap: 4px; padding: 0 20px 18px; }
+.scene-action-btn { display: flex; align-items: center; gap: 4px; padding: 6px 10px; border: none; background: transparent; border-radius: 8px; cursor: pointer; font-size: 12px; color: #64748B; transition: all 0.15s; }
+.scene-action-btn:hover { background: #f1f5f9; color: #0F172A; }
+.scene-action-btn.liked { color: #2563EB; }
+.scene-action-btn.liked svg { fill: #2563EB; stroke: #2563EB; }
+.scene-action-btn svg { width: 16px; height: 16px; }
+
+.scene-enter-btn { margin-left: auto; padding: 6px 14px; background: rgba(37,99,235,0.06); color: #2563EB; border: none; border-radius: 8px; font-size: 12px; font-weight: 500; cursor: pointer; transition: background 0.15s; text-decoration: none; display: inline-flex; align-items: center; }
+.scene-enter-btn:hover { background: rgba(37,99,235,0.12); }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="sb-brand">Joy<span>AI</span>-Sim</div>
+  <a class="sb-item" href="landing.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Home</a>
+  <div class="sb-section-label">AI Models</div>
+  <a class="sb-item" href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>视觉理解</a>
+  <a class="sb-item" href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>视觉生成</a>
+  <a class="sb-item" href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>具身交互</a>
+  <div class="sb-section-label">Tools</div>
+  <a class="sb-item" href="leaderboard.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>排行榜</a>
+  <a class="sb-item active" href="community.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>社区</a>
+  <a class="sb-item" href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>数据看板</a>
+</div>
+
+<div class="main-content">
+  <!-- Creation Section -->
+  <div class="creation-section">
+    <h1 class="section-title">创建场景</h1>
+    <p class="section-subtitle">拍照生成或自由搭建你的收纳挑战</p>
+
+    <div class="creation-grid">
+      <div class="creation-card">
+        <div class="creation-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+        </div>
+        <h3 class="creation-card-title">拍照生成 3D 场景</h3>
+        <p class="creation-card-desc">拍摄真实桌面照片，系统自动识别物品并生成对应的 3D 仿真场景。你的真实桌面变成游戏关卡。</p>
+        <button class="btn-primary">上传照片</button>
+      </div>
+
+      <div class="creation-card">
+        <div class="creation-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+            <line x1="12" y1="22.08" x2="12" y2="12"/>
+          </svg>
+        </div>
+        <h3 class="creation-card-title">3D 素材库搭建</h3>
+        <p class="creation-card-desc">从 53,000+ 3D 资产库中拖拽物品，自由设计场景布局。调整位置、朝向，打造你的专属挑战。</p>
+        <button class="btn-primary">开始搭建</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Community Section -->
+  <div class="community-section">
+    <h1 class="section-title">社区场景</h1>
+    <p class="section-subtitle">探索其他用户创建的场景，点击即可体验</p>
+
+    <div class="masonry-grid">
+      <!-- Card 1 -->
+      <div class="scene-card">
+        <div class="scene-thumbnail" style="height: 180px; background: linear-gradient(135deg, #dbeafe, #bfdbfe);">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+            <rect x="12" y="32" width="40" height="4" rx="1" fill="#3b82f6" opacity="0.3"/>
+            <rect x="16" y="20" width="8" height="12" rx="1" fill="#3b82f6" opacity="0.5"/>
+            <rect x="26" y="24" width="6" height="8" rx="1" fill="#3b82f6" opacity="0.4"/>
+            <rect x="36" y="18" width="12" height="14" rx="1" fill="#3b82f6" opacity="0.6"/>
+            <rect x="12" y="36" width="40" height="16" rx="2" fill="#3b82f6" opacity="0.15"/>
+          </svg>
+        </div>
+        <div class="scene-info">
+          <div class="scene-name">我的书桌</div>
+          <div class="scene-creator">@桌面达人</div>
+        </div>
+        <div class="scene-actions">
+          <button class="scene-action-btn like-btn" onclick="toggleLike(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span>128</span>
+          </button>
+          <button class="scene-action-btn" onclick="toggleSave(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            <span>34</span>
+          </button>
+          <button class="scene-action-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          </button>
+          <a class="scene-enter-btn" href="game.html">进入体验</a>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="scene-card">
+        <div class="scene-thumbnail" style="height: 220px; background: linear-gradient(135deg, #f0fdf4, #bbf7d0);">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+            <rect x="12" y="34" width="40" height="4" rx="1" fill="#22c55e" opacity="0.3"/>
+            <rect x="20" y="26" width="4" height="8" rx="1" fill="#22c55e" opacity="0.5"/>
+            <rect x="28" y="22" width="10" height="12" rx="1" fill="#22c55e" opacity="0.4"/>
+            <rect x="42" y="28" width="6" height="6" rx="1" fill="#22c55e" opacity="0.6"/>
+            <rect x="12" y="38" width="40" height="14" rx="2" fill="#22c55e" opacity="0.15"/>
+          </svg>
+        </div>
+        <div class="scene-info">
+          <div class="scene-name">极简工位</div>
+          <div class="scene-creator">@整理控</div>
+        </div>
+        <div class="scene-actions">
+          <button class="scene-action-btn like-btn" onclick="toggleLike(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span>256</span>
+          </button>
+          <button class="scene-action-btn" onclick="toggleSave(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            <span>87</span>
+          </button>
+          <button class="scene-action-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          </button>
+          <a class="scene-enter-btn" href="game.html">进入体验</a>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="scene-card">
+        <div class="scene-thumbnail" style="height: 160px; background: linear-gradient(135deg, #fef3c7, #fde68a);">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+            <rect x="14" y="30" width="36" height="4" rx="1" fill="#f59e0b" opacity="0.3"/>
+            <circle cx="24" cy="24" r="5" fill="#f59e0b" opacity="0.4"/>
+            <rect x="34" y="20" width="8" height="10" rx="2" fill="#f59e0b" opacity="0.5"/>
+            <rect x="14" y="34" width="36" height="16" rx="2" fill="#f59e0b" opacity="0.15"/>
+          </svg>
+        </div>
+        <div class="scene-info">
+          <div class="scene-name">咖啡角落</div>
+          <div class="scene-creator">@生活家小王</div>
+        </div>
+        <div class="scene-actions">
+          <button class="scene-action-btn like-btn" onclick="toggleLike(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span>89</span>
+          </button>
+          <button class="scene-action-btn" onclick="toggleSave(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            <span>21</span>
+          </button>
+          <button class="scene-action-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          </button>
+          <a class="scene-enter-btn" href="game.html">进入体验</a>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="scene-card">
+        <div class="scene-thumbnail" style="height: 200px; background: linear-gradient(135deg, #ede9fe, #c4b5fd);">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+            <rect x="12" y="32" width="40" height="4" rx="1" fill="#8b5cf6" opacity="0.3"/>
+            <rect x="14" y="16" width="14" height="16" rx="2" fill="#8b5cf6" opacity="0.4"/>
+            <rect x="32" y="22" width="6" height="10" rx="1" fill="#8b5cf6" opacity="0.5"/>
+            <rect x="42" y="20" width="8" height="12" rx="1" fill="#8b5cf6" opacity="0.35"/>
+            <rect x="12" y="36" width="40" height="16" rx="2" fill="#8b5cf6" opacity="0.15"/>
+          </svg>
+        </div>
+        <div class="scene-info">
+          <div class="scene-name">学生宿舍</div>
+          <div class="scene-creator">@大学生日常</div>
+        </div>
+        <div class="scene-actions">
+          <button class="scene-action-btn like-btn" onclick="toggleLike(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span>312</span>
+          </button>
+          <button class="scene-action-btn" onclick="toggleSave(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            <span>104</span>
+          </button>
+          <button class="scene-action-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          </button>
+          <a class="scene-enter-btn" href="game.html">进入体验</a>
+        </div>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="scene-card">
+        <div class="scene-thumbnail" style="height: 170px; background: linear-gradient(135deg, #fce7f3, #f9a8d4);">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+            <rect x="12" y="34" width="40" height="4" rx="1" fill="#ec4899" opacity="0.3"/>
+            <rect x="16" y="20" width="10" height="14" rx="2" fill="#ec4899" opacity="0.4"/>
+            <rect x="30" y="24" width="6" height="10" rx="1" fill="#ec4899" opacity="0.5"/>
+            <circle cx="44" cy="26" r="4" fill="#ec4899" opacity="0.4"/>
+            <rect x="12" y="38" width="40" height="14" rx="2" fill="#ec4899" opacity="0.15"/>
+          </svg>
+        </div>
+        <div class="scene-info">
+          <div class="scene-name">厨房收纳</div>
+          <div class="scene-creator">@收纳女王</div>
+        </div>
+        <div class="scene-actions">
+          <button class="scene-action-btn like-btn" onclick="toggleLike(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span>176</span>
+          </button>
+          <button class="scene-action-btn" onclick="toggleSave(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            <span>52</span>
+          </button>
+          <button class="scene-action-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          </button>
+          <a class="scene-enter-btn" href="game.html">进入体验</a>
+        </div>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="scene-card">
+        <div class="scene-thumbnail" style="height: 190px; background: linear-gradient(135deg, #e0f2fe, #7dd3fc);">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+            <rect x="12" y="32" width="40" height="4" rx="1" fill="#0ea5e9" opacity="0.3"/>
+            <rect x="18" y="18" width="6" height="14" rx="1" fill="#0ea5e9" opacity="0.5"/>
+            <rect x="28" y="22" width="10" height="10" rx="2" fill="#0ea5e9" opacity="0.4"/>
+            <rect x="42" y="24" width="6" height="8" rx="1" fill="#0ea5e9" opacity="0.45"/>
+            <rect x="12" y="36" width="40" height="16" rx="2" fill="#0ea5e9" opacity="0.15"/>
+          </svg>
+        </div>
+        <div class="scene-info">
+          <div class="scene-name">玩具整理</div>
+          <div class="scene-creator">@宝妈分享</div>
+        </div>
+        <div class="scene-actions">
+          <button class="scene-action-btn like-btn" onclick="toggleLike(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span>203</span>
+          </button>
+          <button class="scene-action-btn" onclick="toggleSave(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            <span>67</span>
+          </button>
+          <button class="scene-action-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          </button>
+          <a class="scene-enter-btn" href="game.html">进入体验</a>
+        </div>
+      </div>
+
+      <!-- Card 7 -->
+      <div class="scene-card">
+        <div class="scene-thumbnail" style="height: 210px; background: linear-gradient(135deg, #fff7ed, #fed7aa);">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+            <rect x="12" y="34" width="40" height="4" rx="1" fill="#f97316" opacity="0.3"/>
+            <rect x="14" y="18" width="12" height="16" rx="2" fill="#f97316" opacity="0.4"/>
+            <rect x="30" y="22" width="8" height="12" rx="1" fill="#f97316" opacity="0.5"/>
+            <rect x="42" y="26" width="8" height="8" rx="2" fill="#f97316" opacity="0.35"/>
+            <rect x="12" y="38" width="40" height="14" rx="2" fill="#f97316" opacity="0.15"/>
+          </svg>
+        </div>
+        <div class="scene-info">
+          <div class="scene-name">办公桌改造</div>
+          <div class="scene-creator">@效率先锋</div>
+        </div>
+        <div class="scene-actions">
+          <button class="scene-action-btn like-btn" onclick="toggleLike(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span>145</span>
+          </button>
+          <button class="scene-action-btn" onclick="toggleSave(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            <span>43</span>
+          </button>
+          <button class="scene-action-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          </button>
+          <a class="scene-enter-btn" href="game.html">进入体验</a>
+        </div>
+      </div>
+
+      <!-- Card 8 -->
+      <div class="scene-card">
+        <div class="scene-thumbnail" style="height: 175px; background: linear-gradient(135deg, #f0fdfa, #99f6e4);">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+            <rect x="12" y="32" width="40" height="4" rx="1" fill="#14b8a6" opacity="0.3"/>
+            <rect x="16" y="20" width="8" height="12" rx="1" fill="#14b8a6" opacity="0.5"/>
+            <rect x="28" y="18" width="10" height="14" rx="2" fill="#14b8a6" opacity="0.4"/>
+            <circle cx="46" cy="26" r="4" fill="#14b8a6" opacity="0.45"/>
+            <rect x="12" y="36" width="40" height="16" rx="2" fill="#14b8a6" opacity="0.15"/>
+          </svg>
+        </div>
+        <div class="scene-info">
+          <div class="scene-name">阳台花园</div>
+          <div class="scene-creator">@绿植爱好者</div>
+        </div>
+        <div class="scene-actions">
+          <button class="scene-action-btn like-btn" onclick="toggleLike(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span>98</span>
+          </button>
+          <button class="scene-action-btn" onclick="toggleSave(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            <span>29</span>
+          </button>
+          <button class="scene-action-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          </button>
+          <a class="scene-enter-btn" href="game.html">进入体验</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleLike(btn) {
+  btn.classList.toggle('liked');
+  const countEl = btn.querySelector('span');
+  let count = parseInt(countEl.textContent);
+  if (btn.classList.contains('liked')) {
+    count += 1;
+  } else {
+    count -= 1;
+  }
+  countEl.textContent = count;
+}
+
+function toggleSave(btn) {
+  btn.classList.toggle('liked');
+}
+</script>
+
+</body>
+</html>
