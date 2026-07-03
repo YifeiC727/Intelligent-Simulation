@@ -548,14 +548,17 @@ class ClawGame {
 
   initObstacles() {
     const deskY = this.h * 0.65;
-    const count = 1 + Math.floor(Math.random() * 2); // 1-2 obstacles
+    // Place obstacles between desk objects and target zone (示意位置, not blocking 2D claw)
+    const positions = [
+      { x: this.w * 0.3, y: deskY + (this.h * 0.88 - deskY) * 0.45 },
+      { x: this.w * 0.7, y: deskY + (this.h * 0.88 - deskY) * 0.5 },
+    ];
+    const count = 1 + Math.floor(Math.random() * 2);
     for (let i = 0; i < count; i++) {
-      const w = 30 + Math.random() * 20;
-      const h = 20 + Math.random() * 15;
-      const x = this.w * 0.2 + Math.random() * (this.w * 0.6);
+      const pos = positions[i];
       this.obstacles.push({
-        x: x, y: deskY - h / 2,
-        w: w, h: h
+        x: pos.x, y: pos.y,
+        w: 36, h: 18
       });
     }
   }
@@ -888,25 +891,23 @@ class ClawGame {
       }
     }
 
-    // Obstacles (red-ish blocks on desk)
+    // Obstacles (decorative/示意, placed between desk and targets)
     for (const obs of this.obstacles) {
-      ctx.fillStyle = '#fecaca';
-      ctx.strokeStyle = '#ef4444';
-      ctx.lineWidth = 2;
+      ctx.save();
+      ctx.fillStyle = 'rgba(254,202,202,0.6)';
+      ctx.strokeStyle = 'rgba(239,68,68,0.5)';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 3]);
       ctx.beginPath();
-      ctx.roundRect(obs.x - obs.w/2, obs.y - obs.h/2, obs.w, obs.h, 6);
+      ctx.roundRect(obs.x - obs.w/2, obs.y - obs.h/2, obs.w, obs.h, 5);
       ctx.fill();
       ctx.stroke();
-      // Warning stripes
-      ctx.fillStyle = 'rgba(239,68,68,0.15)';
-      ctx.beginPath();
-      ctx.roundRect(obs.x - obs.w/2, obs.y - obs.h/2, obs.w, obs.h, 6);
-      ctx.fill();
-      // Label
-      ctx.fillStyle = '#dc2626';
-      ctx.font = 'bold 9px Inter, system-ui, sans-serif';
+      ctx.setLineDash([]);
+      ctx.fillStyle = 'rgba(220,38,38,0.5)';
+      ctx.font = '8px Inter, system-ui, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('OBSTACLE', obs.x, obs.y + 3);
+      ctx.fillText('obstacle', obs.x, obs.y + 3);
+      ctx.restore();
     }
 
     // Objects
