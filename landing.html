@@ -7,466 +7,701 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
-    background: #FAFBFD;
-    color: #0F172A;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #000000;
+    color: #fff;
     overflow: hidden;
     height: 100vh;
     -webkit-font-smoothing: antialiased;
   }
+  #c { position: fixed; inset: 0; z-index: 0; }
 
-  /* Sidebar */
-  .sidebar {
-    position: fixed; top: 0; left: 0; bottom: 0; z-index: 1100;
-    width: 240px; background: #fff;
-    border-right: 1px solid rgba(15,23,42,0.06);
-    display: flex; flex-direction: column;
-    padding: 24px 16px; gap: 2px;
-  }
-  .sb-brand {
-    font-size: 17px; font-weight: 700; color: #0F172A;
-    letter-spacing: -0.3px;
-    padding: 0 12px 20px;
-  }
-  .sb-brand span { color: #2563EB; }
-  .sb-item {
-    display: flex; align-items: center; gap: 12px;
-    padding: 10px 12px; border-radius: 10px;
-    font-size: 14px; font-weight: 500; color: #64748B;
-    cursor: pointer; transition: all 0.15s;
-    text-decoration: none;
-  }
-  .sb-item:hover { background: #f1f5f9; color: #0F172A; }
-  .sb-item.active { background: rgba(37,99,235,0.06); color: #2563EB; font-weight: 600; }
-  .sb-item svg { flex-shrink: 0; }
-  .sb-divider { height: 1px; background: rgba(15,23,42,0.06); margin: 10px 12px; }
-  .sb-section-label {
-    font-size: 11px; font-weight: 600; color: #94a3b8;
-    text-transform: uppercase; letter-spacing: 1px;
-    padding: 12px 12px 6px;
-  }
+  /* ---- UI Overlay ---- */
+  .ui-overlay { position: fixed; inset: 0; z-index: 10; pointer-events: none; }
 
-  /* Nav */
-  nav {
-    position: fixed; top: 0; left: 240px; right: 0; z-index: 1000;
-    height: 64px;
-    background: rgba(250,251,253,0.8);
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(15,23,42,0.06);
-    display: flex; align-items: center; justify-content: space-between;
+  /* Top bar */
+  .top-bar {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 56px; display: flex; align-items: center; justify-content: space-between;
     padding: 0 40px;
+    opacity: 0; animation: fadeIn 1s ease 0.3s forwards;
   }
-  .nav-logo { font-size: 17px; font-weight: 700; color: #0F172A; letter-spacing: -0.3px; }
-  .nav-right { display: flex; align-items: center; gap: 8px; }
-  .nav-link {
-    padding: 10px 20px; border-radius: 12px;
-    font-size: 14px; font-weight: 600; color: #475569;
-    text-decoration: none; transition: all 0.15s; cursor: pointer;
-    background: #f1f5f9;
-    border: 1px solid rgba(15,23,42,0.06);
+  .logo { font-size: 18px; font-weight: 700; color: #f5f7fa; letter-spacing: -0.3px; }
+  .logo span { color: #6EC9FF; }
+  .top-links {
+    display: flex; align-items: center; gap: 28px;
   }
-  .nav-link:hover { background: #e2e8f0; color: #0F172A; }
-  .nav-link svg { vertical-align: -2px; margin-right: 5px; }
+  .top-links a {
+    font-size: 14px; font-weight: 500; color: rgba(245,247,250,0.4);
+    text-decoration: none; cursor: pointer; transition: color 0.2s;
+    pointer-events: auto;
+  }
+  .top-links a:hover { color: #f5f7fa; }
+  .top-right { display: flex; align-items: center; gap: 16px; }
+  .link-login {
+    font-size: 14px; font-weight: 500; color: rgba(245,247,250,0.5);
+    text-decoration: none; cursor: pointer; transition: color 0.2s;
+    pointer-events: auto;
+  }
+  .link-login:hover { color: #f5f7fa; }
+  .btn-get-started {
+    padding: 8px 20px; border-radius: 8px;
+    background: rgba(245,247,250,0.08); border: 1px solid rgba(245,247,250,0.12);
+    font-size: 13px; font-weight: 600; color: #f5f7fa;
+    text-decoration: none; cursor: pointer; transition: all 0.2s;
+    pointer-events: auto;
+  }
+  .btn-get-started:hover { background: rgba(245,247,250,0.14); }
 
-  /* Main layout */
-  .main {
-    margin-left: 240px;
-    height: 100vh;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    align-items: center;
-    padding: 20px 60px 0;
-    gap: 48px;
-    max-width: calc(1440px + 56px);
+  /* Hero text — LEFT side */
+  .hero-left {
+    position: absolute; top: 120px; left: 48px;
+    max-width: 400px;
+    opacity: 0; animation: fadeIn 1s ease 0.5s forwards;
   }
-
-  /* Subtle background */
-  .main::before {
-    content: '';
-    position: fixed; top: 0; right: 0;
-    width: 50%; height: 100%;
-    background: radial-gradient(ellipse at 60% 40%, rgba(37,99,235,0.03), transparent 60%);
-    pointer-events: none;
-  }
-
-  /* Left: text */
-  .hero-left { position: relative; z-index: 2; padding-left: 20px; }
   .hero-badge {
-    display: inline-block;
-    padding: 6px 14px; border-radius: 8px;
-    background: rgba(37,99,235,0.06);
-    font-size: 12px; font-weight: 600; color: #2563EB;
-    letter-spacing: 0.3px; margin-bottom: 28px;
-  }
-  .hero-title {
-    font-size: clamp(40px, 5vw, 64px);
-    font-weight: 800; line-height: 1.08;
-    letter-spacing: -2px; color: #0F172A;
+    font-size: 12px; font-weight: 600; color: #9D7CFF;
+    text-transform: uppercase; letter-spacing: 2px;
     margin-bottom: 20px;
   }
-  .hero-title .blue { color: #2563EB; }
-  .hero-sub {
-    font-size: 18px; font-weight: 400;
-    color: #64748B; line-height: 1.65;
-    max-width: 420px; margin-bottom: 40px;
+  .hero-title {
+    font-size: 44px; font-weight: 800;
+    line-height: 1.1; letter-spacing: -1.5px;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #a78bfa 40%, #6EC9FF 70%, #f5f7fa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
-  .hero-buttons { display: flex; gap: 14px; align-items: center; }
-  .btn-primary {
-    padding: 15px 32px; border-radius: 14px;
-    background: #2563EB; color: #fff;
-    font-size: 15px; font-weight: 600;
-    text-decoration: none; border: none; cursor: pointer;
-    font-family: inherit;
-    box-shadow: 0 4px 16px rgba(37,99,235,0.25);
+  .hero-sub {
+    font-size: 15px; font-weight: 400;
+    color: rgba(245,247,250,0.35);
+    line-height: 1.7; margin-bottom: 28px;
+  }
+  .hero-actions { display: flex; gap: 12px; pointer-events: auto; }
+  .btn-p {
+    padding: 12px 24px; border-radius: 20px;
+    background: rgba(245,247,250,0.08); border: 1px solid rgba(245,247,250,0.15);
+    color: #f5f7fa;
+    font-size: 14px; font-weight: 600;
+    text-decoration: none; cursor: pointer; font-family: inherit;
     transition: all 0.25s;
   }
-  .btn-primary:hover {
-    background: #1D4ED8;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(37,99,235,0.35);
+  .btn-p:hover { background: rgba(245,247,250,0.14); }
+  .btn-s {
+    padding: 12px 24px; border-radius: 20px;
+    background: transparent; border: none;
+    color: rgba(245,247,250,0.5);
+    font-size: 14px; font-weight: 500;
+    text-decoration: none; cursor: pointer; font-family: inherit;
+    transition: all 0.25s; pointer-events: auto;
+  }
+  .btn-s:hover { color: #f5f7fa; }
+
+  /* Controls — RIGHT side */
+  .controls-box {
+    position: absolute; top: 120px; right: 40px;
+    opacity: 0; animation: fadeIn 1s ease 1s forwards;
+  }
+  .controls-title {
+    font-size: 11px; font-weight: 700;
+    color: rgba(255,255,255,0.85);
+    text-transform: uppercase; letter-spacing: 1.5px;
+    margin-bottom: 18px;
+  }
+  .ctrl-row { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+  .ctrl-keys { display: flex; gap: 4px; min-width: 50px; }
+  .ctrl-keys kbd {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 26px; height: 26px; padding: 0 6px;
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 6px;
+    font-family: inherit; font-size: 12px; font-weight: 600;
+    color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.05);
+  }
+  .ctrl-label { font-size: 13px; color: rgba(255,255,255,0.7); }
+  .ctrl-divider { height: 12px; }
+  .ctrl-hover-row {
+    display: flex; align-items: center; gap: 10px; margin-top: 8px;
+  }
+  .ctrl-hover-icon {
+    width: 22px; height: 22px; border: 1px solid rgba(245,247,250,0.1);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
   }
 
-  /* Right: scene */
-  .hero-right {
-    position: relative; z-index: 2;
-    display: flex; align-items: center; justify-content: center;
+  /* Bottom hint */
+  .bottom-hint {
+    position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    font-size: 12px; color: rgba(245,247,250,0.2);
+    opacity: 0; animation: fadeIn 1s ease 1.5s forwards;
   }
-  .hero-scene {
-    width: 100%; max-width: 520px; aspect-ratio: 4/3;
-    border-radius: 24px;
-    background: linear-gradient(145deg, #f1f5f9, #e2e8f0);
-    position: relative; overflow: hidden;
-    box-shadow: 0 20px 60px rgba(15,23,42,0.08);
-    border: 1px solid rgba(15,23,42,0.06);
-  }
-  .hero-scene::before {
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(ellipse at 50% 60%, rgba(37,99,235,0.05), transparent 70%);
-  }
-  .demo-tag-light {
-    position: absolute; top: 14px; right: 14px; z-index: 10;
-    padding: 4px 10px; border-radius: 6px;
-    background: rgba(255,255,255,0.8); backdrop-filter: blur(4px);
-    font-size: 10px; font-weight: 500; color: #94a3b8;
-    border: 1px solid rgba(15,23,42,0.04);
-  }
-  .scene-content {
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .scene-desk {
-    position: absolute; bottom: 20%; left: 12%; right: 12%;
-    height: 6px; background: #c4a882; border-radius: 3px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
-  }
-  .scene-desk::after {
-    content: ''; position: absolute; top: 6px;
-    left: 10%; width: 5px; height: 22px;
-    background: #b8976e; border-radius: 0 0 2px 2px;
-    box-shadow: 260px 0 0 0 #b8976e;
-  }
-  .scene-obj { position: absolute; bottom: calc(20% + 6px); }
-  .scene-mug {
-    left: 24%; width: 22px; height: 28px;
-    background: linear-gradient(to bottom, #dbeafe, #93c5fd);
-    border-radius: 3px 3px 5px 5px;
-  }
-  .scene-book {
-    left: 44%; width: 36px; height: 22px;
-    background: linear-gradient(to bottom, #fef3c7, #fbbf24);
-    border-radius: 2px;
-  }
-  .scene-plant {
-    right: 20%; width: 20px; height: 32px;
-    background: linear-gradient(to top, #6b4c2a 30%, #4ade80 30%);
-    border-radius: 2px 2px 10px 10px;
-  }
-  .scene-arm {
-    position: absolute; top: 10%; left: 50%;
-    transform: translateX(-50%);
-    width: 3px; height: 34%;
-    background: linear-gradient(to bottom, #94a3b8, #64748b);
-    border-radius: 2px;
-    animation: armBreathe 4s ease-in-out infinite;
-  }
-  .scene-arm::after {
-    content: ''; position: absolute; bottom: -3px; left: 50%;
-    transform: translateX(-50%);
-    width: 26px; height: 10px;
-    background: #475569; border-radius: 3px 3px 6px 6px;
-  }
-  @keyframes armBreathe {
-    0%, 100% { transform: translateX(-50%) translateY(0); }
-    50% { transform: translateX(-50%) translateY(5px); }
-  }
-  .scene-glow {
-    position: absolute; top: 42%; left: 44%;
-    width: 60px; height: 60px;
-    background: radial-gradient(circle, rgba(37,99,235,0.1), transparent 70%);
-    border-radius: 50%;
-    animation: glowPulse 3s ease-in-out infinite;
-  }
-  @keyframes glowPulse {
-    0%, 100% { opacity: 0.5; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.1); }
+  .hint-circle {
+    width: 32px; height: 32px; border: 1px solid rgba(245,247,250,0.1);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
   }
 
-  /* HUD cards */
-  .hero-hud {
-    position: absolute; bottom: -36px; left: 50%;
-    transform: translateX(-50%);
-    display: flex; gap: 10px;
+  /* Sidebar indicator — white vertical bar with arrow */
+  .sidebar-edge {
+    position: fixed; top: 0; left: 0; bottom: 0; width: 8px; z-index: 1200;
+    background: rgba(255,255,255,1);
+    pointer-events: none; transition: opacity 0.3s;
   }
-  .hud-card {
-    padding: 10px 16px; border-radius: 12px;
-    background: #fff;
-    box-shadow: 0 8px 24px rgba(15,23,42,0.06);
-    border: 1px solid rgba(15,23,42,0.04);
-    display: flex; align-items: center; gap: 8px;
-    font-size: 12px; font-weight: 600; color: #0F172A;
-    white-space: nowrap;
+  .sidebar-edge::after {
+    content: '';
+    position: absolute; top: 50%; left: 8px;
+    width: 7px; height: 7px;
+    border-top: 2px solid rgba(255,255,255,1);
+    border-right: 2px solid rgba(255,255,255,1);
+    transform: translateY(-50%) rotate(45deg);
+    animation: edgePulse 2s ease-in-out infinite;
   }
-  .hud-dot { width: 6px; height: 6px; border-radius: 50%; }
-  .hud-dot.blue { background: #2563EB; }
-  .hud-dot.slate { background: #94a3b8; }
-  .hud-score { font-size: 15px; font-weight: 700; }
-  .hud-label { color: #94a3b8; font-weight: 500; }
+  @keyframes edgePulse {
+    0%, 100% { opacity: 0.5; left: 8px; }
+    50% { opacity: 1; left: 12px; }
+  }
+  .sidebar.open ~ .sidebar-edge { opacity: 0; }
+  .sidebar-trigger { position: fixed; top: 0; left: 0; bottom: 0; width: 20px; z-index: 1201; }
+  .sidebar { position: fixed; top: 0; left: -260px; bottom: 0; z-index: 1100; width: 240px; background: #ffffff; border-right: 1px solid rgba(0,0,0,0.06); display: flex; flex-direction: column; padding: 24px 16px; gap: 2px; transition: left 0.35s cubic-bezier(0.4,0,0.2,1); }
+  .sidebar.open { left: 0; }
+  .sb-brand { font-size: 17px; font-weight: 700; color: #0F172A; letter-spacing: -0.3px; padding: 0 12px 20px; }
+  .sb-brand span { color: #2563EB; }
+  .sb-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; font-size: 14px; font-weight: 500; color: #64748B; cursor: pointer; transition: all 0.15s; text-decoration: none; }
+  .sb-item:hover { background: #F1F5F9; color: #0F172A; }
+  .sb-item.active { background: rgba(37,99,235,0.06); color: #2563EB; font-weight: 600; }
+  .sb-item svg { flex-shrink: 0; }
+  .sb-section-label { font-size: 11px; font-weight: 600; color: #94A3B8; text-transform: uppercase; letter-spacing: 1px; padding: 12px 12px 6px; }
 
-  /* About slide-over */
-  .about-overlay {
-    position: fixed; inset: 0; z-index: 2000;
-    background: rgba(15,23,42,0.15);
-    backdrop-filter: blur(4px);
-    opacity: 0; visibility: hidden;
-    transition: all 0.3s;
-  }
+  /* About */
+  .about-overlay { position: fixed; inset: 0; z-index: 2000; background: rgba(0,0,0,0.5); backdrop-filter: blur(6px); opacity: 0; visibility: hidden; transition: all 0.3s; }
   .about-overlay.open { opacity: 1; visibility: visible; }
-  .about-panel {
-    position: fixed; top: 0; right: -420px; bottom: 0; z-index: 2001;
-    width: 400px; background: #fff;
-    box-shadow: -20px 0 60px rgba(15,23,42,0.08);
-    padding: 40px 36px;
-    overflow-y: auto;
-    transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  }
+  .about-panel { position: fixed; top: 0; right: -440px; bottom: 0; z-index: 2001; width: 400px; background: rgba(8,10,18,0.96); backdrop-filter: blur(24px); box-shadow: -20px 0 60px rgba(0,0,0,0.3); border-left: 1px solid rgba(245,247,250,0.05); padding: 40px 36px; overflow-y: auto; transition: right 0.35s cubic-bezier(0.4,0,0.2,1); }
   .about-overlay.open .about-panel { right: 0; }
-  .about-close {
-    position: absolute; top: 20px; right: 20px;
-    width: 32px; height: 32px; border-radius: 8px;
-    border: none; background: #f1f5f9; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    color: #64748B; font-size: 18px; transition: all 0.15s;
-  }
-  .about-close:hover { background: #e2e8f0; color: #0F172A; }
-  .about-label {
-    font-size: 11px; font-weight: 700; color: #2563EB;
-    text-transform: uppercase; letter-spacing: 2px;
-    margin-bottom: 14px;
-  }
-  .about-panel h2 {
-    font-size: 24px; font-weight: 700; color: #0F172A;
-    margin-bottom: 20px; line-height: 1.3; letter-spacing: -0.5px;
-  }
-  .about-panel p {
-    font-size: 15px; color: #64748B; line-height: 1.8;
-    margin-bottom: 14px;
-  }
-  .about-tags {
-    display: flex; flex-wrap: wrap; gap: 8px;
-    margin-top: 24px;
-  }
-  .about-tag {
-    padding: 6px 14px; border-radius: 10px;
-    background: #f8fafc; border: 1px solid rgba(15,23,42,0.06);
-    font-size: 12px; font-weight: 500; color: #64748B;
-  }
+  .about-close { position: absolute; top: 20px; right: 20px; width: 32px; height: 32px; border-radius: 8px; border: none; background: rgba(245,247,250,0.05); cursor: pointer; display: flex; align-items: center; justify-content: center; color: rgba(245,247,250,0.4); font-size: 18px; transition: all 0.15s; }
+  .about-close:hover { background: rgba(245,247,250,0.08); color: #fff; }
+  .about-label { font-size: 11px; font-weight: 700; color: #6EC9FF; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 14px; }
+  .about-panel h2 { font-size: 24px; font-weight: 700; color: #f5f7fa; margin-bottom: 20px; line-height: 1.3; }
+  .about-panel p { font-size: 15px; color: rgba(245,247,250,0.5); line-height: 1.8; margin-bottom: 14px; }
+  .about-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+  .about-tag { padding: 6px 14px; border-radius: 10px; background: rgba(245,247,250,0.03); border: 1px solid rgba(245,247,250,0.06); font-size: 12px; font-weight: 500; color: rgba(245,247,250,0.4); }
 
-  /* Responsive */
-  @media (max-width: 1024px) {
-    .main { grid-template-columns: 1fr; padding: 80px 32px 32px; gap: 32px; }
-    .hero-right { display: none; }
-    .hero-title { font-size: 40px; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @media (max-width: 768px) {
+    .hero-title { font-size: 28px; }
+    .hero-left { left: 20px; top: 100px; max-width: 260px; }
+    .controls-box { display: none; }
+    .sidebar, .sidebar-trigger, .sidebar-edge { display: none; }
   }
 </style>
 </head>
 <body>
 
-<!-- Sidebar -->
-<div class="sidebar">
-  <div class="sb-brand">Joy<span>AI</span>-Sim</div>
+<canvas id="c"></canvas>
 
-  <a class="sb-item" href="landing.html">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-    Home
-  </a>
-
-  <div class="sb-section-label">AI Models</div>
-  <a class="sb-item" href="#">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-    视觉理解
-  </a>
-  <a class="sb-item" href="#">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-    视觉生成
-  </a>
-  <a class="sb-item active" href="#">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-    具身交互
-  </a>
-
-  <div class="sb-section-label">Tools</div>
-  <a class="sb-item" href="leaderboard.html">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
-    排行榜
-  </a>
-  <a class="sb-item" href="community.html">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-    社区
-  </a>
-  <a class="sb-item" href="#">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
-    数据看板
-  </a>
-</div>
-
-<!-- Nav -->
-<nav>
-  <div class="nav-logo">JoyAI-Sim</div>
-  <div class="nav-right">
-    <a class="nav-link" href="community.html">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-      社区
-    </a>
-    <a class="nav-link" href="leaderboard.html">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
-      排行榜
-    </a>
-    <a class="nav-link" onclick="document.getElementById('aboutOverlay').classList.add('open')" style="cursor:pointer;">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-      About
-    </a>
+<div class="ui-overlay">
+  <!-- Top bar matching reference -->
+  <div class="top-bar">
+    <div style="display:flex;align-items:center;gap:36px;">
+      <div class="logo">Joy<span>AI</span></div>
+      <div class="top-links">
+        <a href="#">产品 ▾</a>
+        <a href="#">价格 ▾</a>
+        <a href="#">资源 ▾</a>
+        <a href="#">关于 ▾</a>
+      </div>
+    </div>
+    <div class="top-right">
+      <a class="link-login" href="community.html">社区</a>
+      <a class="link-login" href="leaderboard.html">排行榜</a>
+      <a class="btn-get-started" onclick="document.getElementById('aboutOverlay').classList.add('open')" style="cursor:pointer;">关于</a>
+    </div>
   </div>
-</nav>
 
-<!-- Main content — single screen -->
-<div class="main">
+  <!-- Hero LEFT -->
   <div class="hero-left">
-    <div class="hero-badge">JoyAI-Sim Interactive Platform</div>
-    <h1 class="hero-title">操控机械臂<br><span class="blue">挑战 AI 对手</span></h1>
-    <p class="hero-sub">基于具身仿真技术，在浏览器中实时操控机械臂完成抓取任务，与 AI 同场竞技。</p>
-    <p style="font-size:14px; color:#94a3b8; margin-bottom:36px;">探索仿真世界的无限可能，感受人机协作的未来体验。</p>
-    <div class="hero-buttons">
-      <a href="level-select.html" class="btn-primary">立即挑战 &rarr;</a>
+    <div class="hero-badge">JoyAI-Sim 具身智能仿真平台</div>
+    <h1 class="hero-title">操控机械臂，<br>挑战 AI 对手。</h1>
+    <p class="hero-sub">进入具身仿真世界，完成抓取任务，<br>同场竞技，看人类直觉能否胜过机器算法。</p>
+    <div class="hero-actions">
+      <a href="level-select.html" class="btn-p">开始挑战</a>
     </div>
   </div>
 
-  <div class="hero-right">
-    <div class="hero-scene">
-      <div class="demo-tag-light">Demo 占位 · 实际使用仿真画面</div>
-      <div class="scene-content">
-        <div class="scene-glow"></div>
-        <div class="scene-arm"></div>
-        <div class="scene-desk"></div>
-        <div class="scene-obj scene-mug"></div>
-        <div class="scene-obj scene-book"></div>
-        <div class="scene-obj scene-plant"></div>
-      </div>
+  <!-- Controls RIGHT -->
+  <div class="controls-box">
+    <div class="controls-title">操控说明</div>
+    <div class="ctrl-row"><div class="ctrl-keys"><kbd>W</kbd><kbd>S</kbd></div><div class="ctrl-label">前进 / 后退</div></div>
+    <div class="ctrl-row"><div class="ctrl-keys"><kbd>A</kbd><kbd>D</kbd></div><div class="ctrl-label">左移 / 右移</div></div>
+    <div class="ctrl-row"><div class="ctrl-keys"><kbd>↑</kbd><kbd>↓</kbd></div><div class="ctrl-label">上升 / 下降</div></div>
+    <div class="ctrl-divider"></div>
+    <div class="ctrl-row"><div class="ctrl-keys"><kbd>Space</kbd></div><div class="ctrl-label">开合抓夹</div></div>
+    <div class="ctrl-hover-row">
+      <div class="ctrl-hover-icon"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(245,247,250,0.25)" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg></div>
+      <div class="ctrl-label">悬停产生粒子扰动</div>
     </div>
-    <div class="hero-hud">
-      <div class="hud-card">
-        <div class="hud-dot blue"></div>
-        <span class="hud-label">Human</span>
-        <span class="hud-score">6/8</span>
-      </div>
-      <div class="hud-card">
-        <div class="hud-dot slate"></div>
-        <span class="hud-label">Robot</span>
-        <span class="hud-score">5/8</span>
-      </div>
-      <div class="hud-card">
-        <span class="hud-label">Combo</span>
-        <span class="hud-score" style="color:#2563EB;">x4</span>
-      </div>
+  </div>
+
+  <!-- Bottom -->
+  <div class="bottom-hint">
+    <div class="hint-circle">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(245,247,250,0.25)" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
     </div>
+    悬停互动
+    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(245,247,250,0.12)" stroke-width="2"><path d="M12 5v14"/><path d="M5 12l7 7 7-7"/></svg>
   </div>
 </div>
 
-<!-- About slide-over panel -->
+<!-- Sidebar -->
+<div class="sidebar-edge" id="sidebarEdge"></div>
+<div class="sidebar-trigger" id="sidebarTrigger"></div>
+<div class="sidebar" id="sidebar">
+  <div class="sb-brand">Joy<span>AI</span>-Sim</div>
+  <a class="sb-item active" href="landing.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Home</a>
+  <div class="sb-section-label">AI Models</div>
+  <a class="sb-item" href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>视觉理解</a>
+  <a class="sb-item" href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>视觉生成</a>
+  <a class="sb-item" href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>具身交互</a>
+  <div class="sb-section-label">Tools</div>
+  <a class="sb-item" href="leaderboard.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>排行榜</a>
+  <a class="sb-item" href="community.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>社区</a>
+</div>
+
+<!-- About -->
 <div class="about-overlay" id="aboutOverlay" onclick="if(event.target===this)this.classList.remove('open')">
   <div class="about-panel">
     <button class="about-close" onclick="document.getElementById('aboutOverlay').classList.remove('open')">&times;</button>
     <div class="about-label">About</div>
     <h2>京东具身智能<br>仿真交互平台</h2>
     <p>JoyAI-Sim 是京东打造的具身智能仿真平台，基于高精度物理引擎与高斯泼溅实时渲染技术，构建逼真的 3D 交互场景。</p>
-    <p>平台拥有覆盖 300+ 细粒度类别、53,000+ 实例的日常物品 3D 资产库，支持家庭场景整理、物流分拣等多种具身任务的仿真与体验。</p>
-    <p>基于京东云 JoyBuilder 提供仿真执行、真实感渲染与场景生成服务，让任何人都能在浏览器中体验操控机器人的乐趣。</p>
+    <p>平台拥有覆盖 300+ 细粒度类别、53,000+ 实例的日常物品 3D 资产库。</p>
     <div class="about-tags">
-      <span class="about-tag">Gaussian Splatting</span>
-      <span class="about-tag">Physics Engine</span>
-      <span class="about-tag">JoyBuilder</span>
-      <span class="about-tag">WebGL2</span>
-      <span class="about-tag">Real-time Rendering</span>
-      <span class="about-tag">53K+ 3D Assets</span>
-      <span class="about-tag">300+ Categories</span>
+      <span class="about-tag">Gaussian Splatting</span><span class="about-tag">Physics Engine</span><span class="about-tag">JoyBuilder</span><span class="about-tag">WebGL2</span><span class="about-tag">53K+ 3D Assets</span>
+    </div>
+    <div style="margin-top: 28px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(245,247,250,0.06);">
+      <img src="assets/仿真抓取.gif" alt="仿真抓取演示" style="width: 100%; display: block; object-fit: cover; object-position: right center;">
     </div>
   </div>
 </div>
 
-<!-- Changelog sticky note -->
-<div class="changelog-note" id="changelogNote">
-  <div class="changelog-header">
-    <span class="changelog-title">v2.1 更新日志</span>
-    <button class="changelog-close" onclick="document.getElementById('changelogNote').classList.add('collapsed')">&times;</button>
-  </div>
-  <ol class="changelog-list">
-    <li>首页改为单屏展示，二级标题突出具身仿真能力</li>
-    <li>新增关卡选择页，用户可自由选择场景和难度</li>
-    <li>游戏界面调整：AI 在左，人在右</li>
-    <li>新增排行榜和社区，体现竞技与分享的具身仿真智能体验</li>
-  </ol>
-</div>
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+}}
+</script>
 
-<style>
-  .changelog-note {
-    position: fixed; bottom: 24px; left: 264px; z-index: 900;
-    width: 300px;
-    background: #FFFBEB;
-    border: 1px solid #FDE68A;
-    border-radius: 14px;
-    padding: 16px 18px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-    font-size: 13px; color: #92400E;
-    transition: all 0.3s ease;
-  }
-  .changelog-note.collapsed {
-    transform: translateY(calc(100% + 40px));
-    opacity: 0; pointer-events: none;
-  }
-  .changelog-header {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 10px;
-  }
-  .changelog-title {
-    font-size: 12px; font-weight: 700; color: #B45309;
-    text-transform: uppercase; letter-spacing: 0.5px;
-  }
-  .changelog-close {
-    width: 22px; height: 22px; border-radius: 6px;
-    border: none; background: rgba(180,83,9,0.08);
-    color: #B45309; font-size: 14px; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: background 0.15s;
-  }
-  .changelog-close:hover { background: rgba(180,83,9,0.15); }
-  .changelog-list {
-    padding-left: 18px;
-    display: flex; flex-direction: column; gap: 6px;
-    line-height: 1.5;
-  }
-  .changelog-list li { font-size: 13px; }
-</style>
+<script type="module">
+import * as THREE from 'three';
+import { MeshSurfaceSampler } from 'three/addons/math/MeshSurfaceSampler.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 
+// ============================================================
+// Core: Surface Sampler Pipeline
+// sampleMesh() works with any THREE.Mesh — from primitives or GLB
+// sampleGroup() handles a Group/Scene from GLTFLoader
+// ============================================================
+
+function sampleMesh(mesh, count) {
+  mesh.updateMatrixWorld(true);
+  const geo = mesh.geometry.clone();
+  geo.applyMatrix4(mesh.matrixWorld);
+  const tempMesh = new THREE.Mesh(geo);
+  const sampler = new MeshSurfaceSampler(tempMesh).build();
+  const pts = new Float32Array(count * 3);
+  const pos = new THREE.Vector3();
+  for (let i = 0; i < count; i++) {
+    sampler.sample(pos);
+    pts[i * 3]     = pos.x;
+    pts[i * 3 + 1] = pos.y;
+    pts[i * 3 + 2] = pos.z;
+  }
+  return pts;
+}
+
+function sampleGroup(group, totalCount) {
+  group.updateMatrixWorld(true);
+  const meshes = [];
+  let totalArea = 0;
+  group.traverse(child => {
+    if (child.isMesh && child.geometry) {
+      const geo = child.geometry.clone();
+      geo.applyMatrix4(child.matrixWorld);
+      const m = new THREE.Mesh(geo);
+      const sampler = new MeshSurfaceSampler(m).build();
+      // Estimate surface area from triangle count
+      const triCount = geo.index ? geo.index.count / 3 : geo.attributes.position.count / 3;
+      meshes.push({ sampler, area: triCount });
+      totalArea += triCount;
+    }
+  });
+  if (meshes.length === 0) return new Float32Array(0);
+  const pts = new Float32Array(totalCount * 3);
+  const pos = new THREE.Vector3();
+  let idx = 0;
+  meshes.forEach(({ sampler, area }) => {
+    const count = Math.round((area / totalArea) * totalCount);
+    for (let i = 0; i < count && idx < totalCount; i++, idx++) {
+      sampler.sample(pos);
+      pts[idx * 3]     = pos.x;
+      pts[idx * 3 + 1] = pos.y;
+      pts[idx * 3 + 2] = pos.z;
+    }
+  });
+  // Fill remaining if rounding left gaps
+  if (idx < totalCount && meshes.length > 0) {
+    const fallback = meshes[0].sampler;
+    while (idx < totalCount) {
+      fallback.sample(pos);
+      pts[idx * 3] = pos.x; pts[idx * 3 + 1] = pos.y; pts[idx * 3 + 2] = pos.z;
+      idx++;
+    }
+  }
+  return pts;
+}
+
+function loadGLB(url) {
+  return new Promise((resolve, reject) => {
+    new GLTFLoader().load(url, gltf => resolve(gltf.scene), undefined, reject);
+  });
+}
+
+// ============================================================
+// Scene: load GLB as the COMPLETE scene, sample as particles
+// ============================================================
+
+async function buildScene() {
+  const objects = [];
+
+  const glbScene = await loadGLB('assets/主页桌子3d.glb');
+  // Scale up — original is ~0.9 units wide
+  glbScene.scale.set(6, 6, 6);
+  glbScene.rotation.y = -Math.PI / 2;  // rotate 90° right
+  glbScene.updateMatrixWorld(true);
+
+  const tablePts = sampleGroup(glbScene, 350000);
+  objects.push({ pts: tablePts, color: [0.45, 0.2, 0.12], id: 'scene', presampled: true });
+
+  return objects;
+}
+
+// ============================================================
+// ASYNC INIT — everything starts here
+// ============================================================
+async function init() {
+
+const sceneObjects = await buildScene();
+
+let totalParticles = 0;
+const sampledData = [];
+
+sceneObjects.forEach(obj => {
+  let pts, count;
+  if (obj.presampled) {
+    pts = obj.pts;
+    count = pts.length / 3;
+  } else {
+    count = obj.count;
+    pts = sampleMesh(obj.mesh, count);
+  }
+  sampledData.push({ pts, color: obj.color, count, id: obj.id });
+  totalParticles += count;
+});
+
+// No ambient dust — particles only exist on object surfaces
+const AMBIENT_COUNT = 0;
+totalParticles += AMBIENT_COUNT;
+
+const allPos = new Float32Array(totalParticles * 3);
+const allHome = new Float32Array(totalParticles * 3);
+const allCol = new Float32Array(totalParticles * 3);
+const allSize = new Float32Array(totalParticles);
+const allPhase = new Float32Array(totalParticles);
+
+let off = 0;
+sampledData.forEach(({ pts, color, count }) => {
+  let minX=Infinity, maxX=-Infinity, minY=Infinity, maxY=-Infinity, minZ=Infinity, maxZ=-Infinity;
+  for (let i = 0; i < count; i++) {
+    const x=pts[i*3], y=pts[i*3+1], z=pts[i*3+2];
+    if(x<minX)minX=x; if(x>maxX)maxX=x;
+    if(y<minY)minY=y; if(y>maxY)maxY=y;
+    if(z<minZ)minZ=z; if(z>maxZ)maxZ=z;
+  }
+  const rx=maxX-minX||1, ry=maxY-minY||1, rz=maxZ-minZ||1;
+
+  for (let i = 0; i < count; i++) {
+    const idx = off + i;
+    const i3 = i * 3, idx3 = idx * 3;
+    allPos[idx3]=pts[i3]; allPos[idx3+1]=pts[i3+1]; allPos[idx3+2]=pts[i3+2];
+    allHome[idx3]=pts[i3]; allHome[idx3+1]=pts[i3+1]; allHome[idx3+2]=pts[i3+2];
+
+    // Smooth position-based color using continuous gradients
+    const nx = (pts[i3] - minX) / rx;     // 0=left, 1=right
+    const ny = (pts[i3+1] - minY) / ry;   // 0=bottom, 1=top
+    const nz = (pts[i3+2] - minZ) / rz;   // 0=back, 1=front
+
+    // Height is the primary separator:
+    // Bottom (legs/under table): very dark warm
+    // Table surface: mid-tone warm orange
+    // Objects on table: brighter, with color variation
+    // Arms (top): brightest, gold/orange
+
+    let r, g, b;
+
+    if (ny < 0.25) {
+      // Below table — very dark
+      r = 0.2; g = 0.08; b = 0.06;
+    } else if (ny < 0.42) {
+      // Table surface — warm orange
+      const t = (ny - 0.25) / 0.17;
+      r = 0.4 + t * 0.1;
+      g = 0.16 + t * 0.04;
+      b = 0.06 + t * 0.03;
+    } else {
+      // Objects on table — distinctly cooler/different from table
+      const heightBoost = Math.min((ny - 0.42) / 0.58, 1.0);
+
+      // Left side: purple/magenta
+      // Center: deep blue / teal
+      // Right side: warm rose / amber
+      // Top (arms): gold-orange
+
+      if (heightBoost > 0.5) {
+        // Arms region — gold/orange, gets brighter toward top
+        r = 0.6 + heightBoost * 0.25;
+        g = 0.28 + heightBoost * 0.15;
+        b = 0.1 + heightBoost * 0.05;
+      } else {
+        // Objects on table — cooler palette, clearly NOT orange
+        // Blend based on horizontal position
+        const leftW = Math.pow(Math.max(0, 1 - nx * 2), 1.2);
+        const rightW = Math.pow(Math.max(0, nx * 2 - 1), 1.2);
+        const centerW = Math.max(0, 1 - Math.abs(nx - 0.5) * 3);
+
+        // Purple from left
+        r = 0.35 * leftW + 0.15 * centerW + 0.5 * rightW;
+        g = 0.12 * leftW + 0.2 * centerW + 0.18 * rightW;
+        b = 0.5 * leftW + 0.55 * centerW + 0.3 * rightW;
+
+        // Normalize
+        const w = leftW + centerW + rightW + 0.001;
+        r /= w; g /= w; b /= w;
+
+        // Slight height brightening
+        r += heightBoost * 0.1;
+        g += heightBoost * 0.05;
+        b += heightBoost * 0.08;
+      }
+    }
+
+    // Depth tint — front slightly warmer
+    r += nz * 0.04;
+    b -= nz * 0.03;
+
+    // Per-particle variation
+    const noise = (Math.random() - 0.5) * 0.1;
+    allCol[idx3]   = Math.max(0.04, Math.min(1, r + noise));
+    allCol[idx3+1] = Math.max(0.02, Math.min(1, g + noise * 0.35));
+    allCol[idx3+2] = Math.max(0.04, Math.min(1, b + noise * 0.6));
+    allSize[idx] = 0.8 + Math.random() * 1.4;
+    allPhase[idx] = Math.random() * Math.PI * 2;
+  }
+  off += count;
+});
+
+// (no ambient dust)
+
+// ============================================================
+// Renderer
+// ============================================================
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: false });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setClearColor(0x000000, 1);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 100);
+// Camera: slightly more elevated, less legs visible
+camera.position.set(0, 2.2, 8);
+camera.lookAt(0, 0.1, 0);
+
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+composer.addPass(new UnrealBloomPass(
+  new THREE.Vector2(window.innerWidth, window.innerHeight),
+  0.15, 0.4, 0.98
+));
+
+// ============================================================
+// Particle material
+// ============================================================
+const geo = new THREE.BufferGeometry();
+geo.setAttribute('position', new THREE.BufferAttribute(allPos, 3));
+geo.setAttribute('home', new THREE.BufferAttribute(allHome, 3));
+geo.setAttribute('customColor', new THREE.BufferAttribute(allCol, 3));
+geo.setAttribute('size', new THREE.BufferAttribute(allSize, 1));
+geo.setAttribute('phase', new THREE.BufferAttribute(allPhase, 1));
+
+const mat = new THREE.ShaderMaterial({
+  vertexShader: `
+    attribute vec3 customColor;
+    attribute float size;
+    attribute float phase;
+    varying vec3 vColor;
+    varying float vAlpha;
+    uniform float uTime;
+    void main() {
+      vColor = customColor;
+      float breathe = 1.0 + sin(uTime * 0.1 + phase) * 0.02;
+      vAlpha = 0.45 * breathe;
+      vec4 mv = modelViewMatrix * vec4(position, 1.0);
+      gl_PointSize = size * breathe * (80.0 / -mv.z);
+      gl_PointSize = clamp(gl_PointSize, 0.5, 4.5);
+      gl_Position = projectionMatrix * mv;
+    }
+  `,
+  fragmentShader: `
+    varying vec3 vColor;
+    varying float vAlpha;
+    void main() {
+      float d = length(gl_PointCoord - 0.5);
+      if (d > 0.5) discard;
+      float soft = smoothstep(0.5, 0.1, d);
+      gl_FragColor = vec4(vColor, soft * vAlpha);
+    }
+  `,
+  uniforms: { uTime: { value: 0 } },
+  transparent: true,
+  depthWrite: true,
+  depthTest: true,
+  blending: THREE.NormalBlending,
+});
+
+scene.add(new THREE.Points(geo, mat));
+
+// ============================================================
+// Noise for breathing
+// ============================================================
+function mod289(x){return x-Math.floor(x/289)*289;}
+function permute(x){return mod289((x*34+1)*x);}
+function lerp(t,a,b){return a+t*(b-a);}
+function snoise3(x,y,z){
+  const X=Math.floor(x)&255,Y=Math.floor(y)&255,Z=Math.floor(z)&255;
+  const xf=x-Math.floor(x),yf=y-Math.floor(y),zf=z-Math.floor(z);
+  const u=xf*xf*(3-2*xf),v=yf*yf*(3-2*yf),w=zf*zf*(3-2*zf);
+  const A=(permute(X)+Y)&255,B=(permute(X+1)+Y)&255;
+  const AA=(permute(A)+Z)&255,AB=(permute(A+1)+Z)&255;
+  const BA=(permute(B)+Z)&255,BB=(permute(B+1)+Z)&255;
+  function g(h,a,b,c){h&=15;const u=h<8?a:b,v=h<4?b:(h===12||h===14?a:c);return((h&1)?-u:u)+((h&2)?-v:v);}
+  return lerp(w,lerp(v,lerp(u,g(permute(AA),xf,yf,zf),g(permute(BA),xf-1,yf,zf)),lerp(u,g(permute(AB),xf,yf-1,zf),g(permute(BB),xf-1,yf-1,zf))),lerp(v,lerp(u,g(permute(AA+1),xf,yf,zf-1),g(permute(BA+1),xf-1,yf,zf-1)),lerp(u,g(permute(AB+1),xf,yf-1,zf-1),g(permute(BB+1),xf-1,yf-1,zf-1))));
+}
+
+// ============================================================
+// Mouse interaction
+// ============================================================
+const mouse = { x: 999, y: 999, z: 999 };
+const rc = new THREE.Raycaster();
+const ndc = new THREE.Vector2();
+const tablePlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+const hit = new THREE.Vector3();
+
+window.addEventListener('mousemove', e => {
+  ndc.x = (e.clientX / window.innerWidth) * 2 - 1;
+  ndc.y = -(e.clientY / window.innerHeight) * 2 + 1;
+  rc.setFromCamera(ndc, camera);
+  if (rc.ray.intersectPlane(tablePlane, hit)) {
+    mouse.x = hit.x; mouse.y = hit.y; mouse.z = hit.z;
+  }
+});
+
+// ============================================================
+// Keyboard
+// ============================================================
+const keys = {};
+window.addEventListener('keydown', e => {
+  keys[e.code] = true;
+  if (['Space','ArrowUp','ArrowDown','Tab'].includes(e.code)) e.preventDefault();
+});
+window.addEventListener('keyup', e => { keys[e.code] = false; });
+
+// ============================================================
+// Animate
+// ============================================================
+let time = 0;
+const clock = new THREE.Clock();
+
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = Math.min(clock.getDelta(), 0.05);
+  time += dt;
+  mat.uniforms.uTime.value = time;
+
+  const pos = geo.attributes.position.array;
+  const home = geo.attributes.home.array;
+  const nt = time * 0.02;
+
+  for (let i = 0; i < totalParticles; i++) {
+    const i3 = i * 3;
+    const hx = home[i3], hy = home[i3+1], hz = home[i3+2];
+
+    const n = snoise3(hx * 2 + nt, hy * 2 + nt * 0.5, hz * 2 + nt * 0.3);
+    let tx = hx + n * 0.002;
+    let ty = hy + n * 0.001;
+    let tz = hz + n * 0.002;
+
+    // Mouse flow field — strong visible swirl
+    const mdx = pos[i3] - mouse.x;
+    const mdy = pos[i3+1] - mouse.y;
+    const mdz = pos[i3+2] - mouse.z;
+    const mDist = Math.sqrt(mdx * mdx + mdy * mdy + mdz * mdz);
+    if (mDist < 2.2 && mDist > 0.01) {
+      const falloff = (1 - mDist / 2.2);
+      const strength = falloff * falloff * 0.12;
+      tx += (-mdz / mDist) * strength;
+      tz += (mdx / mDist) * strength;
+      ty += Math.sin(time * 3.0 + mDist * 6) * strength * 0.5;
+    }
+
+    // Ambient flow — slow curl across the whole scene
+    const flow = snoise3(hx * 1.5 + nt * 1.2, hy * 1.5 + nt * 0.8, hz * 1.5 + nt * 0.5);
+    const flow2 = snoise3(hx * 1.2 + nt * 0.6 + 100, hy * 1.2 + nt * 1.0 + 100, hz * 1.2 + nt * 0.7 + 100);
+    tx += flow * 0.008;
+    ty += flow2 * 0.004;
+    tz += flow * 0.006;
+
+    pos[i3]   += (tx - pos[i3]) * 0.06;
+    pos[i3+1] += (ty - pos[i3+1]) * 0.06;
+    pos[i3+2] += (tz - pos[i3+2]) * 0.06;
+  }
+
+  geo.attributes.position.needsUpdate = true;
+  composer.render();
+}
+animate();
+
+// Resize
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  composer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// Sidebar
+const sb = document.getElementById('sidebar');
+const tr = document.getElementById('sidebarTrigger');
+let sT;
+tr.addEventListener('mouseenter', () => { clearTimeout(sT); sb.classList.add('open'); });
+sb.addEventListener('mouseenter', () => { clearTimeout(sT); sb.classList.add('open'); });
+sb.addEventListener('mouseleave', () => { clearTimeout(sT); sT = setTimeout(() => sb.classList.remove('open'), 400); });
+tr.addEventListener('mouseleave', () => { clearTimeout(sT); sT = setTimeout(() => sb.classList.remove('open'), 400); });
+
+} // end async init()
+
+init().catch(e => console.error('Init failed:', e));
+</script>
 </body>
 </html>

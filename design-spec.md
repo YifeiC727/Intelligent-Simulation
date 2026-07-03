@@ -47,18 +47,60 @@ Font: **Inter** or **SF Pro Display**
 
 ## Color System
 
-| Role | Value |
-|------|-------|
-| Primary | `#2563EB` |
-| Hover | `#1D4ED8` |
-| Dark | `#0F172A` |
-| Secondary Text | `#64748B` |
-| Background | `#F8FAFC` |
-| Card Background | `#FFFFFF` |
-| Border | `rgba(15,23,42,0.06)` |
+### Primary (Brand Blue)
+
+| Role | Value | Usage |
+|------|-------|-------|
+| Primary | `#2563EB` | Buttons, links, active states, brand accent |
+| Primary Hover | `#1D4ED8` | Button hover, link hover |
+| Primary Light BG | `#EFF6FF` | Active sidebar item bg, selected state bg |
+| Primary Light Border | `#BFDBFE` / `#DBEAFE` | Highlighted tag border, blue card bg |
+
+### Neutrals (Slate)
+
+| Role | Value | Usage |
+|------|-------|-------|
+| Heading / Title | `#0F172A` | H1, H2, brand name, primary headings |
+| Body Dark | `#1E293B` | Body text on light bg |
+| Body Medium | `#334155` | Key labels, hint-key text |
+| Body Default | `#475569` | Subtitle, hint text, secondary content |
+| Body Light | `#64748B` | Paragraph text, sidebar items, muted labels |
+| Muted | `#94A3B8` | Placeholder, section labels, skip note |
+| Border | `#E2E8F0` | Card borders, dividers, input borders |
+| Border Light | `#CBD5E1` | Hover borders, arm illustration |
+| Hover BG | `#F1F5F9` | Sidebar hover, light button bg |
+| Page BG | `#FAFBFD` / `#F8FAFC` | Page background |
+| Card BG | `#FFFFFF` | Cards, modals, scene preview |
+
+### Semantic
+
+| Role | Value | Usage |
+|------|-------|-------|
+| Success | `#22C55E` / `#16A34A` | Success state, positive indicator |
+| Success Light | `#86EFAC` / `#4ADE80` | Success bg, illustration objects |
+| Warning | `#F59E0B` / `#FBBF24` | Warning badges, hook stat icon |
+| Warning Dark | `#92400E` / `#B45309` | Warning text on light bg |
+| Warning Light BG | `#FFF7ED` / `#FFFBEB` | Warning card bg |
+| Warning Light Border | `#FED7AA` / `#FDE68A` | Warning card border |
+| Error | `#DC2626` / `#EF4444` | Error state, failure indicator |
+| Error Light | `#F87171` / `#FCA5A5` | Error bg, soft error |
+
+### Decorative (Game UI)
+
+| Role | Value | Usage |
+|------|-------|-------|
+| Object Blue | `#93C5FD` | Illustration object (cup) |
+| Object Yellow | `#FCD34D` | Illustration object (book) |
+| Object Green | `#86EFAC` | Illustration object (pen) |
+| Purple Accent | `#818CF8` / `#A78BFA` | Decorative accent, chart |
+| Pink Accent | `#F472B6` | Decorative accent |
+| Cyan Accent | `#67E8F9` | Decorative accent |
+
+### Usage Rules
 
 - No saturated gradients
 - If gradients used: White → Blue, opacity < 8%
+- Border prefer `rgba(15,23,42,0.06)` for subtle dividers
 
 ---
 

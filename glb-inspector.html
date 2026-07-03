@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>GLB Inspector</title></head>
+<body style="background:#111;color:#fff;font-family:monospace;padding:20px;">
+<h2>GLB Inspector</h2>
+<pre id="out">Loading...</pre>
+<script type="importmap">
+{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+const out = document.getElementById('out');
+new GLTFLoader().load('assets/主页桌子3d.glb', (gltf) => {
+  const scene = gltf.scene;
+  scene.updateMatrixWorld(true);
+  const box = new THREE.Box3().setFromObject(scene);
+  const size = box.getSize(new THREE.Vector3());
+  const center = box.getCenter(new THREE.Vector3());
+
+  let info = `=== GLB Structure ===\n\n`;
+  info += `Bounding Box:\n  min: (${box.min.x.toFixed(2)}, ${box.min.y.toFixed(2)}, ${box.min.z.toFixed(2)})\n  max: (${box.max.x.toFixed(2)}, ${box.max.y.toFixed(2)}, ${box.max.z.toFixed(2)})\n`;
+  info += `Size: ${size.x.toFixed(2)} x ${size.y.toFixed(2)} x ${size.z.toFixed(2)}\n`;
+  info += `Center: (${center.x.toFixed(2)}, ${center.y.toFixed(2)}, ${center.z.toFixed(2)})\n\n`;
+  info += `=== Objects ===\n`;
+
+  let meshCount = 0;
+  let totalVerts = 0;
+  scene.traverse(child => {
+    const indent = '  '.repeat(getDepth(child, scene));
+    info += `${indent}[${child.type}] "${child.name}"`;
+    if (child.isMesh) {
+      meshCount++;
+      const verts = child.geometry.attributes.position.count;
+      totalVerts += verts;
+      info += ` — ${verts} vertices`;
+      const cbox = new THREE.Box3().setFromObject(child);
+      const cs = cbox.getSize(new THREE.Vector3());
+      info += ` — size: ${cs.x.toFixed(2)}x${cs.y.toFixed(2)}x${cs.z.toFixed(2)}`;
+    }
+    info += `\n`;
+  });
+
+  info += `\nTotal: ${meshCount} meshes, ${totalVerts} vertices`;
+  out.textContent = info;
+}, undefined, (err) => {
+  out.textContent = 'Error loading GLB: ' + err.message;
+});
+
+function getDepth(obj, root) {
+  let d = 0, p = obj;
+  while (p !== root && p.parent) { d++; p = p.parent; }
+  return d;
+}
+</script>
+</body></html>
