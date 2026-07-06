@@ -190,20 +190,25 @@
 
   /* Level panel — integrated into page left side */
   .level-panel {
-    position: fixed; bottom: 80px; left: 48px;
+    position: fixed; top: 380px; left: 48px;
     width: 28vw; min-width: 280px; max-width: 380px;
-    max-height: 35vh;
+    max-height: calc(100vh - 420px);
     z-index: 15;
     background: transparent;
-    padding: 0 6px 0 0;
+    padding: 0;
     display: flex; flex-direction: column; gap: 10px;
-    overflow-y: auto;
     pointer-events: auto;
     opacity: 0; animation: fadeIn 1s ease 1.2s forwards;
   }
-  .level-panel::-webkit-scrollbar { width: 4px; }
-  .level-panel::-webkit-scrollbar-track { background: transparent; }
-  .level-panel::-webkit-scrollbar-thumb { background: rgba(245,247,250,0.25); border-radius: 2px; }
+  .level-cards-scroll {
+    display: flex; flex-direction: column; gap: 10px;
+    max-height: 30vh;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  .level-cards-scroll::-webkit-scrollbar { width: 4px; }
+  .level-cards-scroll::-webkit-scrollbar-track { background: transparent; }
+  .level-cards-scroll::-webkit-scrollbar-thumb { background: rgba(245,247,250,0.25); border-radius: 2px; }
   .mode-toggle {
     display: flex; gap: 4px;
     padding: 3px; border-radius: 10px;
@@ -341,6 +346,33 @@
 
 <canvas id="c"></canvas>
 
+<!-- Click to gather prompt -->
+<div id="clickPrompt" style="
+  position: fixed; inset: 0; z-index: 20;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  pointer-events: auto; cursor: pointer;
+" onclick="window.startGather(); this.style.opacity='0'; this.style.pointerEvents='none'; this.style.transition='opacity 1s';">
+  <div style="
+    width: 72px; height: 72px; border-radius: 50%;
+    border: 2px solid rgba(110,201,255,0.4);
+    display: flex; align-items: center; justify-content: center;
+    animation: promptPulse 2s ease-in-out infinite;
+    background: rgba(110,201,255,0.06);
+    box-shadow: 0 0 30px rgba(110,201,255,0.15);
+  ">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="#6EC9FF" stroke="none">
+      <polygon points="8,5 19,12 8,19"/>
+    </svg>
+  </div>
+  <span style="margin-top: 14px; font-size: 12px; color: #6EC9FF; letter-spacing: 1px; font-weight: 500;">CLICK TO CONVERGE</span>
+</div>
+<style>
+  @keyframes promptPulse {
+    0%, 100% { transform: scale(1); border-color: rgba(245,247,250,0.15); }
+    50% { transform: scale(1.06); border-color: rgba(110,201,255,0.3); }
+  }
+</style>
+
 <div class="ui-overlay">
   <!-- Top bar matching reference -->
   <div class="top-bar">
@@ -369,6 +401,7 @@
     </div>
     <div class="level-panel-title">关卡选择</div>
 
+    <div class="level-cards-scroll">
     <a href="onboarding.html?level=tutorial&name=%E6%96%B0%E6%89%8B%E6%95%99%E5%AD%A6&objects=3&time=0" class="lv-card">
       <div class="lv-info">
         <div class="lv-name">新手教学</div>
@@ -471,6 +504,7 @@
       <span class="lv-lock"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
     </div>
 
+    </div><!-- end level-cards-scroll -->
     <a href="level-select.html" class="lv-all">查看全部关卡 →</a>
   </div>
 </div>
@@ -719,8 +753,15 @@ sampledData.forEach(({ pts, color, count }) => {
   for (let i = 0; i < count; i++) {
     const idx = off + i;
     const i3 = i * 3, idx3 = idx * 3;
-    allPos[idx3]=pts[i3]; allPos[idx3+1]=pts[i3+1]; allPos[idx3+2]=pts[i3+2];
+    // Home = model surface (target)
     allHome[idx3]=pts[i3]; allHome[idx3+1]=pts[i3+1]; allHome[idx3+2]=pts[i3+2];
+    // Start position = very close to home, just slightly offset (thin haze)
+    const angle1 = Math.random() * Math.PI * 2;
+    const angle2 = Math.random() * Math.PI * 2;
+    const radius = 0.1 + Math.random() * 0.4;
+    allPos[idx3]   = pts[i3] + Math.cos(angle1) * radius;
+    allPos[idx3+1] = pts[i3+1] + Math.sin(angle2) * radius * 0.3;
+    allPos[idx3+2] = pts[i3+2] + Math.sin(angle1) * radius;
 
     // Smooth position-based color using continuous gradients
     const nx = (pts[i3] - minX) / rx;     // 0=left, 1=right
@@ -945,6 +986,16 @@ window.addEventListener('keyup', e => { keys[e.code] = false; });
 let time = 0;
 const clock = new THREE.Clock();
 
+// Gather state: 'floating' = nebula drift, 'gathering' = converge to model
+let gatherState = 'floating';
+let gatherStartTime = 0;
+
+// Called when user clicks CTA
+window.startGather = function() {
+  gatherState = 'gathering';
+  gatherStartTime = time;
+};
+
 function animate() {
   requestAnimationFrame(animate);
   const dt = Math.min(clock.getDelta(), 0.05);
@@ -954,30 +1005,56 @@ function animate() {
   const pos = geo.attributes.position.array;
   const home = geo.attributes.home.array;
 
+  const GATHER_DURATION = 6.0;
+  let lerpSpeed;
+
+  if (gatherState === 'floating') {
+    // Nebula drift: particles wander slowly, never converge
+    lerpSpeed = 0;
+  } else {
+    // Gathering: converge to home
+    const elapsed = time - gatherStartTime;
+    const progress = Math.min(elapsed / GATHER_DURATION, 1.0);
+    const ease = progress * progress * (3 - 2 * progress);
+    lerpSpeed = 0.003 + ease * 0.077;
+  }
+
   for (let i = 0; i < totalParticles; i++) {
     const i3 = i * 3;
     const hx = home[i3], hy = home[i3+1], hz = home[i3+2];
 
-    let tx = hx;
-    let ty = hy;
-    let tz = hz;
+    if (gatherState === 'floating') {
+      // Slow noise-based drift
+      const drift = 0.15;
+      const nx = Math.sin(time * 0.3 + i * 0.01) * drift;
+      const ny = Math.cos(time * 0.2 + i * 0.013) * drift * 0.3;
+      const nz = Math.sin(time * 0.25 + i * 0.017) * drift;
+      pos[i3]   += (pos[i3] + nx - pos[i3]) * 0.02;
+      pos[i3+1] += (pos[i3+1] + ny - pos[i3+1]) * 0.02;
+      pos[i3+2] += (pos[i3+2] + nz - pos[i3+2]) * 0.02;
+    } else {
+      let tx = hx, ty = hy, tz = hz;
 
-    // Mouse interaction — swirl nearby particles
-    const mdx = pos[i3] - mouse.x;
-    const mdy = pos[i3+1] - mouse.y;
-    const mdz = pos[i3+2] - mouse.z;
-    const mDist = Math.sqrt(mdx * mdx + mdy * mdy + mdz * mdz);
-    if (mDist < 2.2 && mDist > 0.01) {
-      const falloff = (1 - mDist / 2.2);
-      const strength = falloff * falloff * 0.036;
-      tx += (-mdz / mDist) * strength;
-      tz += (mdx / mDist) * strength;
-      ty += Math.sin(time * 3.0 + mDist * 6) * strength * 0.5;
+      // Mouse interaction after mostly gathered
+      const elapsed = time - gatherStartTime;
+      if (elapsed > GATHER_DURATION * 0.8) {
+        const mdx = pos[i3] - mouse.x;
+        const mdy = pos[i3+1] - mouse.y;
+        const mdz = pos[i3+2] - mouse.z;
+        const mDist = Math.sqrt(mdx * mdx + mdy * mdy + mdz * mdz);
+        if (mDist < 2.2 && mDist > 0.01) {
+          const falloff = (1 - mDist / 2.2);
+          const strength = falloff * falloff * 0.036;
+          tx += (-mdz / mDist) * strength;
+          tz += (mdx / mDist) * strength;
+          ty += Math.sin(time * 3.0 + mDist * 6) * strength * 0.5;
+        }
+      }
+
+      pos[i3]   += (tx - pos[i3]) * lerpSpeed;
+      pos[i3+1] += (ty - pos[i3+1]) * lerpSpeed;
+      pos[i3+2] += (tz - pos[i3+2]) * lerpSpeed;
     }
-
-    pos[i3]   += (tx - pos[i3]) * 0.08;
-    pos[i3+1] += (ty - pos[i3+1]) * 0.08;
-    pos[i3+2] += (tz - pos[i3+2]) * 0.08;
   }
 
   geo.attributes.position.needsUpdate = true;
@@ -985,6 +1062,11 @@ function animate() {
 }
 
 animate();
+
+// Click anywhere on canvas to trigger gather
+document.getElementById('c').addEventListener('click', () => {
+  if (gatherState === 'floating') window.startGather();
+});
 
 // Resize
 window.addEventListener('resize', () => {
