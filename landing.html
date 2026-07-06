@@ -190,7 +190,7 @@
     position: fixed; bottom: auto; top: 42%; left: 48px;
     transform: translateY(-50%);
     width: 30vw; min-width: 300px; max-width: 400px;
-    max-height: 60vh;
+    max-height: 48vh;
     z-index: 15;
     background: transparent;
     padding: 0;
@@ -201,7 +201,7 @@
   }
   .level-panel::-webkit-scrollbar { width: 4px; }
   .level-panel::-webkit-scrollbar-track { background: transparent; }
-  .level-panel::-webkit-scrollbar-thumb { background: rgba(245,247,250,0.1); border-radius: 2px; }
+  .level-panel::-webkit-scrollbar-thumb { background: rgba(245,247,250,0.2); border-radius: 2px; }
   .mode-toggle {
     display: flex; gap: 4px;
     padding: 3px; border-radius: 10px;
@@ -596,7 +596,7 @@ function loadGLB(url) {
 async function buildScene() {
   const objects = [];
 
-  const glbScene = await loadGLB('assets/desk-split.glb?v=2');
+  const glbScene = await loadGLB('assets/desk-split.glb');
 
   const box = new THREE.Box3().setFromObject(glbScene);
   const size = new THREE.Vector3();
@@ -654,7 +654,7 @@ async function buildScene() {
 
   // ---- Load textured GLB for mesh rendering mode ----
   try {
-    const texScene = await loadGLB('assets/桌子3d拆分渲染后.glb');
+    const texScene = await loadGLB('assets/desk-textured.glb');
     texScene.scale.set(autoScale, autoScale, autoScale);
     texScene.rotation.y = Math.PI * 3 / 2;
     texScene.position.set(-center.x * autoScale, -center.y * autoScale, -center.z * autoScale);
