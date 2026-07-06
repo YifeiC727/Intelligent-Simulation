@@ -226,16 +226,36 @@
   }
   .lv-card {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 12px 16px; border-radius: 12px;
-    background: rgba(8,10,18,0.6);
+    padding: 14px 18px; border-radius: 14px;
+    background: rgba(10,12,22,0.7);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(245,247,250,0.08);
+    border: 1px solid rgba(245,247,250,0.06);
     text-decoration: none; color: inherit;
-    transition: all 0.2s;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
   }
-  .lv-card:hover { background: rgba(8,10,18,0.75); border-color: rgba(245,247,250,0.15); }
+  .lv-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(110,201,255,0.06), rgba(157,124,255,0.04));
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .lv-card:hover {
+    background: rgba(10,12,22,0.85);
+    border-color: rgba(110,201,255,0.2);
+    transform: translateX(4px);
+    box-shadow: 0 4px 24px rgba(110,201,255,0.06), 0 0 0 1px rgba(110,201,255,0.1);
+  }
+  .lv-card:hover::before { opacity: 1; }
+  .lv-card:hover .lv-name { color: #fff; }
+  .lv-card:hover .lv-meta { color: rgba(245,247,250,0.5); }
+  .lv-card:hover .lv-badge { background: rgba(110,201,255,0.12); color: #6EC9FF; }
   .lv-info { display: flex; flex-direction: column; gap: 5px; }
-  .lv-name { font-size: 15px; font-weight: 600; color: rgba(245,247,250,0.9); }
+  .lv-name { font-size: 15px; font-weight: 600; color: rgba(245,247,250,0.9); transition: color 0.3s; }
   .lv-row { display: flex; align-items: center; gap: 9px; }
   .lv-stars { display: flex; gap: 3px; }
   .lv-stars svg { width: 13px; height: 13px; }
@@ -418,6 +438,36 @@
       <span class="lv-lock"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
     </div>
 
+    <div class="lv-card locked">
+      <div class="lv-info">
+        <div class="lv-name">厨房 · 初级</div>
+        <div class="lv-row">
+          <span class="lv-meta">即将开放</span>
+        </div>
+      </div>
+      <span class="lv-lock"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+    </div>
+
+    <div class="lv-card locked">
+      <div class="lv-info">
+        <div class="lv-name">厨房 · 中级</div>
+        <div class="lv-row">
+          <span class="lv-meta">即将开放</span>
+        </div>
+      </div>
+      <span class="lv-lock"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+    </div>
+
+    <div class="lv-card locked">
+      <div class="lv-info">
+        <div class="lv-name">仓库 · 分拣</div>
+        <div class="lv-row">
+          <span class="lv-meta">即将开放</span>
+        </div>
+      </div>
+      <span class="lv-lock"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+    </div>
+
     <a href="level-select.html" class="lv-all">查看全部关卡 →</a>
   </div>
 </div>
@@ -449,7 +499,7 @@
       <span class="about-tag">Gaussian Splatting</span><span class="about-tag">Physics Engine</span><span class="about-tag">JoyBuilder</span><span class="about-tag">WebGL2</span><span class="about-tag">53K+ 3D Assets</span>
     </div>
     <div style="margin-top: 28px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(245,247,250,0.06);">
-      <img src="assets/仿真抓取.gif" alt="仿真抓取演示" style="width: 100%; display: block; object-fit: cover; object-position: right center;">
+      <img src="assets/sim-grab.gif" alt="仿真抓取演示" style="width: 100%; display: block; object-fit: cover; object-position: right center;">
     </div>
   </div>
 </div>
@@ -546,7 +596,7 @@ function loadGLB(url) {
 async function buildScene() {
   const objects = [];
 
-  const glbScene = await loadGLB('assets/主页桌子3d拆分.glb?v=2');
+  const glbScene = await loadGLB('assets/desk-split.glb?v=2');
 
   const box = new THREE.Box3().setFromObject(glbScene);
   const size = new THREE.Vector3();
@@ -682,35 +732,44 @@ sampledData.forEach(({ pts, color, count }) => {
     const isLeg = (partId === 16 || partId === 17 || partId === 24 || partId === 25);
 
     if (isLeg) {
-      // Legs — near-black with subtle warm tint, front slightly lighter
-      r = 0.08 + nz * 0.03;
-      g = 0.05 + nz * 0.02;
-      b = 0.04 + nz * 0.02;
+      // Legs — very dark cold, subtle blue
+      r = 0.04 + nz * 0.02;
+      g = 0.03 + nz * 0.02;
+      b = 0.08 + nz * 0.04;
     } else if (isDeskTop) {
-      // Desk surface — dark warm bronze/brown, front edge darker for depth
+      // Desk surface — dark with warm amber glow spots, NOT pink
       const frontMix = Math.pow(nz, 1.5);
       const topMix = 1 - frontMix;
-      r = 0.12 * frontMix + 0.22 * topMix;
-      g = 0.08 * frontMix + 0.14 * topMix;
-      b = 0.06 * frontMix + 0.1 * topMix;
+      r = 0.1 * frontMix + 0.18 * topMix;
+      g = 0.06 * frontMix + 0.1 * topMix;
+      b = 0.08 * frontMix + 0.12 * topMix;
+      // Random warm amber glow spots on desk (not pink)
+      if (Math.random() < 0.06) {
+        r += 0.35; g += 0.18; b += 0.03;
+      }
     } else {
       // All other parts — objects and arms on the table
       const heightBoost = Math.min(Math.max((ny - 0.42) / 0.58, 0), 1.0);
 
       if (heightBoost > 0.5) {
-        // Arms — cold blue-violet, brighter toward tips
-        r = 0.3 + heightBoost * 0.15;
-        g = 0.18 + heightBoost * 0.12;
-        b = 0.6 + heightBoost * 0.2;
+        // Arms — cool blue-violet, NOT pink
+        r = 0.2 + heightBoost * 0.15;
+        g = 0.15 + heightBoost * 0.15;
+        b = 0.65 + heightBoost * 0.3;
+        // Bright blue-white tips
+        if (heightBoost > 0.8 && Math.random() < 0.15) {
+          r = 0.75; g = 0.85; b = 1.0;
+        }
       } else {
-        // Objects — left: deep violet, center: electric cyan, right: amber accent
-        const leftW = Math.pow(Math.max(0, 1 - nx * 2), 1.2);
-        const rightW = Math.pow(Math.max(0, nx * 2 - 1), 1.2);
-        const centerW = Math.max(0, 1 - Math.abs(nx - 0.5) * 3);
+        // Objects — saturated, pure colors per region
+        const leftW = Math.pow(Math.max(0, 1 - nx * 2), 1.5);
+        const rightW = Math.pow(Math.max(0, nx * 2 - 1), 1.5);
+        const centerW = Math.pow(Math.max(0, 1 - Math.abs(nx - 0.5) * 2.5), 1.2);
 
-        r = 0.25 * leftW + 0.05 * centerW + 0.85 * rightW;
-        g = 0.08 * leftW + 0.45 * centerW + 0.4 * rightW;
-        b = 0.55 * leftW + 0.85 * centerW + 0.08 * rightW;
+        // Left: bright electric blue, Center: deep indigo/violet, Right: hot amber/orange
+        r = 0.08 * leftW + 0.2 * centerW + 0.95 * rightW;
+        g = 0.35 * leftW + 0.08 * centerW + 0.45 * rightW;
+        b = 0.95 * leftW + 0.6 * centerW + 0.05 * rightW;
 
         // Normalize
         const w = leftW + centerW + rightW + 0.001;
@@ -732,6 +791,15 @@ sampledData.forEach(({ pts, color, count }) => {
     allCol[idx3]   = Math.max(0.04, Math.min(1, r + noise));
     allCol[idx3+1] = Math.max(0.02, Math.min(1, g + noise * 0.3));
     allCol[idx3+2] = Math.max(0.04, Math.min(1, b + noise * 0.5));
+
+    // Bright hotspot particles on top of objects (not desk/legs)
+    if (!isDeskTop && !isLeg && ny > 0.6 && Math.random() < 0.03) {
+      const boost = 0.3 + Math.random() * 0.4;
+      allCol[idx3] = Math.min(1, allCol[idx3] + boost);
+      allCol[idx3+1] = Math.min(1, allCol[idx3+1] + boost * 0.8);
+      allCol[idx3+2] = Math.min(1, allCol[idx3+2] + boost * 0.6);
+    }
+
     allSize[idx] = 0.4 + Math.random() * 2.6 + (Math.random() < 0.08 ? 2.0 : 0);
     allPhase[idx] = Math.random() * Math.PI * 2;
   }
@@ -755,15 +823,15 @@ scene.add(ambLight);
 const dirLight = new THREE.DirectionalLight(0xffffff, 0.4);
 dirLight.position.set(3, 5, 4);
 scene.add(dirLight);
-const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(-1.1, 1.2, 7.5);
-camera.lookAt(-1.1, 0.3, 0);
+const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.set(-0.8, 0.6, 5.5);
+camera.lookAt(-0.5, 0.4, 0);
 
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
 const bloomPass = new UnrealBloomPass(
   new THREE.Vector2(window.innerWidth, window.innerHeight),
-  0.45, 0.6, 0.85
+  0.55, 0.7, 0.8
 );
 composer.addPass(bloomPass);
 
@@ -948,7 +1016,7 @@ function doSwitch(mode) {
     particlePoints.visible = true;
     if (texMeshGroup) texMeshGroup.visible = false;
     renderer.setClearColor(0x000000, 1);
-    bloomPass.strength = 0.45;
+    bloomPass.strength = 0.55;
     ambLight.intensity = 0.3;
     dirLight.intensity = 0.4;
     document.body.classList.remove('light-mode');
