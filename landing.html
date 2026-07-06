@@ -129,19 +129,6 @@
     border-radius: 50%; display: flex; align-items: center; justify-content: center;
   }
 
-  /* 3D Demo button */
-  .arm-demo-btn {
-    position: absolute; bottom: 28px; right: 28px;
-    display: flex; align-items: center; gap: 8px;
-    padding: 10px 18px; border-radius: 10px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: rgba(255,255,255,0.5); font-size: 13px; font-weight: 500;
-    text-decoration: none; transition: all 0.2s;
-    pointer-events: auto; cursor: pointer; font-family: inherit;
-  }
-  .arm-demo-btn:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8); }
-
   /* Bottom hint */
   .bottom-hint {
     position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
@@ -215,6 +202,23 @@
   .level-panel::-webkit-scrollbar { width: 4px; }
   .level-panel::-webkit-scrollbar-track { background: transparent; }
   .level-panel::-webkit-scrollbar-thumb { background: rgba(245,247,250,0.1); border-radius: 2px; }
+  .mode-toggle {
+    display: flex; gap: 4px;
+    padding: 3px; border-radius: 10px;
+    background: rgba(245,247,250,0.04);
+    border: 1px solid rgba(245,247,250,0.06);
+    margin-bottom: 10px;
+  }
+  .mode-btn {
+    flex: 1; padding: 6px 0; border: none; border-radius: 8px;
+    font-size: 12px; font-weight: 600; font-family: inherit;
+    color: rgba(245,247,250,0.35); background: transparent;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .mode-btn.active {
+    background: rgba(110,201,255,0.12); color: #6EC9FF;
+  }
+  .mode-btn:hover:not(.active) { color: rgba(245,247,250,0.6); }
   .level-panel-title {
     font-size: 18px; font-weight: 800; color: #6EC9FF;
     letter-spacing: -0.3px;
@@ -263,6 +267,51 @@
     .sidebar, .sidebar-trigger, .sidebar-edge { display: none; }
     .level-panel { display: none; }
   }
+
+  /* ===== LIGHT MODE (texture version) ===== */
+  body.light-mode { background: #d4d8de; }
+  body.light-mode .logo { color: #0F172A; }
+  body.light-mode .logo span { color: #2563EB; }
+  body.light-mode .link-login { color: #64748B; }
+  body.light-mode .link-login:hover { color: #0F172A; }
+  body.light-mode .btn-get-started {
+    background: rgba(15,23,42,0.04); border-color: rgba(15,23,42,0.1); color: #0F172A;
+  }
+  body.light-mode .btn-get-started:hover { background: rgba(15,23,42,0.08); }
+  body.light-mode .hero-badge { color: #2563EB; }
+  body.light-mode .hero-title {
+    background: linear-gradient(135deg, #0F172A 0%, #2563EB 50%, #0F172A 100%);
+    -webkit-background-clip: text; background-clip: text;
+  }
+  body.light-mode .hero-sub { color: #64748B; }
+  body.light-mode .level-panel-title { color: #2563EB; }
+  body.light-mode .lv-card {
+    background: rgba(15,23,42,0.03); border-color: rgba(15,23,42,0.08);
+  }
+  body.light-mode .lv-card:hover {
+    background: rgba(15,23,42,0.06); border-color: rgba(15,23,42,0.12);
+  }
+  body.light-mode .lv-name { color: #0F172A; }
+  body.light-mode .lv-meta { color: #94A3B8; }
+  body.light-mode .lv-stars svg[fill="rgba(245,247,250,0.1)"] { fill: #E2E8F0; }
+  body.light-mode .lv-lock { color: #94A3B8; }
+  body.light-mode .lv-all { color: #94A3B8; }
+  body.light-mode .lv-all:hover { color: #475569; }
+  body.light-mode .mode-toggle {
+    background: rgba(15,23,42,0.04); border-color: rgba(15,23,42,0.08);
+  }
+  body.light-mode .mode-btn { color: #94A3B8; }
+  body.light-mode .mode-btn.active { background: rgba(37,99,235,0.08); color: #2563EB; }
+  body.light-mode .mode-btn:hover:not(.active) { color: #475569; }
+  body.light-mode .sidebar-edge { background: #2563EB; }
+  body.light-mode .sidebar-edge::after { border-top-color: #2563EB; border-right-color: #2563EB; }
+  body.light-mode .about-overlay { background: rgba(255,255,255,0.5); }
+  body.light-mode .about-panel { background: rgba(255,255,255,0.96); border-left-color: rgba(15,23,42,0.06); }
+  body.light-mode .about-panel h2 { color: #0F172A; }
+  body.light-mode .about-panel p { color: #64748B; }
+  body.light-mode .about-label { color: #2563EB; }
+  body.light-mode .about-close { background: rgba(15,23,42,0.04); color: #64748B; }
+  body.light-mode .about-tag { background: rgba(15,23,42,0.03); border-color: rgba(15,23,42,0.08); color: #64748B; }
 </style>
 </head>
 <body>
@@ -274,12 +323,6 @@
   <div class="top-bar">
     <div style="display:flex;align-items:center;gap:36px;">
       <div class="logo">Joy<span>AI</span></div>
-      <div class="top-links">
-        <a href="#">产品 ▾</a>
-        <a href="#">价格 ▾</a>
-        <a href="#">资源 ▾</a>
-        <a href="#">关于 ▾</a>
-      </div>
     </div>
     <div class="top-right">
       <a class="link-login" href="community.html">社区</a>
@@ -295,22 +338,12 @@
     <p class="hero-sub">进入具身仿真世界，完成抓取任务，<br>同场竞技，看人类直觉能否胜过机器算法。</p>
   </div>
 
-  <!-- Controls RIGHT -->
-  <div class="controls-box">
-    <div class="controls-title">操控说明</div>
-    <div class="ctrl-row"><div class="ctrl-keys"><kbd>W</kbd><kbd>S</kbd></div><div class="ctrl-label">前进 / 后退</div></div>
-    <div class="ctrl-row"><div class="ctrl-keys"><kbd>A</kbd><kbd>D</kbd></div><div class="ctrl-label">左移 / 右移</div></div>
-    <div class="ctrl-row"><div class="ctrl-keys"><kbd>↑</kbd><kbd>↓</kbd></div><div class="ctrl-label">上升 / 下降</div></div>
-    <div class="ctrl-divider"></div>
-    <div class="ctrl-row"><div class="ctrl-keys"><kbd>Space</kbd></div><div class="ctrl-label">开合抓夹</div></div>
-    <div class="ctrl-hover-row">
-      <div class="ctrl-hover-icon"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(245,247,250,0.25)" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg></div>
-      <div class="ctrl-label">悬停产生粒子扰动</div>
-    </div>
-  </div>
-
   <!-- Level Panel — RIGHT BOTTOM -->
   <div class="level-panel">
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="modeParticle">粒子版</button>
+      <button class="mode-btn" id="modeTexture">贴图版</button>
+    </div>
     <div class="level-panel-title">关卡选择</div>
 
     <a href="onboarding.html?level=tutorial&name=%E6%96%B0%E6%89%8B%E6%95%99%E5%AD%A6&objects=3&time=0" class="lv-card">
@@ -386,24 +419,6 @@
     </div>
 
     <a href="level-select.html" class="lv-all">查看全部关卡 →</a>
-  </div>
-
-  <!-- 3D Demo Link -->
-  <a href="arm-demo.html" class="arm-demo-btn" style="bottom: 72px;">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg>
-    3D 操控演示
-  </a>
-  <button id="animToggle" class="arm-demo-btn" onclick="window._armAnimOn = !window._armAnimOn; this.textContent = window._armAnimOn ? '关闭臂动画' : '开启臂动画';">
-    开启臂动画
-  </button>
-
-  <!-- Bottom -->
-  <div class="bottom-hint">
-    <div class="hint-circle">
-      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(245,247,250,0.25)" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
-    </div>
-    悬停互动
-    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(245,247,250,0.12)" stroke-width="2"><path d="M12 5v14"/><path d="M5 12l7 7 7-7"/></svg>
   </div>
 </div>
 
@@ -584,8 +599,21 @@ async function buildScene() {
     idx++;
   }
 
-  // Store original home positions for arm animation
+  // Store original home positions
   window._particleOrigHome = new Float32Array(allPts);
+
+  // ---- Load textured GLB for mesh rendering mode ----
+  try {
+    const texScene = await loadGLB('assets/桌子3d拆分渲染后.glb');
+    texScene.scale.set(autoScale, autoScale, autoScale);
+    texScene.rotation.y = Math.PI * 3 / 2;
+    texScene.position.set(-center.x * autoScale, -center.y * autoScale, -center.z * autoScale);
+    texScene.updateMatrixWorld(true);
+    window._texSceneGroup = texScene;
+  } catch (e) {
+    console.warn('Textured GLB failed to load:', e);
+    window._texSceneGroup = null;
+  }
 
   objects.push({ pts: allPts, color: [0.45, 0.2, 0.12], id: 'scene', presampled: true });
   return objects;
@@ -646,70 +674,65 @@ sampledData.forEach(({ pts, color, count }) => {
     const ny = (pts[i3+1] - minY) / ry;   // 0=bottom, 1=top
     const nz = (pts[i3+2] - minZ) / rz;   // 0=back, 1=front
 
-    // Height is the primary separator:
-    // Bottom (legs/under table): very dark warm
-    // Table surface: mid-tone warm orange
-    // Objects on table: brighter, with color variation
-    // Arms (top): brightest, gold/orange
-
     let r, g, b;
 
-    if (ny < 0.25) {
-      // Below table — very dark
-      r = 0.2; g = 0.08; b = 0.06;
-    } else if (ny < 0.42) {
-      // Table surface — warm orange
-      const t = (ny - 0.25) / 0.17;
-      r = 0.4 + t * 0.1;
-      g = 0.16 + t * 0.04;
-      b = 0.06 + t * 0.03;
-    } else {
-      // Objects on table — distinctly cooler/different from table
-      const heightBoost = Math.min((ny - 0.42) / 0.58, 1.0);
+    // Use part ID to separate desk/legs from objects
+    const partId = window._particlePartIds ? window._particlePartIds[idx] : -1;
+    const isDeskTop = (partId === 5);
+    const isLeg = (partId === 16 || partId === 17 || partId === 24 || partId === 25);
 
-      // Left side: purple/magenta
-      // Center: deep blue / teal
-      // Right side: warm rose / amber
-      // Top (arms): gold-orange
+    if (isLeg) {
+      // Legs — near-black with subtle warm tint, front slightly lighter
+      r = 0.08 + nz * 0.03;
+      g = 0.05 + nz * 0.02;
+      b = 0.04 + nz * 0.02;
+    } else if (isDeskTop) {
+      // Desk surface — dark warm bronze/brown, front edge darker for depth
+      const frontMix = Math.pow(nz, 1.5);
+      const topMix = 1 - frontMix;
+      r = 0.12 * frontMix + 0.22 * topMix;
+      g = 0.08 * frontMix + 0.14 * topMix;
+      b = 0.06 * frontMix + 0.1 * topMix;
+    } else {
+      // All other parts — objects and arms on the table
+      const heightBoost = Math.min(Math.max((ny - 0.42) / 0.58, 0), 1.0);
 
       if (heightBoost > 0.5) {
-        // Arms region — gold/orange, gets brighter toward top
-        r = 0.6 + heightBoost * 0.25;
-        g = 0.28 + heightBoost * 0.15;
-        b = 0.1 + heightBoost * 0.05;
+        // Arms — cold blue-violet, brighter toward tips
+        r = 0.3 + heightBoost * 0.15;
+        g = 0.18 + heightBoost * 0.12;
+        b = 0.6 + heightBoost * 0.2;
       } else {
-        // Objects on table — cooler palette, clearly NOT orange
-        // Blend based on horizontal position
+        // Objects — left: deep violet, center: electric cyan, right: amber accent
         const leftW = Math.pow(Math.max(0, 1 - nx * 2), 1.2);
         const rightW = Math.pow(Math.max(0, nx * 2 - 1), 1.2);
         const centerW = Math.max(0, 1 - Math.abs(nx - 0.5) * 3);
 
-        // Purple from left
-        r = 0.35 * leftW + 0.15 * centerW + 0.5 * rightW;
-        g = 0.12 * leftW + 0.2 * centerW + 0.18 * rightW;
-        b = 0.5 * leftW + 0.55 * centerW + 0.3 * rightW;
+        r = 0.25 * leftW + 0.05 * centerW + 0.85 * rightW;
+        g = 0.08 * leftW + 0.45 * centerW + 0.4 * rightW;
+        b = 0.55 * leftW + 0.85 * centerW + 0.08 * rightW;
 
         // Normalize
         const w = leftW + centerW + rightW + 0.001;
         r /= w; g /= w; b /= w;
 
-        // Slight height brightening
-        r += heightBoost * 0.1;
-        g += heightBoost * 0.05;
-        b += heightBoost * 0.08;
+        // Height brightening
+        r += heightBoost * 0.15;
+        g += heightBoost * 0.08;
+        b += heightBoost * 0.1;
       }
     }
 
-    // Depth tint — front slightly warmer
-    r += nz * 0.04;
-    b -= nz * 0.03;
+    // Depth tint — front warmer
+    r += nz * 0.06;
+    b -= nz * 0.04;
 
-    // Per-particle variation
-    const noise = (Math.random() - 0.5) * 0.1;
+    // Per-particle color variation (wider spread)
+    const noise = (Math.random() - 0.5) * 0.12;
     allCol[idx3]   = Math.max(0.04, Math.min(1, r + noise));
-    allCol[idx3+1] = Math.max(0.02, Math.min(1, g + noise * 0.35));
-    allCol[idx3+2] = Math.max(0.04, Math.min(1, b + noise * 0.6));
-    allSize[idx] = 0.8 + Math.random() * 1.4;
+    allCol[idx3+1] = Math.max(0.02, Math.min(1, g + noise * 0.3));
+    allCol[idx3+2] = Math.max(0.04, Math.min(1, b + noise * 0.5));
+    allSize[idx] = 0.4 + Math.random() * 2.6 + (Math.random() < 0.08 ? 2.0 : 0);
     allPhase[idx] = Math.random() * Math.PI * 2;
   }
   off += count;
@@ -727,17 +750,22 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setClearColor(0x000000, 1);
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 100);
-// Camera: slightly more elevated, less legs visible
-camera.position.set(-1.1, 2.2, 8);
-camera.lookAt(-1.1, 0.1, 0);
+const ambLight = new THREE.AmbientLight(0xffffff, 0.3);
+scene.add(ambLight);
+const dirLight = new THREE.DirectionalLight(0xffffff, 0.4);
+dirLight.position.set(3, 5, 4);
+scene.add(dirLight);
+const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.set(-1.1, 1.2, 7.5);
+camera.lookAt(-1.1, 0.3, 0);
 
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
-composer.addPass(new UnrealBloomPass(
+const bloomPass = new UnrealBloomPass(
   new THREE.Vector2(window.innerWidth, window.innerHeight),
-  0.15, 0.4, 0.98
-));
+  0.45, 0.6, 0.85
+);
+composer.addPass(bloomPass);
 
 // ============================================================
 // Particle material
@@ -760,10 +788,10 @@ const mat = new THREE.ShaderMaterial({
     void main() {
       vColor = customColor;
       float breathe = 1.0 + sin(uTime * 0.1 + phase) * 0.02;
-      vAlpha = 0.45 * breathe;
+      vAlpha = 0.6 * breathe;
       vec4 mv = modelViewMatrix * vec4(position, 1.0);
-      gl_PointSize = size * breathe * (80.0 / -mv.z);
-      gl_PointSize = clamp(gl_PointSize, 0.5, 4.5);
+      gl_PointSize = size * breathe * (90.0 / -mv.z);
+      gl_PointSize = clamp(gl_PointSize, 0.5, 6.0);
       gl_Position = projectionMatrix * mv;
     }
   `,
@@ -784,7 +812,16 @@ const mat = new THREE.ShaderMaterial({
   blending: THREE.NormalBlending,
 });
 
-scene.add(new THREE.Points(geo, mat));
+const particlePoints = new THREE.Points(geo, mat);
+scene.add(particlePoints);
+
+// Load textured mesh version (hidden initially)
+let texMeshGroup = null;
+if (window._texSceneGroup) {
+  texMeshGroup = window._texSceneGroup;
+  texMeshGroup.visible = false;
+  scene.add(texMeshGroup);
+}
 
 // ============================================================
 // Noise for breathing
@@ -846,58 +883,6 @@ function animate() {
   const pos = geo.attributes.position.array;
   const home = geo.attributes.home.array;
 
-  // ---- ARM ANIMATION: only process arm particles, every 3 frames ----
-  if (window._armAnimOn && _origHome && _armParticleIndices.length > 0) {
-    window._armFrame = (window._armFrame || 0) + 1;
-    if (window._armFrame % 3 === 0) {
-    const t = (time % 10) / 10;
-    const lAngles = [Math.sin(t * Math.PI * 2) * 0.4, 0, 0, 0];
-    if (t < 0.3) { const p = t / 0.3; lAngles[1] = -0.06 * p; lAngles[2] = -0.08 * p; lAngles[3] = -0.05 * p; }
-    else if (t < 0.45) { lAngles[1] = -0.06; lAngles[2] = -0.08; lAngles[3] = -0.05; }
-    else if (t < 0.65) { const p = (t - 0.45) / 0.2; lAngles[1] = -0.06 + 0.12 * p; lAngles[2] = -0.08 + 0.14 * p; lAngles[3] = -0.05 + 0.09 * p; }
-    else if (t < 0.8) { lAngles[1] = 0.06; lAngles[2] = 0.06; lAngles[3] = 0.04; }
-    else { const p = (t - 0.8) / 0.2; lAngles[1] = 0.06 * (1 - p); lAngles[2] = 0.06 * (1 - p); lAngles[3] = 0.04 * (1 - p); }
-
-    for (let k = 0; k < _armParticleIndices.length; k++) {
-      const i = _armParticleIndices[k];
-      const i3 = i * 3;
-      const pid = _partIds[i];
-      // Reset to original
-      home[i3] = _origHome[i3]; home[i3+1] = _origHome[i3+1]; home[i3+2] = _origHome[i3+2];
-      // Apply chain
-      for (let ji = 0; ji < _leftChain.length; ji++) {
-        const angle = lAngles[ji];
-        if (Math.abs(angle) < 0.0001) continue;
-        if (!_leftChain[ji].above.has(pid)) continue;
-        const pc = _pivotCenters[_leftChain[ji].pivot];
-        if (!pc) continue;
-        if (_leftChain[ji].axis === 'y') {
-          const dx = home[i3] - pc[0], dz = home[i3+2] - pc[2];
-          const c = Math.cos(angle), s = Math.sin(angle);
-          home[i3] = pc[0] + dx*c - dz*s; home[i3+2] = pc[2] + dx*s + dz*c;
-        } else {
-          const dy = home[i3+1] - pc[1], dz = home[i3+2] - pc[2];
-          const c = Math.cos(angle), s = Math.sin(angle);
-          home[i3+1] = pc[1] + dy*c - dz*s; home[i3+2] = pc[2] + dy*s + dz*c;
-        }
-      }
-    }
-    geo.attributes.home.needsUpdate = true;
-    } // end every-3-frames
-  } else if (!window._armAnimOn && _origHome && _armParticleIndices.length > 0) {
-    // Reset only arm particles
-    let needsReset = false;
-    for (let k = 0; k < _armParticleIndices.length; k++) {
-      const i = _armParticleIndices[k];
-      const i3 = i * 3;
-      if (home[i3] !== _origHome[i3] || home[i3+1] !== _origHome[i3+1]) {
-        home[i3] = _origHome[i3]; home[i3+1] = _origHome[i3+1]; home[i3+2] = _origHome[i3+2];
-        needsReset = true;
-      }
-    }
-    if (needsReset) geo.attributes.home.needsUpdate = true;
-  }
-
   for (let i = 0; i < totalParticles; i++) {
     const i3 = i * 3;
     const hx = home[i3], hy = home[i3+1], hz = home[i3+2];
@@ -913,7 +898,7 @@ function animate() {
     const mDist = Math.sqrt(mdx * mdx + mdy * mdy + mdz * mdz);
     if (mDist < 2.2 && mDist > 0.01) {
       const falloff = (1 - mDist / 2.2);
-      const strength = falloff * falloff * 0.12;
+      const strength = falloff * falloff * 0.036;
       tx += (-mdz / mDist) * strength;
       tz += (mdx / mDist) * strength;
       ty += Math.sin(time * 3.0 + mDist * 6) * strength * 0.5;
@@ -926,44 +911,6 @@ function animate() {
 
   geo.attributes.position.needsUpdate = true;
   composer.render();
-}
-
-// Pre-compute pivot centers for arm animation (once)
-const _pivotCenters = {};
-const _pivotCounts = {};
-const _partIds = window._particlePartIds;
-const _origHome = window._particleOrigHome;
-if (_partIds && _origHome) {
-  for (let i = 0; i < totalParticles; i++) {
-    const pid = _partIds[i];
-    if (pid < 0) continue;
-    if (!_pivotCenters[pid]) { _pivotCenters[pid] = [0, 0, 0]; _pivotCounts[pid] = 0; }
-    _pivotCenters[pid][0] += _origHome[i * 3];
-    _pivotCenters[pid][1] += _origHome[i * 3 + 1];
-    _pivotCenters[pid][2] += _origHome[i * 3 + 2];
-    _pivotCounts[pid]++;
-  }
-  for (const pid in _pivotCenters) {
-    const n = _pivotCounts[pid];
-    _pivotCenters[pid][0] /= n;
-    _pivotCenters[pid][1] /= n;
-    _pivotCenters[pid][2] /= n;
-  }
-}
-window._armAnimOn = false;
-const _leftArmSet = new Set([25, 62, 6, 22, 7, 24, 55, 12, 42, 10, 58, 49, 46, 8, 31]);
-const _leftChain = [
-  { pivot: 25, axis: 'y', above: new Set([25, 62, 6, 22, 7, 24, 55, 12, 42, 10, 58, 49, 46, 8, 31]) },
-  { pivot: 6,  axis: 'x', above: new Set([6, 22, 7, 24, 55, 12, 42, 10, 58, 49, 46, 8, 31]) },
-  { pivot: 7,  axis: 'x', above: new Set([7, 24, 55, 12, 42, 10, 58, 49, 46, 8, 31]) },
-  { pivot: 12, axis: 'x', above: new Set([12, 42, 10, 58, 49, 46, 8, 31]) },
-];
-// Pre-build particle index list for arm parts only (skip 99% of particles)
-const _armParticleIndices = [];
-if (_partIds) {
-  for (let i = 0; i < totalParticles; i++) {
-    if (_leftArmSet.has(_partIds[i])) _armParticleIndices.push(i);
-  }
 }
 
 animate();
@@ -984,6 +931,33 @@ tr.addEventListener('mouseenter', () => { clearTimeout(sT); sb.classList.add('op
 sb.addEventListener('mouseenter', () => { clearTimeout(sT); sb.classList.add('open'); });
 sb.addEventListener('mouseleave', () => { clearTimeout(sT); sT = setTimeout(() => sb.classList.remove('open'), 400); });
 tr.addEventListener('mouseleave', () => { clearTimeout(sT); sT = setTimeout(() => sb.classList.remove('open'), 400); });
+
+// Color mode switching — toggle particles vs textured mesh + theme
+function doSwitch(mode) {
+  if (mode === 'texture' && texMeshGroup) {
+    particlePoints.visible = false;
+    texMeshGroup.visible = true;
+    renderer.setClearColor(0xd4d8de, 1);
+    bloomPass.strength = 0;
+    ambLight.intensity = 1.2;
+    dirLight.intensity = 1.5;
+    document.body.classList.add('light-mode');
+    document.getElementById('modeTexture').classList.add('active');
+    document.getElementById('modeParticle').classList.remove('active');
+  } else {
+    particlePoints.visible = true;
+    if (texMeshGroup) texMeshGroup.visible = false;
+    renderer.setClearColor(0x000000, 1);
+    bloomPass.strength = 0.45;
+    ambLight.intensity = 0.3;
+    dirLight.intensity = 0.4;
+    document.body.classList.remove('light-mode');
+    document.getElementById('modeParticle').classList.add('active');
+    document.getElementById('modeTexture').classList.remove('active');
+  }
+}
+document.getElementById('modeParticle').addEventListener('click', () => doSwitch('particle'));
+document.getElementById('modeTexture').addEventListener('click', () => doSwitch('texture'));
 
 } // end async init()
 

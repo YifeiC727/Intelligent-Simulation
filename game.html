@@ -79,8 +79,8 @@
 
   /* Demo panel */
   .demo-panel {
-    position: fixed; top: 8px; right: 8px; z-index: 600;
-    width: 200px; background: rgba(10,10,15,0.9);
+    position: fixed; top: 50%; left: 12px; transform: translateY(-50%); z-index: 600;
+    width: 160px; background: rgba(10,10,15,0.9);
     backdrop-filter: blur(12px);
     border-radius: 12px;
     padding: 12px; border: 1px solid rgba(245,247,250,0.06);
@@ -101,6 +101,52 @@
   .demo-btn:last-child { margin-bottom: 0; }
   .demo-btn:hover { background: rgba(110,201,255,0.06); border-color: rgba(110,201,255,0.15); color: #6EC9FF; }
 
+  /* Mini leaderboard */
+  .mini-lb {
+    position: fixed; top: 60px; right: 16px; z-index: 500;
+    width: 210px; background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(16px);
+    border-radius: 14px;
+    padding: 16px 16px 12px; border: 1px solid rgba(110,201,255,0.08);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+  .mini-lb-title {
+    font-size: 10px; font-weight: 700; color: #6EC9FF;
+    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 14px;
+    padding-bottom: 8px; border-bottom: 1px solid rgba(245,247,250,0.06);
+  }
+  .mini-lb-row {
+    display: flex; align-items: center;
+    padding: 7px 8px; margin-bottom: 2px; border-radius: 8px;
+    transition: background 0.15s;
+  }
+  .mini-lb-row:hover { background: rgba(245,247,250,0.03); }
+  .mini-lb-row.you-row { background: rgba(110,201,255,0.06); border: 1px solid rgba(110,201,255,0.1); }
+  .mini-lb-rank {
+    font-size: 12px; font-weight: 800; width: 20px; text-align: center;
+    color: rgba(245,247,250,0.2);
+  }
+  .mini-lb-rank.gold { color: #fbbf24; }
+  .mini-lb-rank.silver { color: #94a3b8; }
+  .mini-lb-rank.bronze { color: #cd7f32; }
+  .mini-lb-name {
+    font-size: 12px; font-weight: 500; color: rgba(245,247,250,0.55);
+    flex: 1; margin-left: 10px;
+  }
+  .mini-lb-name.you { color: #6EC9FF; font-weight: 700; }
+  .mini-lb-score {
+    font-size: 13px; font-weight: 700; color: rgba(245,247,250,0.7);
+    font-variant-numeric: tabular-nums;
+  }
+  .mini-lb-divider {
+    height: 1px; background: rgba(245,247,250,0.05); margin: 8px 4px;
+  }
+  .mini-lb-footer {
+    font-size: 10px; color: rgba(245,247,250,0.2); margin-top: 8px;
+    text-align: center; letter-spacing: 0.3px;
+  }
+  .mini-lb-footer span { color: rgba(110,201,255,0.5); font-weight: 600; }
+
   /* Main game area */
   .game-main {
     display: grid;
@@ -108,6 +154,8 @@
     gap: 0;
     min-height: 0;
   }
+  .game-main.solo { grid-template-columns: 1fr; }
+  .game-main.solo .game-panel.ai-panel { display: none; }
   .game-panel {
     position: relative;
     overflow: hidden;
@@ -278,6 +326,58 @@
     border: 1px solid rgba(245,247,250,0.08);
   }
   .rbtn.ghost:hover { background: rgba(245,247,250,0.08); color: #f5f7fa; }
+
+  /* GIF Preview — covers only the game area, not header/footer */
+  .gif-preview {
+    position: absolute; inset: 0; z-index: 50;
+    background: #0a0a0f;
+    display: grid; grid-template-columns: 1fr 1fr;
+  }
+  .gif-preview.fullscreen { grid-template-columns: 1fr; }
+  .gif-preview.fullscreen .gif-half.left { display: none; }
+  .gif-preview.fullscreen .gif-half.right { display: block; border: none; }
+  .gif-preview.fullscreen .gif-half.right img { width: 200%; left: -100%; }
+  .gif-preview.hidden { display: none; }
+  .gif-half {
+    position: relative; overflow: hidden;
+  }
+  .gif-half img {
+    position: absolute;
+    top: -15%; height: 130%;
+    object-fit: cover;
+  }
+  .gif-half.left { border-right: 1px solid rgba(245,247,250,0.06); }
+  .gif-half.left img { left: 0; width: 200%; }
+  .gif-half.right img { left: -100%; width: 200%; }
+  .gif-label {
+    position: absolute; top: 14px; left: 18px; z-index: 10;
+    font-size: 12px; font-weight: 700; color: #fff;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    padding: 6px 12px; border-radius: 8px;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(6px);
+    text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+  }
+  .gif-start-btn {
+    display: block;
+    position: absolute; bottom: 32px; right: 32px; z-index: 20;
+    padding: 12px 28px; border-radius: 12px;
+    background: #6EC9FF; color: #000;
+    font-size: 14px; font-weight: 600;
+    border: none; cursor: pointer; font-family: inherit;
+    box-shadow: 0 0 20px rgba(110,201,255,0.2);
+    transition: all 0.2s;
+  }
+  .gif-start-btn:hover { background: #8DD4FF; transform: translateY(-1px); }
+  .gif-start-btn.visible { display: block; animation: fadeIn 0.5s ease-out; }
+  .gif-view-toggle {
+    position: absolute; bottom: 32px; left: 32px; z-index: 20;
+    padding: 10px 20px; border-radius: 10px;
+    background: rgba(245,247,250,0.06); border: 1px solid rgba(245,247,250,0.1);
+    color: rgba(245,247,250,0.6); font-size: 13px; font-weight: 500;
+    cursor: pointer; font-family: inherit; transition: all 0.2s;
+  }
+  .gif-view-toggle:hover { background: rgba(245,247,250,0.1); color: #f5f7fa; }
 </style>
 </head>
 <body>
@@ -292,6 +392,33 @@
   <button class="demo-btn" onclick="simulateTimeout()">模拟：时间到</button>
 </div>
 
+<!-- Mini Leaderboard -->
+<div class="mini-lb" id="miniLb">
+  <div class="mini-lb-title">本关排行</div>
+  <div class="mini-lb-row">
+    <span class="mini-lb-rank gold">1</span>
+    <span class="mini-lb-name">Player_A</span>
+    <span class="mini-lb-score">520</span>
+  </div>
+  <div class="mini-lb-row">
+    <span class="mini-lb-rank silver">2</span>
+    <span class="mini-lb-name">GripMaster</span>
+    <span class="mini-lb-score">485</span>
+  </div>
+  <div class="mini-lb-row">
+    <span class="mini-lb-rank bronze">3</span>
+    <span class="mini-lb-name">RoboFan99</span>
+    <span class="mini-lb-score">410</span>
+  </div>
+  <div class="mini-lb-divider"></div>
+  <div class="mini-lb-row you-row">
+    <span class="mini-lb-rank">—</span>
+    <span class="mini-lb-name you">你</span>
+    <span class="mini-lb-score" id="miniLbYourScore">0</span>
+  </div>
+  <div class="mini-lb-footer">历史最高: <span id="miniLbBest">--</span> · 最佳排名: <span id="miniLbBestRank">--</span></div>
+</div>
+
 <div class="game-layout">
   <!-- Header -->
   <div class="header">
@@ -302,14 +429,27 @@
     </div>
     <div class="timer" id="countdownTimer">--:--</div>
     <div class="score-area">
-      <div class="score-chip you"><span class="label">You</span> <span id="yourScore">0</span></div>
-      <div class="score-vs">VS</div>
       <div class="score-chip ai"><span class="label">AI</span> <span id="aiScore">0</span></div>
+      <div class="score-vs">VS</div>
+      <div class="score-chip you"><span class="label">You</span> <span id="yourScore">0</span></div>
     </div>
   </div>
 
   <!-- Game panels -->
-  <div class="game-main">
+  <div class="game-main" style="position:relative;">
+    <!-- GIF Preview — covers game area only -->
+    <div class="gif-preview" id="gifPreview">
+      <div class="gif-half left">
+        <div class="gif-label">AI Opponent</div>
+        <img src="assets/仿真抓取.gif" alt="ai" />
+      </div>
+      <div class="gif-half right">
+        <div class="gif-label">Your Control</div>
+        <img src="assets/仿真抓取.gif" alt="player" />
+      </div>
+      <button class="gif-view-toggle" id="gifViewToggle" onclick="toggleGifView()">切换全屏仿真</button>
+      <button class="gif-start-btn" id="gifStartBtn" onclick="dismissGifPreview()">进入 2D 模拟 →</button>
+    </div>
     <div class="game-panel ai-panel">
       <div class="panel-label">AI Opponent</div>
       <div class="ai-demo-notice">
@@ -332,6 +472,9 @@
       <div class="ctrl-item"><span class="ctrl-key">Mouse</span> 移动夹爪</div>
       <div class="ctrl-item"><span class="ctrl-key">Click</span> 下降抓取</div>
       <div class="ctrl-item"><span class="ctrl-key">Space</span> 释放物体</div>
+      <div class="ctrl-item"><span class="ctrl-key">R</span> 待定</div>
+      <div class="ctrl-item"><span class="ctrl-key">Shift</span> 待定</div>
+      <div class="ctrl-item"><span class="ctrl-key">Tab</span> 待定</div>
     </div>
     <div class="combo-info">
       <div class="combo-badge" id="comboBadge">x0</div>
@@ -382,6 +525,28 @@
     <a class="rbtn ghost" href="landing.html">返回首页</a>
   </div>
 </div>
+
+<script>
+// GIF preview
+function dismissGifPreview() {
+  const preview = document.getElementById('gifPreview');
+  const isFullscreen = preview.classList.contains('fullscreen');
+  preview.classList.add('hidden');
+  // Match game layout to preview mode
+  if (isFullscreen) {
+    document.querySelector('.game-main').classList.add('solo');
+  } else {
+    document.querySelector('.game-main').classList.remove('solo');
+  }
+}
+
+function toggleGifView() {
+  const preview = document.getElementById('gifPreview');
+  const btn = document.getElementById('gifViewToggle');
+  const isFullscreen = preview.classList.toggle('fullscreen');
+  btn.textContent = isFullscreen ? '切换分屏对比' : '切换全屏仿真';
+}
+</script>
 
 <script>
 // ==================== LEVEL CONFIG FROM URL ====================
@@ -985,6 +1150,7 @@ function gameLoop() {
   document.getElementById('aiScore').textContent = Math.round(aiGame.score);
   document.getElementById('comboBadge').textContent = `x${playerGame.combo}`;
   document.getElementById('placedCount').textContent = playerGame.placed;
+  document.getElementById('miniLbYourScore').textContent = Math.round(playerGame.score);
 
   if (!gameOver && (playerGame.placed >= TOTAL_OBJECTS || aiGame.placed >= TOTAL_OBJECTS)) {
     triggerEndGame();
