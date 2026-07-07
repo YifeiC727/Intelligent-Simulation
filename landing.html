@@ -648,7 +648,7 @@ async function buildScene() {
   glbScene.updateMatrixWorld(true);
 
   // Sample per-mesh to track part ownership
-  const TOTAL_SAMPLES = 500000;
+  const TOTAL_SAMPLES = 200000;
   const meshInfos = [];
   let totalTris = 0;
   glbScene.traverse(child => {
