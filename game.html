@@ -31,12 +31,35 @@
     border-bottom: 1px solid rgba(245,247,250,0.06);
     background: rgba(10,10,15,0.9);
     backdrop-filter: blur(12px);
+    position: relative;
+  }
+  .header-progress {
+    position: absolute; bottom: 0; left: 0; height: 3px;
+    background: linear-gradient(90deg, #6EC9FF, #a78bfa);
+    border-radius: 0 2px 2px 0;
+    transition: width 0.4s ease;
+    width: 0%;
   }
   .header-left { display: flex; align-items: center; gap: 16px; }
   .logo { font-size: 16px; font-weight: 700; color: #f5f7fa; letter-spacing: -0.3px; }
   .logo span { color: #6EC9FF; }
   .header-title { font-size: 14px; font-weight: 600; color: rgba(245,247,250,0.7); }
   .header-sep { width: 1px; height: 20px; background: rgba(245,247,250,0.08); }
+
+  .placed-dots {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .placed-dot {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: #ffffff;
+    border: none;
+    transition: all 0.3s ease;
+  }
+  .placed-dot.done {
+    background: #6EC9FF;
+    border-color: #6EC9FF;
+    box-shadow: 0 0 6px rgba(110,201,255,0.4);
+  }
 
   .timer {
     font-size: 18px; font-weight: 700; color: #f5f7fa;
@@ -269,6 +292,24 @@
   }
   .placed-info { font-size: 13px; color: rgba(245,247,250,0.5); font-weight: 600; }
 
+  /* Object legend in footer */
+  .obj-legend {
+    display: flex; align-items: center; gap: 16px;
+    margin-left: auto; margin-right: 16px;
+  }
+  .obj-legend-item {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; color: rgba(245,247,250,0.45); font-weight: 500;
+  }
+  .obj-legend-icon {
+    width: 20px; height: 20px; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+  }
+  .obj-legend-pts {
+    font-size: 10px; color: rgba(245,247,250,0.3); font-weight: 600;
+  }
+
   /* Result overlay */
   .result-overlay {
     position: fixed; inset: 0; z-index: 100;
@@ -409,6 +450,40 @@
     background: rgba(245,247,250,0.06); border: 1px solid rgba(245,247,250,0.1);
     font-size: 11px; font-weight: 600; color: rgba(245,247,250,0.4);
     font-family: inherit;
+  }
+
+  /* Spotlight overlay for tutorial intro */
+  .spotlight-overlay {
+    position: fixed; inset: 0; z-index: 1999;
+    display: none; cursor: pointer;
+  }
+  .spotlight-overlay.active { display: block; }
+  .spotlight-cutout {
+    position: absolute;
+    border-radius: 16px;
+    box-shadow: 0 0 0 9999px rgba(0,0,0,0.82);
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .spotlight-tooltip {
+    position: absolute;
+    padding: 18px 28px; border-radius: 16px;
+    background: rgba(255,255,255,0.95); color: #1a1a2e;
+    font-size: 16px; font-weight: 600; line-height: 1.5;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    max-width: 520px;
+    animation: spotlightFadeIn 0.4s ease;
+  }
+  .spotlight-tooltip::after {
+    content: '点击任意处继续';
+    display: block; margin-top: 8px;
+    font-size: 12px; font-weight: 400; color: rgba(0,0,0,0.3);
+  }
+  .spotlight-tooltip[data-hint="click-icon"]::after {
+    content: none;
+  }
+  @keyframes spotlightFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   /* Key tutorial overlay — transparent, no dimming */
@@ -907,6 +982,7 @@
       <div class="header-title" id="headerTitle">书桌整理挑战</div>
     </div>
     <div class="timer" id="countdownTimer">--:--</div>
+    <div class="placed-dots" id="placedDots"></div>
     <div class="score-area">
       <div class="score-chip ai"><span class="label">AI</span> <span id="aiScore">0</span></div>
       <div class="score-vs">VS</div>
@@ -915,9 +991,8 @@
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
       </button>
     </div>
+    <div class="header-progress" id="headerProgress"></div>
   </div>
-
-  <!-- Game panels -->
   <div class="game-main" style="position:relative;">
     <!-- GIF Preview / Tutorial Overview — covers game area only -->
     <div class="gif-preview" id="gifPreview">
@@ -983,8 +1058,6 @@
           <span style="color:rgba(251,191,36,0.5);">当前为定时轮播示意，非实时检测</span></div>
         </div>
 
-        <!-- CTA button -->
-        <button class="tut-cta" onclick="dismissGifPreview()">进入 2D 模拟 →</button>
       </div>
 
       <!-- Normal level CTA -->
@@ -1045,9 +1118,9 @@
       <div class="ctrl-item"><span class="ctrl-key">Tab</span> 切臂</div>
       <div class="ctrl-item"><span class="ctrl-key">H</span> 复位</div>
     </div>
+    <div class="obj-legend" id="objLegend"></div>
     <div class="combo-info">
       <div class="combo-badge" id="comboBadge">x0</div>
-      <div class="placed-info"><span id="placedCount">0</span>/5 已归位</div>
     </div>
   </div>
 </div>
@@ -1061,6 +1134,12 @@
     <a class="pause-btn quit" href="landing.html">退出</a>
   </div>
   <div class="pause-hint">按 <kbd>Esc</kbd> 继续</div>
+</div>
+
+<!-- Spotlight overlay for tutorial intro -->
+<div class="spotlight-overlay" id="spotlightOverlay">
+  <div class="spotlight-cutout" id="spotlightCutout"></div>
+  <div class="spotlight-tooltip" id="spotlightTooltip">欢迎来到新手教学！</div>
 </div>
 
 <!-- Key Tutorial Overlay — top-level, above everything -->
@@ -1323,20 +1402,225 @@ function toggleControlsPanel() {
 }
 
 function skipTutorial() {
+  if (spotlightActive) {
+    dismissSpotlight();
+  }
   if (tutActive) {
-    // Skip key tutorial → go to step guide
     tutActive = false;
     tutKeyDown = false;
     cancelAnimationFrame(tutHoldRaf);
     window.removeEventListener('keydown', tutListenerDown);
     window.removeEventListener('keyup', tutListenerUp);
-    startStepGuide();
-  } else if (inStepGuide) {
-    // Skip step guide → dismiss entirely
-    clearTimeout(guideTimer);
-    inStepGuide = false;
-    document.getElementById('keyTutorial').classList.remove('active');
   }
+  document.getElementById('keyTutorial').classList.remove('active');
+  const footer = document.getElementById('gameFooter');
+  if (footer) footer.style.visibility = 'visible';
+  startPostKeySpotlight();
+}
+
+// ==================== SPOTLIGHT INTRO ====================
+let spotlightActive = false;
+let spotlightPhase = 0;
+
+const SPOTLIGHT_STEPS = [
+  { target: '.game-main', text: '欢迎来到新手教学！', pos: 'center' },
+  { target: '.key-tut-top', text: '这里先帮你熟悉一下仿真游戏中的键盘使用', pos: 'below' },
+  { target: '.key-tut-top', text: '先尝试按住 W 键让抓夹向前移动吧！', pos: 'below', endIntro: true },
+];
+
+const SPOTLIGHT_POST_STEPS = [
+  { target: '#gameFooter .controls-info', text: '这里是按键指南，之后随时可以查看键位', pos: 'above' },
+  { target: '#countdownTimer', text: '这里显示游戏时间。新手关不计时，其他关卡会有倒计时', pos: 'below' },
+  { target: '#placedDots', text: '每个圆点代表一个物体，放入对应位置后会被点亮', pos: 'below' },
+  { target: '.pause-btn-header', text: '点这里可以暂停游戏', pos: 'below' },
+  { target: null, text: '现在，跟随分步教学，将高亮物体放进白色虚线框里吧！', pos: 'center', endPostIntro: true },
+];
+
+function positionSpotlight(step) {
+  const cutout = document.getElementById('spotlightCutout');
+  const tooltip = document.getElementById('spotlightTooltip');
+
+  if (!step.target) {
+    cutout.style.display = 'none';
+    tooltip.textContent = step.text;
+    tooltip.style.left = '50%';
+    tooltip.style.top = '50%';
+    tooltip.style.transform = 'translate(-50%, -50%)';
+    return;
+  }
+
+  cutout.style.display = '';
+  tooltip.style.transform = '';
+  const el = document.querySelector(step.target);
+  if (!el) return;
+  const rect = el.getBoundingClientRect();
+  const pad = 12;
+  cutout.style.left = (rect.left - pad) + 'px';
+  cutout.style.top = (rect.top - pad) + 'px';
+  cutout.style.width = (rect.width + pad * 2) + 'px';
+  cutout.style.height = (rect.height + pad * 2) + 'px';
+
+  tooltip.textContent = step.text;
+
+  // Position tooltip: prefer left side of cutout, fallback to centered below
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const tooltipW = 300;
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+
+  if (step.pos === 'center') {
+    tooltip.style.left = cx + 'px';
+    tooltip.style.top = (cy + 30) + 'px';
+    tooltip.style.transform = 'translateX(-50%)';
+  } else if (step.pos === 'below') {
+    let left = cx;
+    // If too far right, shift tooltip left
+    if (cx + tooltipW / 2 > vw - 20) left = vw - tooltipW / 2 - 20;
+    if (cx - tooltipW / 2 < 20) left = tooltipW / 2 + 20;
+    tooltip.style.left = left + 'px';
+    tooltip.style.top = (rect.bottom + pad + 16) + 'px';
+    tooltip.style.transform = 'translateX(-50%)';
+    // If below goes off screen, put above instead
+    if (rect.bottom + pad + 100 > vh) {
+      tooltip.style.top = (rect.top - pad - 80) + 'px';
+    }
+  } else if (step.pos === 'above') {
+    let left = cx;
+    if (cx + tooltipW / 2 > vw - 20) left = vw - tooltipW / 2 - 20;
+    if (cx - tooltipW / 2 < 20) left = tooltipW / 2 + 20;
+    tooltip.style.left = left + 'px';
+    tooltip.style.top = (rect.top - pad - 140) + 'px';
+    tooltip.style.transform = 'translateX(-50%)';
+    if (rect.top - pad - 140 < 10) {
+      tooltip.style.top = (rect.bottom + pad + 16) + 'px';
+    }
+  }
+}
+
+function startSpotlight() {
+  spotlightActive = true;
+  spotlightPhase = 0;
+  const overlay = document.getElementById('spotlightOverlay');
+  overlay.classList.add('active');
+  positionSpotlight(SPOTLIGHT_STEPS[0]);
+  overlay.onclick = advanceSpotlight;
+}
+
+function advanceSpotlight() {
+  spotlightPhase++;
+  if (spotlightPhase >= SPOTLIGHT_STEPS.length) {
+    dismissSpotlight();
+    return;
+  }
+  const step = SPOTLIGHT_STEPS[spotlightPhase];
+  positionSpotlight(step);
+  if (step.endIntro) {
+    // Next click will dismiss and start key interaction
+  }
+}
+
+function dismissSpotlight() {
+  spotlightActive = false;
+  const overlay = document.getElementById('spotlightOverlay');
+  overlay.classList.remove('active');
+  overlay.onclick = null;
+}
+
+// Post-key-tutorial spotlight (UI elements guide)
+function startPostKeySpotlight() {
+  spotlightActive = true;
+  spotlightPhase = 0;
+  const overlay = document.getElementById('spotlightOverlay');
+  overlay.classList.add('active');
+  positionSpotlight(SPOTLIGHT_POST_STEPS[0]);
+  overlay.onclick = advancePostSpotlight;
+}
+
+function advancePostSpotlight() {
+  spotlightPhase++;
+  if (spotlightPhase >= SPOTLIGHT_POST_STEPS.length) {
+    dismissSpotlight();
+    actuallyStartStepGuide();
+    return;
+  }
+  const step = SPOTLIGHT_POST_STEPS[spotlightPhase];
+  positionSpotlight(step);
+  if (step.endPostIntro) {
+    // Next click will dismiss and start step guide
+  }
+}
+
+// ==================== DESK-1 SPOTLIGHT (formal level intro) ====================
+const DESK1_SPOTLIGHT_STEPS = [
+  { target: '#gifPreview', text: '欢迎来到正式关卡！在这里你将和 AI 操控的机械臂实时对战', pos: 'center' },
+  { target: '.gif-half.left', text: '这边是你的 AI 对手，游戏开始后它会立刻开始抓取任务', pos: 'center' },
+  { target: '.gif-half.right', text: '这边是你的操作区，用你在新手关学到的键位操作，把物体移到目标位置', pos: 'center' },
+  { target: '#objLegend', text: '每个物体都有对应的分数，这里可以查看本关的物体种类、数量和分数', pos: 'above' },
+  { target: null, text: '试试点击第一个物体图标！', pos: 'center', waitForObjClick: true },
+  { target: '.combo-info', text: '这是连击倍率——连续成功放置物体且中途不掉落，分数倍率会逐步提升（×2 → ×3 → ×5）', pos: 'above' },
+  { target: '.score-area', text: '这里是你和 AI 的实时分数对比', pos: 'below' },
+  { target: '#miniLb', text: '这里可以看到本关前三玩家的分数，以及你当前的分数、排名和历史最佳', pos: 'center' },
+  { target: null, text: '准备好了吗？点击开始挑战！', pos: 'center', endDesk1: true },
+];
+
+function startDesk1Spotlight() {
+  spotlightActive = true;
+  spotlightPhase = 0;
+  const overlay = document.getElementById('spotlightOverlay');
+  overlay.classList.add('active');
+  positionSpotlight(DESK1_SPOTLIGHT_STEPS[0]);
+  overlay.onclick = advanceDesk1Spotlight;
+}
+
+function advanceDesk1Spotlight() {
+  spotlightPhase++;
+  if (spotlightPhase >= DESK1_SPOTLIGHT_STEPS.length) {
+    dismissSpotlight();
+    dismissGifPreview();
+    return;
+  }
+  const step = DESK1_SPOTLIGHT_STEPS[spotlightPhase];
+
+  if (step.waitForObjClick) {
+    const firstItem = document.querySelector('.obj-legend-item');
+    if (firstItem) {
+      const cutout = document.getElementById('spotlightCutout');
+      const tooltip = document.getElementById('spotlightTooltip');
+      const rect = firstItem.getBoundingClientRect();
+      const pad = 8;
+      cutout.style.display = '';
+      cutout.style.left = (rect.left - pad) + 'px';
+      cutout.style.top = (rect.top - pad) + 'px';
+      cutout.style.width = (rect.width + pad * 2) + 'px';
+      cutout.style.height = (rect.height + pad * 2) + 'px';
+      tooltip.textContent = step.text;
+      tooltip.style.left = (rect.left + rect.width / 2) + 'px';
+      tooltip.style.top = (rect.top - pad - 90) + 'px';
+      tooltip.style.transform = 'translateX(-50%)';
+      tooltip.dataset.hint = 'click-icon';
+
+      const overlay = document.getElementById('spotlightOverlay');
+      overlay.onclick = function(e) {
+        const r = firstItem.getBoundingClientRect();
+        if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) {
+          tooltip.dataset.hint = '';
+          overlay.onclick = advanceDesk1Spotlight;
+          advanceDesk1Spotlight();
+        }
+      };
+    } else {
+      advanceDesk1Spotlight();
+    }
+    return;
+  }
+
+  if (step.endDesk1) {
+    positionSpotlight(step);
+    return;
+  }
+
+  positionSpotlight(step);
 }
 
 function startKeyTutorial() {
@@ -1346,8 +1630,11 @@ function startKeyTutorial() {
   document.getElementById('keyTutorial').classList.add('active');
   renderTutStep();
 
+  // Show spotlight intro before allowing key input
+  startSpotlight();
+
   tutListenerDown = (e) => {
-    if (!tutActive) return;
+    if (!tutActive || spotlightActive) return;
     const step = TUTORIAL_STEPS[tutStep];
     const currentListen = step.listen[tutSubStep];
     if (currentListen.includes(e.code) && !tutKeyDown) {
@@ -1357,7 +1644,7 @@ function startKeyTutorial() {
     }
   };
   tutListenerUp = (e) => {
-    if (!tutActive) return;
+    if (!tutActive || spotlightActive) return;
     const step = TUTORIAL_STEPS[tutStep];
     const currentListen = step.listen[tutSubStep];
     if (currentListen.includes(e.code)) {
@@ -1440,7 +1727,11 @@ function completeSubStep() {
           tutActive = false;
           window.removeEventListener('keydown', tutListenerDown);
           window.removeEventListener('keyup', tutListenerUp);
-          startStepGuide();
+          // Show UI elements then start post-key spotlight
+          document.getElementById('keyTutorial').classList.remove('active');
+          const footer = document.getElementById('gameFooter');
+          if (footer) footer.style.visibility = 'visible';
+          startPostKeySpotlight();
         }, 1500);
       }, 500);
     } else {
@@ -1462,24 +1753,22 @@ const GUIDE_STEPS = [
 let guideStep = 0;
 let guideTimer = null;
 
-function startStepGuide() {
+function actuallyStartStepGuide() {
   guideStep = 0;
   inStepGuide = true;
   const keysEl = document.getElementById('keyTutKeys');
   const textEl = document.getElementById('keyTutText');
   const progressEl = document.getElementById('keyTutProgress');
-  keysEl.innerHTML = '';
-  textEl.textContent = '';
+  if (keysEl) keysEl.innerHTML = '';
+  if (textEl) textEl.textContent = '';
   if (progressEl) progressEl.textContent = '';
   document.getElementById('keyTutorial').classList.remove('active');
-  // Show step guide elements and footer
   const currentStep = document.getElementById('tutCurrentStep');
   const stepsPanel = document.getElementById('tutStepsPanel');
   const footer = document.getElementById('gameFooter');
   if (currentStep) currentStep.style.display = '';
   if (stepsPanel) stepsPanel.style.display = '';
   if (footer) footer.style.visibility = 'visible';
-  // Start the auto-advance step guide on the static image
   startOverviewAutoAdvance();
 }
 
@@ -1556,16 +1845,51 @@ const LEVEL_CONFIG = {
 
 document.getElementById('headerTitle').textContent = LEVEL_CONFIG.name;
 
+if (LEVEL_CONFIG.level === 'tutorial') {
+  document.querySelectorAll('.score-chip, .score-vs').forEach(el => el.style.display = 'none');
+  document.querySelector('.combo-info').style.display = 'none';
+}
+
 // ==================== GAME ENGINE ====================
 let TOTAL_TIME = LEVEL_CONFIG.time || 720;
 if (LEVEL_CONFIG.level === 'tutorial') TOTAL_TIME = 600;
-let TOTAL_OBJECTS;
-if (LEVEL_CONFIG.level === 'tutorial') {
-  TOTAL_OBJECTS = 3;
-} else if (LEVEL_CONFIG.objects <= 5) {
-  TOTAL_OBJECTS = 3 + Math.floor(Math.random() * 3);
-} else {
-  TOTAL_OBJECTS = 8 + Math.floor(Math.random() * 5);
+let TOTAL_OBJECTS = LEVEL_CONFIG.objects;
+// Initialize placed dots
+const dotsEl = document.getElementById('placedDots');
+dotsEl.innerHTML = Array.from({length: TOTAL_OBJECTS}, () => '<div class="placed-dot"></div>').join('');
+
+// Object legend (non-tutorial only)
+const OBJ_TYPES = [
+  { name: '涂改液', icon: '🖊', color: '#60a5fa', pts: [80, 120] },
+  { name: '马克笔', icon: '🖍', color: '#f87171', pts: [120, 180] },
+  { name: '文具盒', icon: '📦', color: '#fbbf24', pts: [150, 200] },
+  { name: '纸巾盒', icon: '🧻', color: '#a78bfa', pts: [180, 250] },
+];
+
+const LEVEL_OBJ_CONFIGS = {
+  'desk-1':  [{ type: 0, count: 1 }, { type: 1, count: 1 }, { type: 2, count: 1 }],
+  'desk-2':  [{ type: 0, count: 1 }, { type: 1, count: 1 }, { type: 2, count: 1 }, { type: 3, count: 2 }],
+  'table-1': [{ type: 0, count: 1 }, { type: 1, count: 2 }, { type: 2, count: 1 }, { type: 3, count: 1 }],
+  'table-2': [{ type: 0, count: 2 }, { type: 1, count: 2 }, { type: 2, count: 2 }, { type: 3, count: 2 }],
+};
+
+if (LEVEL_CONFIG.level !== 'tutorial') {
+  const legendEl = document.getElementById('objLegend');
+  const config = LEVEL_OBJ_CONFIGS[LEVEL_CONFIG.level] || [];
+  legendEl.innerHTML = config.map(c => {
+    const obj = OBJ_TYPES[c.type];
+    const pts = (obj.pts[0] + Math.floor(Math.random() * ((obj.pts[1] - obj.pts[0]) / 5 + 1)) * 5);
+    return `<div class="obj-legend-item">
+      <div class="obj-legend-icon" style="background:${obj.color}22;border:1px solid ${obj.color}44;">${obj.icon}</div>
+      <span>${obj.name}</span>
+      <span class="obj-legend-pts">×${c.count} · ${pts}pt</span>
+    </div>`;
+  }).join('');
+}
+
+// Start desk-1 spotlight after legend is populated
+if (LEVEL_CONFIG.level === 'desk-1') {
+  requestAnimationFrame(() => startDesk1Spotlight());
 }
 
 const BASE_COLORS = ['#60a5fa','#f87171','#fbbf24','#34d399','#a78bfa','#f472b6','#fb923c','#34d399','#818cf8','#fca5a5','#a3e635','#67e8f9'];
@@ -1724,6 +2048,20 @@ class ClawGame {
 
   updateTutorial() {
     if (this.tutorialPhase === 'done') return;
+    if (this.tutorialPhase === 'success') {
+      this.tutorialSuccessTimer++;
+      if (this.tutorialSuccessTimer > 300) {
+        this.tutorialObjIndex++;
+        this.tutorialSuccessTimer = 0;
+        if (this.tutorialObjIndex >= 2) {
+          this.tutorialPhase = 'done';
+        } else {
+          this.tutorialPhase = 'move_to_obj';
+          this.tutorialClawLocked = false;
+        }
+      }
+      return;
+    }
     const tutObj = this.objects[this.tutorialObjIndex];
     if (!tutObj || tutObj.placed) {
       this.tutorialObjIndex++;
@@ -1750,18 +2088,6 @@ class ClawGame {
       }
       if (this.clawState === 'idle' && !this.grabbedObj) {
         this.tutorialPhase = 'move_to_obj';
-      }
-    } else if (this.tutorialPhase === 'success') {
-      this.tutorialSuccessTimer++;
-      if (this.tutorialSuccessTimer > 120) {
-        this.tutorialObjIndex++;
-        this.tutorialSuccessTimer = 0;
-        if (this.tutorialObjIndex >= 2) {
-          this.tutorialPhase = 'done';
-        } else {
-          this.tutorialPhase = 'move_to_obj';
-          this.tutorialClawLocked = false;
-        }
       }
     }
   }
@@ -2181,7 +2507,10 @@ function gameLoop() {
   document.getElementById('yourScore').textContent = Math.round(playerGame.score);
   document.getElementById('aiScore').textContent = Math.round(aiGame.score);
   document.getElementById('comboBadge').textContent = `x${playerGame.combo}`;
-  document.getElementById('placedCount').textContent = playerGame.placed;
+  // Update placed dots + progress bar
+  const dots = document.querySelectorAll('.placed-dot');
+  dots.forEach((d, i) => d.classList.toggle('done', i < playerGame.placed));
+  document.getElementById('headerProgress').style.width = (playerGame.placed / TOTAL_OBJECTS * 100) + '%';
   document.getElementById('miniLbYourScore').textContent = Math.round(playerGame.score);
 
   if (!gameOver && (playerGame.placed >= TOTAL_OBJECTS || aiGame.placed >= TOTAL_OBJECTS)) {
@@ -2194,6 +2523,9 @@ function gameLoop() {
 function triggerEndGame() {
   if (gameOver) return;
   gameOver = true;
+
+  const keyTut = document.getElementById('keyTutorial');
+  if (keyTut) keyTut.classList.remove('active');
 
   const robotTime = 45 + Math.floor(Math.random() * 30);
 
