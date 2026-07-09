@@ -91,18 +91,33 @@
   }
 
   /* Control hints */
-  .controls { display: flex; gap: 24px; justify-content: center; }
+  .controls {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 12px 32px; max-width: 480px; margin: 0 auto;
+  }
   .ctrl {
-    display: flex; align-items: center; gap: 10px;
-    font-size: 14px; color: rgba(245,247,250,0.6); font-weight: 500;
+    display: flex; align-items: center; gap: 12px;
+    font-size: 13px; color: rgba(245,247,250,0.55); font-weight: 500;
+    padding: 10px 16px; border-radius: 12px;
+    background: rgba(245,247,250,0.03);
+    border: 1px solid rgba(245,247,250,0.06);
+  }
+  .ctrl-keys-group {
+    display: flex; gap: 4px; align-items: center; flex-shrink: 0;
+  }
+  .ctrl-label {
+    white-space: nowrap;
   }
   .ctrl kbd {
     display: inline-flex; align-items: center; justify-content: center;
-    min-width: 32px; height: 32px; padding: 0 10px;
-    border: 1px solid rgba(245,247,250,0.15); border-radius: 8px;
-    background: rgba(245,247,250,0.05);
-    font-family: inherit; font-size: 12px; font-weight: 700;
-    color: rgba(245,247,250,0.85);
+    min-width: 32px; height: 32px; padding: 0 7px;
+    border-radius: 8px;
+    background: rgba(20,24,32,0.9);
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+    font-family: -apple-system, 'SF Pro Display', 'Inter', sans-serif;
+    font-size: 12px; font-weight: 700;
+    color: #fff;
   }
 
   /* Hook stat */
@@ -154,7 +169,7 @@
   @media (max-width: 768px) {
     .phase h2 { font-size: 26px; }
     .preview-frame { width: 280px; height: 130px; }
-    .controls { flex-direction: column; gap: 12px; align-items: center; }
+    .controls { grid-template-columns: 1fr; gap: 8px; max-width: 320px; }
   }
 </style>
 </head>
@@ -188,11 +203,40 @@
   <div class="phase" id="phase3">
     <h2>操控方式</h2>
     <div class="controls">
-      <div class="ctrl"><kbd>W A S D</kbd> 移动</div>
-      <div class="ctrl"><kbd>↑ ↓</kbd> 升降</div>
-      <div class="ctrl"><kbd>Space</kbd> 抓取/释放</div>
+      <div class="ctrl">
+        <div class="ctrl-keys-group"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></div>
+        <span class="ctrl-label">移动</span>
+      </div>
+      <div class="ctrl">
+        <div class="ctrl-keys-group"><kbd>E</kbd><span style="font-size:11px;color:rgba(245,247,250,0.3);margin:0 2px;">按住</span></div>
+        <span class="ctrl-label">抓取</span>
+      </div>
+      <div class="ctrl">
+        <div class="ctrl-keys-group"><kbd>↑</kbd><kbd>↓</kbd></div>
+        <span class="ctrl-label">升降</span>
+      </div>
+      <div class="ctrl">
+        <div class="ctrl-keys-group"><kbd>Q</kbd><span style="font-size:11px;color:rgba(245,247,250,0.3);margin:0 2px;">按住</span></div>
+        <span class="ctrl-label">释放</span>
+      </div>
+      <div class="ctrl">
+        <div class="ctrl-keys-group"><kbd>←</kbd><kbd>→</kbd></div>
+        <span class="ctrl-label">旋转</span>
+      </div>
+      <div class="ctrl">
+        <div class="ctrl-keys-group"><kbd>Tab</kbd></div>
+        <span class="ctrl-label">切换左右臂</span>
+      </div>
+      <div class="ctrl">
+        <div class="ctrl-keys-group"><kbd>H</kbd></div>
+        <span class="ctrl-label">复位</span>
+      </div>
+      <div class="ctrl">
+        <div class="ctrl-keys-group"><kbd>Esc</kbd></div>
+        <span class="ctrl-label">暂停</span>
+      </div>
     </div>
-    <p>像抓娃娃一样简单</p>
+
   </div>
 
   <!-- Phase 4: Hook -->
@@ -200,7 +244,7 @@
     <h2>你能比机器人<br>做得更好吗？</h2>
     <div class="hook-card">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      <span>机器人完成同样任务用了 45 秒</span>
+      <span>机器人完成同样任务用了 10 分 14 秒</span>
     </div>
   </div>
 
