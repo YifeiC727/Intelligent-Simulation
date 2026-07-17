@@ -41,8 +41,8 @@
     width: 0%;
   }
   .header-left { display: flex; align-items: center; gap: 16px; }
-  .logo { font-size: 16px; font-weight: 700; color: #f5f7fa; letter-spacing: -0.3px; }
-  .logo span { color: #6EC9FF; }
+  .logo { height: 32px; margin-left: -8px; }
+  .logo img { height: 100%; width: auto; display: block; }
   .header-title { font-size: 14px; font-weight: 600; color: rgba(245,247,250,0.7); }
   .header-sep { width: 1px; height: 20px; background: rgba(245,247,250,0.08); }
 
@@ -99,7 +99,7 @@
 
   /* Skip task button */
   .skip-task-btn {
-    position: absolute; top: 16px; left: 50%; transform: translateX(-50%); z-index: 20;
+    position: fixed; bottom: 56px; right: 28px; z-index: 9999;
     padding: 10px 28px; border-radius: 40px;
     background: rgba(15, 23, 42, 0.8);
     backdrop-filter: blur(12px);
@@ -114,7 +114,7 @@
     background: rgba(15, 23, 42, 0.9);
     border-color: rgba(110,201,255,0.3);
     box-shadow: 0 4px 24px rgba(110,201,255,0.15);
-    transform: translateX(-50%) translateY(-1px);
+    transform: translateY(-1px);
   }
   .skip-task-btn.visible { display: block; animation: slideDown 0.5s ease-out; }
   @keyframes slideDown {
@@ -407,26 +407,33 @@
   /* Pause overlay */
   .pause-overlay {
     position: fixed; inset: 0; z-index: 90;
-    background: rgba(6,6,10,0.85);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    display: none; flex-direction: column;
+    background: rgba(0,0,0,0.6);
+    display: none;
     align-items: center; justify-content: center;
-    gap: 16px;
   }
   .pause-overlay.active { display: flex; }
+  .pause-card {
+    background: rgba(15,15,22,0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(245,247,250,0.08);
+    border-radius: 20px;
+    padding: 40px 48px;
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+  }
   .pause-title {
-    font-size: 28px; font-weight: 800; color: #f5f7fa;
-    letter-spacing: -0.5px; margin-bottom: 4px;
+    font-size: 24px; font-weight: 800; color: #f5f7fa;
+    letter-spacing: -0.5px;
   }
   .pause-sub {
-    font-size: 14px; color: rgba(245,247,250,0.35);
-    margin-bottom: 24px;
+    font-size: 13px; color: rgba(245,247,250,0.35);
+    margin-bottom: 8px;
   }
   .pause-btns { display: flex; gap: 12px; }
   .pause-btn {
-    padding: 14px 36px; border-radius: 14px;
-    font-size: 15px; font-weight: 600;
+    padding: 12px 32px; border-radius: 12px;
+    font-size: 14px; font-weight: 600;
     border: none; cursor: pointer; transition: all 0.2s;
     font-family: inherit;
   }
@@ -442,8 +449,8 @@
   }
   .pause-btn.quit:hover { background: rgba(245,247,250,0.1); color: #f5f7fa; }
   .pause-hint {
-    font-size: 12px; color: rgba(245,247,250,0.2);
-    margin-top: 12px;
+    font-size: 11px; color: rgba(245,247,250,0.2);
+    margin-top: 8px;
   }
   .pause-hint kbd {
     padding: 2px 6px; border-radius: 4px;
@@ -977,7 +984,7 @@
   <!-- Header -->
   <div class="header">
     <div class="header-left">
-      <div class="logo">Joy<span>AI</span></div>
+      <div class="logo"><img src="assets/JoyAI.png" alt="JoyAI"></div>
       <div class="header-sep"></div>
       <div class="header-title" id="headerTitle">书桌整理挑战</div>
     </div>
@@ -1081,8 +1088,8 @@
         <div class="cp-row"><kbd>A</kbd><kbd>D</kbd><span>左移 / 右移</span></div>
         <div class="cp-row"><kbd>↑</kbd><kbd>↓</kbd><span>上升 / 下降</span></div>
         <div class="cp-row"><kbd>←</kbd><kbd>→</kbd><span>旋转角度</span></div>
-        <div class="cp-row"><kbd>E</kbd><span>抓取（按住）</span></div>
-        <div class="cp-row"><kbd>Q</kbd><span>释放（按住）</span></div>
+        <div class="cp-row"><kbd>Q</kbd><kbd>E</kbd><span>旋转视角</span></div>
+        <div class="cp-row"><kbd>␣</kbd><span>张开/关闭抓夹</span></div>
         <div class="cp-row"><kbd>Tab</kbd><span>切换左右臂</span></div>
         <div class="cp-row"><kbd>H</kbd><span>复位</span></div>
       </div>
@@ -1113,8 +1120,8 @@
       <div class="ctrl-item"><span class="ctrl-key">D</span> 右移</div>
       <div class="ctrl-item"><span class="ctrl-key">↑↓</span> 升降</div>
       <div class="ctrl-item"><span class="ctrl-key">←→</span> 旋转</div>
-      <div class="ctrl-item"><span class="ctrl-key">E</span> 抓取</div>
-      <div class="ctrl-item"><span class="ctrl-key">Q</span> 释放</div>
+      <div class="ctrl-item"><span class="ctrl-key">Q/E</span> 视角</div>
+      <div class="ctrl-item"><span class="ctrl-key">␣</span> 抓夹</div>
       <div class="ctrl-item"><span class="ctrl-key">Tab</span> 切臂</div>
       <div class="ctrl-item"><span class="ctrl-key">H</span> 复位</div>
     </div>
@@ -1127,13 +1134,15 @@
 
 <!-- Pause Overlay -->
 <div class="pause-overlay" id="pauseOverlay">
-  <div class="pause-title">暂停</div>
-  <div class="pause-sub">游戏已暂停，计时已停止</div>
-  <div class="pause-btns">
-    <button class="pause-btn resume" onclick="resumeGame()">继续游戏</button>
-    <a class="pause-btn quit" href="landing.html">退出</a>
+  <div class="pause-card">
+    <div class="pause-title">暂停</div>
+    <div class="pause-sub">游戏已暂停，计时已停止</div>
+    <div class="pause-btns">
+      <button class="pause-btn resume" onclick="resumeGame()">继续游戏</button>
+      <a class="pause-btn quit" href="landing.html">退出</a>
+    </div>
+    <div class="pause-hint">按 <kbd>Esc</kbd> 继续</div>
   </div>
-  <div class="pause-hint">按 <kbd>Esc</kbd> 继续</div>
 </div>
 
 <!-- Spotlight overlay for tutorial intro -->
@@ -1161,7 +1170,28 @@
   </div>
 </div>
 
-<!-- Result Overlay -->
+<!-- Result Overlay — Tutorial -->
+<div class="result-overlay" id="tutResultOverlay">
+  <div class="result-title" id="tutResultTitle">完成了！</div>
+  <div class="result-sub" id="tutResultSub"></div>
+
+  <div class="result-table">
+    <div class="rt-row">
+      <div class="rt-dim">完成数</div>
+      <div class="rt-val you-val" id="tutRPlaced">-</div>
+    </div>
+    <div class="rt-row">
+      <div class="rt-dim">用时</div>
+      <div class="rt-val you-val" id="tutRTime">-</div>
+    </div>
+  </div>
+  <div class="result-btns">
+    <a class="rbtn primary" href="landing.html">进入下一关</a>
+    <a class="rbtn ghost" href="landing.html">返回首页</a>
+  </div>
+</div>
+
+<!-- Result Overlay — Normal -->
 <div class="result-overlay" id="resultOverlay">
   <div class="result-title" id="resultTitle">挑战完成！</div>
   <div class="result-sub" id="resultSub"></div>
@@ -1233,9 +1263,9 @@ function startOverviewAutoAdvance() {
 
   const TUT_STEPS = [
     { title: '靠近目标', desc: 'WASD 平移 · ↑↓ 升降 · ←→ 旋转', keys: [{cap:'W A S D', label:'移动'}], duration: 5000, floatKeys: null },
-    { title: '抓取物体', desc: '按住 E 闭合 · 按住 Q 张开 · 松开保持', keys: [{cap:'E', label:'闭合'}, {cap:'Q', label:'张开'}], duration: 5000, floatKeys: [{cap:'E', label:'闭合'}, {cap:'Q', label:'张开'}] },
+    { title: '抓取物体', desc: '按空格抓取物体', keys: [{cap:'␣', label:'抓取'}], duration: 5000, floatKeys: [{cap:'␣', label:'抓取'}] },
     { title: '搬运到目标区', desc: '抓住后移动到虚线框', keys: [{cap:'W A S D', label:'移动'}], duration: 5000, floatKeys: null },
-    { title: '放置物体', desc: '按住 Q 张开夹爪释放', keys: [{cap:'Q', label:'张开'}], duration: 5000, floatKeys: [{cap:'Q', label:'张开'}] },
+    { title: '放置物体', desc: '按空格释放物体', keys: [{cap:'␣', label:'释放'}], duration: 5000, floatKeys: [{cap:'␣', label:'释放'}] },
   ];
 
   let curStep = 0;
@@ -1323,8 +1353,8 @@ function startOverviewAutoAdvance() {
       const keyEl = document.getElementById('tutCsKey');
       const pill = document.getElementById('tutCsPill');
       const bar = document.getElementById('tutProgressBar');
-      if (title) title.textContent = '漂亮！还有 2 个等着你';
-      if (desc) desc.textContent = '引导结束，接下来自己试试吧';
+      if (title) title.textContent = '漂亮！放置完成了！';
+      if (desc) desc.textContent = '';
       if (keyEl) keyEl.innerHTML = '';
       if (pill) pill.textContent = '✓';
       if (bar) { bar.style.transition = 'none'; bar.style.width = '100%'; }
@@ -1337,15 +1367,10 @@ function startOverviewAutoAdvance() {
         if (num) { num.classList.remove('active'); num.classList.add('done'); num.textContent = '✓'; }
         item.querySelector('span:last-child').style.opacity = '0.35';
       }
-      // 5 seconds later, fade out the entire banner and step panel
+      // 3 seconds later, show result page
       setTimeout(() => {
-        const card = document.getElementById('tutCurrentStep');
-        const panel = document.getElementById('tutStepsPanel');
-        const floatKey = document.getElementById('tutFloatKey');
-        if (card) { card.style.transition = 'opacity 0.5s'; card.style.opacity = '0'; }
-        if (panel) { panel.style.transition = 'opacity 0.5s'; panel.style.opacity = '0'; }
-        if (floatKey) { floatKey.style.transition = 'opacity 0.5s'; floatKey.style.opacity = '0'; }
-      }, 5000);
+        triggerEndGame();
+      }, 3000);
       return;
     }
 
@@ -1376,8 +1401,8 @@ const TUTORIAL_STEPS = [
   { keys: ['A', 'D'], text: '按住 A 左移', listen: [['KeyA'], ['KeyD']], holdMs: 1200, textPerSub: ['按住 A 左移', '按住 D 右移'] },
   { keys: ['↑', '↓'], text: '按住 ↑ 上升', listen: [['ArrowUp'], ['ArrowDown']], holdMs: 1200, textPerSub: ['按住 ↑ 上升', '按住 ↓ 下降'] },
   { keys: ['←', '→'], text: '按住 ← 旋转', listen: [['ArrowLeft'], ['ArrowRight']], holdMs: 1200, textPerSub: ['按住 ← 向左旋转', '按住 → 向右旋转'] },
-  { keys: ['E'], text: '按住 E 闭合夹爪（抓取）', listen: [['KeyE']], holdMs: 1500 },
-  { keys: ['Q'], text: '按住 Q 张开夹爪（释放）', listen: [['KeyQ']], holdMs: 1500 },
+  { keys: ['Q', 'E'], text: '按住 Q 视角左转', listen: [['KeyQ'], ['KeyE']], holdMs: 1200, textPerSub: ['按住 Q 视角左转', '按住 E 视角右转'] },
+  { keys: ['␣'], text: '按一下空格 张开/关闭抓夹', listen: [['Space']], holdMs: 50 },
   { keys: ['Tab'], text: '按一下 Tab 切换左右臂', listen: [['Tab']], holdMs: 50, wide: true },
   { keys: ['H'], text: '按一下 H 回到初始位姿', listen: [['KeyH']], holdMs: 50 },
 ];
@@ -1541,6 +1566,7 @@ function advancePostSpotlight() {
   spotlightPhase++;
   if (spotlightPhase >= SPOTLIGHT_POST_STEPS.length) {
     dismissSpotlight();
+    playerStarted = true;
     actuallyStartStepGuide();
     return;
   }
@@ -1743,9 +1769,9 @@ function completeSubStep() {
 // ==================== STEP-BY-STEP GUIDE (timed prompts) ====================
 const GUIDE_STEPS = [
   { text: '移动夹爪到物体上方', duration: 5000 },
-  { text: '按住 E 抓取物体', duration: 5000 },
+  { text: '按空格抓取物体', duration: 5000 },
   { text: '搬运到目标区域', duration: 5000 },
-  { text: '按住 Q 放置物体', duration: 5000 },
+  { text: '按空格放置物体', duration: 5000 },
   { text: '失败了？没关系，再来一次', duration: 4000 },
   { text: '开始吧', duration: 2500 },
 ];
@@ -2027,21 +2053,21 @@ class ClawGame {
 
   onClick(e) {
     playerStarted = true;
+  }
+
+  onSpace() {
+    playerStarted = true;
     if (this.tutorialPhase === 'locked_grab') {
       this.clawState = 'descending';
       this.moves++;
       this.tutorialPhase = 'move_to_target';
       return;
     }
-    if (this.tutorialPhase === 'move_to_obj' || this.tutorialPhase === 'locked_drop') return;
+    if (this.tutorialPhase === 'move_to_obj') return;
     if (this.clawState === 'idle') {
       this.clawState = 'descending';
       this.moves++;
-    }
-  }
-
-  onSpace() {
-    if (this.clawState === 'carrying' && this.grabbedObj) {
+    } else if (this.clawState === 'carrying' && this.grabbedObj) {
       this.clawState = 'dropping';
     }
   }
@@ -2050,7 +2076,14 @@ class ClawGame {
     if (this.tutorialPhase === 'done') return;
     if (this.tutorialPhase === 'success') {
       this.tutorialSuccessTimer++;
+      if (this.tutorialSuccessTimer === 1 && LEVEL_CONFIG.level === 'tutorial') {
+        const btn = document.getElementById('skipTaskBtn');
+        btn.textContent = '跳过 →';
+        btn.onclick = () => { window.location.href = 'landing.html'; };
+        btn.classList.add('visible');
+      }
       if (this.tutorialSuccessTimer > 300) {
+        document.getElementById('skipTaskBtn').classList.remove('visible');
         this.tutorialObjIndex++;
         this.tutorialSuccessTimer = 0;
         if (this.tutorialObjIndex >= 2) {
@@ -2121,14 +2154,13 @@ class ClawGame {
     if (this.tutorialPhase === 'move_to_obj') {
       text = '移动鼠标，将夹爪移到 ' + tutObj.label + ' 上方';
     } else if (this.tutorialPhase === 'locked_grab') {
-      text = '就是现在！点击鼠标抓取';
+      text = '按空格抓取！';
     } else if (this.tutorialPhase === 'move_to_target') {
       text = '移到虚线框内';
     } else if (this.tutorialPhase === 'locked_drop') {
       text = '按空格释放物体';
     } else if (this.tutorialPhase === 'success') {
-      const remaining = TOTAL_OBJECTS - this.placed;
-      text = '漂亮！还有 ' + remaining + ' 个物品等着你';
+      text = '漂亮！放置完成了！';
     }
 
     if (text) {
@@ -2404,6 +2436,7 @@ let paused = false;
 
 function pauseGame() {
   if (gameOver || !playerStarted) return;
+  if (spotlightActive || tutActive) return;
   paused = true;
   document.getElementById('pauseOverlay').classList.add('active');
 }
@@ -2527,6 +2560,18 @@ function triggerEndGame() {
   const keyTut = document.getElementById('keyTutorial');
   if (keyTut) keyTut.classList.remove('active');
 
+  if (LEVEL_CONFIG.level === 'tutorial') {
+    // Tutorial result — no AI comparison
+    const placed = playerGame.placed;
+    const title = placed >= TOTAL_OBJECTS ? '完成了！' : '就差一点！';
+    document.getElementById('tutResultTitle').textContent = title;
+    document.getElementById('tutResultSub').textContent = `用时 ${formatTime(elapsedSeconds)}，完成 ${placed}/${TOTAL_OBJECTS} 个物体归位`;
+    document.getElementById('tutRPlaced').textContent = placed + '/' + TOTAL_OBJECTS;
+    document.getElementById('tutRTime').textContent = formatTime(elapsedSeconds);
+    setTimeout(() => { document.getElementById('tutResultOverlay').classList.add('active'); }, 600);
+    return;
+  }
+
   const robotTime = 45 + Math.floor(Math.random() * 30);
 
   document.getElementById('rYouPlaced').textContent = playerGame.placed + '/' + TOTAL_OBJECTS;
@@ -2538,7 +2583,7 @@ function triggerEndGame() {
   document.getElementById('rYouScore').textContent = Math.round(playerGame.score);
   document.getElementById('rAiScore').textContent = Math.round(aiGame.score);
 
-  const rows = document.querySelectorAll('.rt-row');
+  const rows = document.querySelectorAll('#resultOverlay .rt-row');
   const youVals = [playerGame.placed, -elapsedSeconds, playerGame.maxCombo, playerGame.score];
   const aiVals = [aiGame.placed, -robotTime, aiGame.maxCombo, aiGame.score];
   let youWins = 0;

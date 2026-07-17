@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JoyAI-Sim</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #000000;
+    color: #fff;
+    overflow: hidden;
+    height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  #c { position: fixed; inset: 0; z-index: 0; }
+
+  /* ---- UI Overlay ---- */
+  .ui-overlay { position: fixed; inset: 0; z-index: 10; pointer-events: none; }
+
+  /* Top bar */
+  .top-bar {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 56px; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 40px;
+    opacity: 0; animation: fadeIn 1s ease 0.3s forwards;
+  }
+  .logo { height: 32px; margin-left: -8px; }
+  .logo img { height: 100%; width: auto; display: block; }
+  .top-links {
+    display: flex; align-items: center; gap: 28px;
+  }
+  .top-links a {
+    font-size: 14px; font-weight: 500; color: rgba(245,247,250,0.4);
+    text-decoration: none; cursor: pointer; transition: color 0.2s;
+    pointer-events: auto;
+  }
+  .top-links a:hover { color: #f5f7fa; }
+  .top-right { display: flex; align-items: center; gap: 16px; }
+  .link-login {
+    font-size: 14px; font-weight: 500; color: rgba(245,247,250,0.5);
+    text-decoration: none; cursor: pointer; transition: color 0.2s;
+    pointer-events: auto;
+  }
+  .link-login:hover { color: #f5f7fa; }
+  .btn-get-started {
+    padding: 8px 20px; border-radius: 8px;
+    background: rgba(245,247,250,0.08); border: 1px solid rgba(245,247,250,0.12);
+    font-size: 13px; font-weight: 600; color: #f5f7fa;
+    text-decoration: none; cursor: pointer; transition: all 0.2s;
+    pointer-events: auto;
+  }
+  .btn-get-started:hover { background: rgba(245,247,250,0.14); }
+
+  /* Hero text — LEFT side */
+  .hero-left {
+    position: fixed; top: 120px; left: 48px;
+    max-width: 400px;
+    opacity: 0; animation: fadeIn 1s ease 0.5s forwards;
+    z-index: 12;
+  }
+  .hero-badge {
+    font-size: 12px; font-weight: 600; color: #9D7CFF;
+    text-transform: uppercase; letter-spacing: 2px;
+    margin-bottom: 20px;
+  }
+  .hero-title {
+    font-size: 44px; font-weight: 800;
+    line-height: 1.1; letter-spacing: -1.5px;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #a78bfa 40%, #6EC9FF 70%, #f5f7fa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-sub {
+    font-size: 15px; font-weight: 400;
+    color: rgba(245,247,250,0.35);
+    line-height: 1.7; margin-bottom: 28px;
+  }
+  .hero-actions { display: flex; gap: 12px; pointer-events: auto; }
+  .btn-p {
+    padding: 12px 24px; border-radius: 20px;
+    background: rgba(245,247,250,0.08); border: 1px solid rgba(245,247,250,0.15);
+    color: #f5f7fa;
+    font-size: 14px; font-weight: 600;
+    text-decoration: none; cursor: pointer; font-family: inherit;
+    transition: all 0.25s;
+  }
+  .btn-p:hover { background: rgba(245,247,250,0.14); }
+  .btn-s {
+    padding: 12px 24px; border-radius: 20px;
+    background: transparent; border: none;
+    color: rgba(245,247,250,0.5);
+    font-size: 14px; font-weight: 500;
+    text-decoration: none; cursor: pointer; font-family: inherit;
+    transition: all 0.25s; pointer-events: auto;
+  }
+  .btn-s:hover { color: #f5f7fa; }
+
+  /* Controls — RIGHT side */
+  .controls-box {
+    position: fixed; top: 120px; right: 40px;
+    opacity: 0; animation: fadeIn 1s ease 1s forwards;
+    z-index: 12;
+  }
+  .controls-title {
+    font-size: 11px; font-weight: 700;
+    color: rgba(255,255,255,0.85);
+    text-transform: uppercase; letter-spacing: 1.5px;
+    margin-bottom: 18px;
+  }
+  .ctrl-row { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+  .ctrl-keys { display: flex; gap: 4px; min-width: 50px; }
+  .ctrl-keys kbd {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 26px; height: 26px; padding: 0 6px;
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 6px;
+    font-family: inherit; font-size: 12px; font-weight: 600;
+    color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.05);
+  }
+  .ctrl-label { font-size: 13px; color: rgba(255,255,255,0.7); }
+  .ctrl-divider { height: 12px; }
+  .ctrl-hover-row {
+    display: flex; align-items: center; gap: 10px; margin-top: 8px;
+  }
+  .ctrl-hover-icon {
+    width: 22px; height: 22px; border: 1px solid rgba(245,247,250,0.1);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  }
+
+  /* Bottom hint */
+  .bottom-hint {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    font-size: 12px; color: rgba(245,247,250,0.2);
+    opacity: 0; animation: fadeIn 1s ease 1.5s forwards;
+    z-index: 12;
+  }
+  .hint-circle {
+    width: 32px; height: 32px; border: 1px solid rgba(245,247,250,0.1);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  }
+
+  /* Sidebar indicator — white vertical bar with arrow */
+  .sidebar-edge {
+    position: fixed; top: 0; left: 0; bottom: 0; width: 8px; z-index: 1200;
+    background: rgba(255,255,255,1);
+    pointer-events: none; transition: opacity 0.3s;
+  }
+  .sidebar-edge::after {
+    content: '';
+    position: absolute; top: 50%; left: 8px;
+    width: 7px; height: 7px;
+    border-top: 2px solid rgba(255,255,255,1);
+    border-right: 2px solid rgba(255,255,255,1);
+    transform: translateY(-50%) rotate(45deg);
+    animation: edgePulse 2s ease-in-out infinite;
+  }
+  @keyframes edgePulse {
+    0%, 100% { opacity: 0.5; left: 8px; }
+    50% { opacity: 1; left: 12px; }
+  }
+  .sidebar.open ~ .sidebar-edge { opacity: 0; }
+  .sidebar-trigger { position: fixed; top: 0; left: 0; bottom: 0; width: 20px; z-index: 1201; }
+  .sidebar { position: fixed; top: 0; left: -260px; bottom: 0; z-index: 1100; width: 240px; background: #ffffff; border-right: 1px solid rgba(0,0,0,0.06); display: flex; flex-direction: column; padding: 24px 16px; gap: 2px; transition: left 0.35s cubic-bezier(0.4,0,0.2,1); }
+  .sidebar.open { left: 0; }
+  .sb-brand { font-size: 17px; font-weight: 700; color: #0F172A; letter-spacing: -0.3px; padding: 0 12px 20px; }
+  .sb-brand span { color: #2563EB; }
+  .sb-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; font-size: 14px; font-weight: 500; color: #64748B; cursor: pointer; transition: all 0.15s; text-decoration: none; }
+  .sb-item:hover { background: #F1F5F9; color: #0F172A; }
+  .sb-item.active { background: rgba(37,99,235,0.06); color: #2563EB; font-weight: 600; }
+  .sb-item svg { flex-shrink: 0; }
+  .sb-section-label { font-size: 11px; font-weight: 600; color: #94A3B8; text-transform: uppercase; letter-spacing: 1px; padding: 12px 12px 6px; }
+
+  /* About */
+  .about-overlay { position: fixed; inset: 0; z-index: 2000; background: rgba(0,0,0,0.5); backdrop-filter: blur(6px); opacity: 0; visibility: hidden; transition: all 0.3s; }
+  .about-overlay.open { opacity: 1; visibility: visible; }
+  .about-panel { position: fixed; top: 0; right: -440px; bottom: 0; z-index: 2001; width: 400px; background: rgba(8,10,18,0.96); backdrop-filter: blur(24px); box-shadow: -20px 0 60px rgba(0,0,0,0.3); border-left: 1px solid rgba(245,247,250,0.05); padding: 40px 36px; overflow-y: auto; transition: right 0.35s cubic-bezier(0.4,0,0.2,1); }
+  .about-overlay.open .about-panel { right: 0; }
+  .about-close { position: absolute; top: 20px; right: 20px; width: 32px; height: 32px; border-radius: 8px; border: none; background: rgba(245,247,250,0.05); cursor: pointer; display: flex; align-items: center; justify-content: center; color: rgba(245,247,250,0.4); font-size: 18px; transition: all 0.15s; }
+  .about-close:hover { background: rgba(245,247,250,0.08); color: #fff; }
+  .about-label { font-size: 11px; font-weight: 700; color: #6EC9FF; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 14px; }
+  .about-panel h2 { font-size: 24px; font-weight: 700; color: #f5f7fa; margin-bottom: 20px; line-height: 1.3; }
+  .about-panel p { font-size: 15px; color: rgba(245,247,250,0.5); line-height: 1.8; margin-bottom: 14px; }
+  .about-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+  .about-tag { padding: 6px 14px; border-radius: 10px; background: rgba(245,247,250,0.03); border: 1px solid rgba(245,247,250,0.06); font-size: 12px; font-weight: 500; color: rgba(245,247,250,0.4); }
+
+  /* Level panel — integrated into page left side */
+  .level-panel {
+    position: fixed; top: 360px; left: 48px;
+    width: 28vw; min-width: 280px; max-width: 380px;
+    max-height: calc(100vh - 420px);
+    z-index: 25;
+    background: transparent;
+    padding: 0;
+    display: flex; flex-direction: column; gap: 10px;
+    pointer-events: auto;
+    opacity: 0; animation: fadeIn 1s ease 1.2s forwards;
+  }
+  .level-cards-scroll {
+    display: flex; flex-direction: column; gap: 10px;
+    max-height: 30vh;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  .level-cards-scroll::-webkit-scrollbar { width: 4px; }
+  .level-cards-scroll::-webkit-scrollbar-track { background: transparent; }
+  .level-cards-scroll::-webkit-scrollbar-thumb { background: rgba(245,247,250,0.25); border-radius: 2px; }
+  .level-panel-title {
+    font-size: 18px; font-weight: 800; color: #6EC9FF;
+    letter-spacing: -0.3px;
+    margin-bottom: 8px;
+  }
+  .lv-card {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px; border-radius: 14px;
+    background: rgba(10,12,22,0.7);
+    backdrop-filter: blur(12px);
+    flex-shrink: 0;
+    border: 1px solid rgba(245,247,250,0.06);
+    text-decoration: none; color: inherit;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .lv-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(110,201,255,0.06), rgba(157,124,255,0.04));
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .lv-card:hover {
+    background: rgba(10,12,22,0.85);
+    border-color: rgba(110,201,255,0.2);
+    transform: translateX(4px);
+    box-shadow: 0 4px 24px rgba(110,201,255,0.06), 0 0 0 1px rgba(110,201,255,0.1);
+  }
+  .lv-card:hover::before { opacity: 1; }
+  .lv-card:hover .lv-name { color: #fff; }
+  .lv-card:hover .lv-meta { color: rgba(245,247,250,0.5); }
+  .lv-card:hover .lv-badge { background: rgba(110,201,255,0.12); color: #6EC9FF; }
+  .lv-info { display: flex; flex-direction: column; gap: 5px; }
+  .lv-name { font-size: 15px; font-weight: 600; color: rgba(245,247,250,0.9); transition: color 0.3s; }
+  .lv-row { display: flex; align-items: center; gap: 9px; }
+  .lv-stars { display: flex; gap: 3px; }
+  .lv-stars svg { width: 13px; height: 13px; }
+  .lv-meta { font-size: 12px; color: rgba(245,247,250,0.3); font-weight: 500; }
+  .lv-badge {
+    font-size: 11px; font-weight: 600; color: #16A34A;
+    background: rgba(34,197,94,0.1); padding: 3px 9px; border-radius: 6px;
+  }
+  .lv-card.locked {
+    opacity: 0.35; pointer-events: none;
+  }
+  .lv-lock {
+    color: rgba(245,247,250,0.3);
+  }
+  .lv-all {
+    display: block; text-align: center;
+    font-size: 13px; font-weight: 500;
+    color: rgba(245,247,250,0.3);
+    text-decoration: none; padding: 8px 0 2px;
+    transition: color 0.2s; pointer-events: auto;
+  }
+  .lv-all:hover { color: rgba(245,247,250,0.6); }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @media (max-width: 768px) {
+    .hero-title { font-size: 28px; }
+    .hero-left { left: 20px; top: 100px; max-width: 260px; }
+    .controls-box { display: none; }
+    .sidebar, .sidebar-trigger, .sidebar-edge { display: none; }
+    .level-panel { display: none; }
+  }
+
+</style>
+</head>
+<body>
+
+<canvas id="c"></canvas>
+
+<!-- Click to gather prompt -->
+<div id="clickPrompt" style="
+  position: fixed; inset: 0; z-index: 20;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  pointer-events: auto; cursor: pointer;
+" onclick="window.startGather(); this.style.opacity='0'; this.style.pointerEvents='none'; this.style.transition='opacity 1s';">
+  <div style="
+    width: 72px; height: 72px; border-radius: 50%;
+    border: 2px solid rgba(110,201,255,0.4);
+    display: flex; align-items: center; justify-content: center;
+    animation: promptPulse 2s ease-in-out infinite;
+    background: rgba(110,201,255,0.06);
+    box-shadow: 0 0 30px rgba(110,201,255,0.15);
+  ">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="#6EC9FF" stroke="none">
+      <polygon points="8,5 19,12 8,19"/>
+    </svg>
+  </div>
+  <span style="margin-top: 14px; font-size: 12px; color: #6EC9FF; letter-spacing: 1px; font-weight: 500;">CLICK TO CONVERGE</span>
+</div>
+<style>
+  @keyframes promptPulse {
+    0%, 100% { transform: scale(1); border-color: rgba(245,247,250,0.15); }
+    50% { transform: scale(1.06); border-color: rgba(110,201,255,0.3); }
+  }
+</style>
+
+<div class="ui-overlay">
+  <!-- Top bar matching reference -->
+  <div class="top-bar">
+    <div style="display:flex;align-items:center;gap:36px;">
+      <div class="logo"><img src="assets/JoyAI.png" alt="JoyAI"></div>
+    </div>
+    <div class="top-right">
+      <a class="btn-get-started" onclick="document.getElementById('aboutOverlay').classList.add('open')" style="cursor:pointer;">关于</a>
+    </div>
+  </div>
+
+  <!-- Hero LEFT -->
+  <div class="hero-left">
+    <div class="hero-badge">JoyAI-Sim 具身智能仿真平台</div>
+    <h1 class="hero-title">操控机械臂，<br>挑战 AI 对手。</h1>
+    <p class="hero-sub">进入具身仿真世界，完成抓取任务，<br>同场竞技，看人类直觉能否胜过机器算法。</p>
+  </div>
+
+  </div>
+</div>
+
+<!-- Level Panel — independent of ui-overlay for z-index -->
+<div class="level-panel">
+  <div class="level-panel-title">关卡选择</div>
+
+  <div class="level-cards-scroll">
+  <a href="onboarding.html?level=tutorial&name=%E6%96%B0%E6%89%8B%E6%95%99%E5%AD%A6&objects=1&time=0" class="lv-card">
+    <div class="lv-info">
+      <div class="lv-name">新手教学</div>
+      <div class="lv-row">
+        <div class="lv-stars">
+          <svg viewBox="0 0 24 24" fill="#FBBF24" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="rgba(245,247,250,0.1)" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="rgba(245,247,250,0.1)" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+        </div>
+        <span class="lv-badge">已通关</span>
+        <span class="lv-meta">不限时 · 1 物体</span>
+      </div>
+    </div>
+  </a>
+
+  <a href="onboarding.html?level=desk-1&name=%E4%B9%A6%E6%A1%8C%C2%B7%E5%88%9D%E7%BA%A7&objects=3&time=900&shuffle=1" class="lv-card">
+    <div class="lv-info">
+      <div class="lv-name">书桌 · 初级</div>
+      <div class="lv-row">
+        <div class="lv-stars">
+          <svg viewBox="0 0 24 24" fill="#FBBF24" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="rgba(245,247,250,0.1)" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="rgba(245,247,250,0.1)" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+        </div>
+        <span class="lv-meta">15min · 3物体</span>
+      </div>
+    </div>
+  </a>
+
+  <a href="onboarding.html?level=desk-2&name=%E4%B9%A6%E6%A1%8C%C2%B7%E4%B8%AD%E7%BA%A7&objects=5&time=1080&shuffle=1&obstacles=1" class="lv-card">
+    <div class="lv-info">
+      <div class="lv-name">书桌 · 中级</div>
+      <div class="lv-row">
+        <div class="lv-stars">
+          <svg viewBox="0 0 24 24" fill="#FBBF24" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="#FBBF24" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="rgba(245,247,250,0.1)" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+        </div>
+        <span class="lv-meta">18min · 5物体</span>
+      </div>
+    </div>
+  </a>
+
+  <a href="onboarding.html?level=table-1&name=%E8%8C%B6%E5%87%A0%C2%B7%E5%88%9D%E7%BA%A7&objects=5&time=900&shuffle=1" class="lv-card">
+    <div class="lv-info">
+      <div class="lv-name">茶几 · 初级</div>
+      <div class="lv-row">
+        <div class="lv-stars">
+          <svg viewBox="0 0 24 24" fill="#FBBF24" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="rgba(245,247,250,0.1)" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="rgba(245,247,250,0.1)" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+        </div>
+        <span class="lv-meta">15min · 3物体</span>
+      </div>
+    </div>
+  </a>
+
+  <a href="onboarding.html?level=table-2&name=%E8%8C%B6%E5%87%A0%C2%B7%E4%B8%AD%E7%BA%A7&objects=8&time=1080&shuffle=1&obstacles=1" class="lv-card">
+    <div class="lv-info">
+      <div class="lv-name">茶几 · 中级</div>
+      <div class="lv-row">
+        <div class="lv-stars">
+          <svg viewBox="0 0 24 24" fill="#FBBF24" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="#FBBF24" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="rgba(245,247,250,0.1)" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+        </div>
+        <span class="lv-meta">18min · 8物体</span>
+      </div>
+    </div>
+  </a>
+
+  <div class="lv-card locked">
+    <div class="lv-info">
+      <div class="lv-name">厨房 · 初级</div>
+      <div class="lv-row">
+        <span class="lv-meta">即将开放</span>
+      </div>
+    </div>
+    <span class="lv-lock"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+  </div>
+
+  <div class="lv-card locked">
+    <div class="lv-info">
+      <div class="lv-name">厨房 · 中级</div>
+      <div class="lv-row">
+        <span class="lv-meta">即将开放</span>
+      </div>
+    </div>
+    <span class="lv-lock"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+  </div>
+
+  <div class="lv-card locked">
+    <div class="lv-info">
+      <div class="lv-name">仓库 · 分拣</div>
+      <div class="lv-row">
+        <span class="lv-meta">即将开放</span>
+      </div>
+    </div>
+    <span class="lv-lock"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+  </div>
+
+  </div><!-- end level-cards-scroll -->
+</div>
+
+<!-- Sidebar -->
+<div class="sidebar-edge" id="sidebarEdge"></div>
+<div class="sidebar-trigger" id="sidebarTrigger"></div>
+<div class="sidebar" id="sidebar">
+  <div class="sb-brand">Joy<span>AI</span>-Sim</div>
+  <a class="sb-item active" href="landing.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Home</a>
+  <div class="sb-section-label">AI Models</div>
+  <a class="sb-item" href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>视觉理解</a>
+  <a class="sb-item" href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>视觉生成</a>
+  <a class="sb-item" href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>具身交互</a>
+</div>
+
+<!-- About -->
+<div class="about-overlay" id="aboutOverlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="about-panel">
+    <button class="about-close" onclick="document.getElementById('aboutOverlay').classList.remove('open')">&times;</button>
+    <div class="about-label">About</div>
+    <h2>京东具身智能<br>仿真交互平台</h2>
+    <p>JoyAI-Sim 是京东打造的具身智能仿真平台，基于高精度物理引擎与高斯泼溅实时渲染技术，构建逼真的 3D 交互场景。</p>
+    <p>平台拥有覆盖 300+ 细粒度类别、53,000+ 实例的日常物品 3D 资产库。</p>
+    <div class="about-tags">
+      <span class="about-tag">Gaussian Splatting</span><span class="about-tag">Physics Engine</span><span class="about-tag">JoyBuilder</span><span class="about-tag">WebGL2</span><span class="about-tag">53K+ 3D Assets</span>
+    </div>
+    <div style="margin-top: 28px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(245,247,250,0.06);">
+      <img src="assets/sim-grab.gif" alt="仿真抓取演示" style="width: 100%; display: block; object-fit: cover; object-position: right center;">
+    </div>
+  </div>
+</div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+}}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { MeshSurfaceSampler } from 'three/addons/math/MeshSurfaceSampler.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+// ============================================================
+// Core: Surface Sampler Pipeline
+// sampleMesh() works with any THREE.Mesh — from primitives or GLB
+// sampleGroup() handles a Group/Scene from GLTFLoader
+// ============================================================
+
+function sampleMesh(mesh, count) {
+  mesh.updateMatrixWorld(true);
+  const geo = mesh.geometry.clone();
+  geo.applyMatrix4(mesh.matrixWorld);
+  const tempMesh = new THREE.Mesh(geo);
+  const sampler = new MeshSurfaceSampler(tempMesh).build();
+  const pts = new Float32Array(count * 3);
+  const pos = new THREE.Vector3();
+  for (let i = 0; i < count; i++) {
+    sampler.sample(pos);
+    pts[i * 3]     = pos.x;
+    pts[i * 3 + 1] = pos.y;
+    pts[i * 3 + 2] = pos.z;
+  }
+  return pts;
+}
+
+function sampleGroup(group, totalCount) {
+  group.updateMatrixWorld(true);
+  const meshes = [];
+  let totalArea = 0;
+  group.traverse(child => {
+    if (child.isMesh && child.geometry) {
+      const geo = child.geometry.clone();
+      geo.applyMatrix4(child.matrixWorld);
+      const m = new THREE.Mesh(geo);
+      const sampler = new MeshSurfaceSampler(m).build();
+      // Estimate surface area from triangle count
+      const triCount = geo.index ? geo.index.count / 3 : geo.attributes.position.count / 3;
+      meshes.push({ sampler, area: triCount });
+      totalArea += triCount;
+    }
+  });
+  if (meshes.length === 0) return new Float32Array(0);
+  const pts = new Float32Array(totalCount * 3);
+  const pos = new THREE.Vector3();
+  let idx = 0;
+  meshes.forEach(({ sampler, area }) => {
+    const count = Math.round((area / totalArea) * totalCount);
+    for (let i = 0; i < count && idx < totalCount; i++, idx++) {
+      sampler.sample(pos);
+      pts[idx * 3]     = pos.x;
+      pts[idx * 3 + 1] = pos.y;
+      pts[idx * 3 + 2] = pos.z;
+    }
+  });
+  // Fill remaining if rounding left gaps
+  if (idx < totalCount && meshes.length > 0) {
+    const fallback = meshes[0].sampler;
+    while (idx < totalCount) {
+      fallback.sample(pos);
+      pts[idx * 3] = pos.x; pts[idx * 3 + 1] = pos.y; pts[idx * 3 + 2] = pos.z;
+      idx++;
+    }
+  }
+  return pts;
+}
+
+function loadGLB(url) {
+  return new Promise((resolve, reject) => {
+    new GLTFLoader().load(url, gltf => resolve(gltf.scene), undefined, reject);
+  });
+}
+
+// ============================================================
+// Scene: load GLB as the COMPLETE scene, sample as particles
+// ============================================================
+
+async function buildScene() {
+  const objects = [];
+
+  const glbScene = await loadGLB('assets/desk-split.glb');
+
+  const box = new THREE.Box3().setFromObject(glbScene);
+  const size = new THREE.Vector3();
+  const center = new THREE.Vector3();
+  box.getSize(size);
+  box.getCenter(center);
+  const maxDim = Math.max(size.x, size.y, size.z);
+  const autoScale = 6 / maxDim;
+  glbScene.scale.set(autoScale, autoScale, autoScale);
+  glbScene.rotation.y = Math.PI * 3 / 2;
+  glbScene.position.set(-center.x * autoScale, -center.y * autoScale, -center.z * autoScale);
+  glbScene.updateMatrixWorld(true);
+
+  // Sample per-mesh to track part ownership
+  const TOTAL_SAMPLES = 500000;
+  const meshInfos = [];
+  let totalTris = 0;
+  glbScene.traverse(child => {
+    if (child.isMesh && child.geometry) {
+      const match = child.name.match(/tripo_part_(\d+)/);
+      const partId = match ? parseInt(match[1]) : -1;
+      const geo = child.geometry.clone();
+      geo.applyMatrix4(child.matrixWorld);
+      const m = new THREE.Mesh(geo);
+      const sampler = new MeshSurfaceSampler(m).build();
+      const triCount = geo.index ? geo.index.count / 3 : geo.attributes.position.count / 3;
+      meshInfos.push({ sampler, triCount, partId });
+      totalTris += triCount;
+    }
+  });
+
+  const allPts = new Float32Array(TOTAL_SAMPLES * 3);
+  window._particlePartIds = new Int16Array(TOTAL_SAMPLES); // track which part each particle belongs to
+  const pos = new THREE.Vector3();
+  let idx = 0;
+  meshInfos.forEach(({ sampler, triCount, partId }) => {
+    const count = Math.round((triCount / totalTris) * TOTAL_SAMPLES);
+    for (let i = 0; i < count && idx < TOTAL_SAMPLES; i++, idx++) {
+      sampler.sample(pos);
+      allPts[idx * 3] = pos.x;
+      allPts[idx * 3 + 1] = pos.y;
+      allPts[idx * 3 + 2] = pos.z;
+      window._particlePartIds[idx] = partId;
+    }
+  });
+  // Fill remaining
+  while (idx < TOTAL_SAMPLES) {
+    window._particlePartIds[idx] = -1;
+    allPts[idx * 3] = 0; allPts[idx * 3 + 1] = 0; allPts[idx * 3 + 2] = 0;
+    idx++;
+  }
+
+  // Store original home positions
+  window._particleOrigHome = new Float32Array(allPts);
+
+  objects.push({ pts: allPts, color: [0.45, 0.2, 0.12], id: 'scene', presampled: true });
+  return objects;
+}
+
+// ============================================================
+// ASYNC INIT — everything starts here
+// ============================================================
+async function init() {
+
+const sceneObjects = await buildScene();
+
+let totalParticles = 0;
+const sampledData = [];
+
+sceneObjects.forEach(obj => {
+  let pts, count;
+  if (obj.presampled) {
+    pts = obj.pts;
+    count = pts.length / 3;
+  } else {
+    count = obj.count;
+    pts = sampleMesh(obj.mesh, count);
+  }
+  sampledData.push({ pts, color: obj.color, count, id: obj.id });
+  totalParticles += count;
+});
+
+// No ambient dust — particles only exist on object surfaces
+const AMBIENT_COUNT = 0;
+totalParticles += AMBIENT_COUNT;
+
+const allPos = new Float32Array(totalParticles * 3);
+const allHome = new Float32Array(totalParticles * 3);
+const allCol = new Float32Array(totalParticles * 3);
+const allSize = new Float32Array(totalParticles);
+const allPhase = new Float32Array(totalParticles);
+
+let off = 0;
+sampledData.forEach(({ pts, color, count }) => {
+  let minX=Infinity, maxX=-Infinity, minY=Infinity, maxY=-Infinity, minZ=Infinity, maxZ=-Infinity;
+  for (let i = 0; i < count; i++) {
+    const x=pts[i*3], y=pts[i*3+1], z=pts[i*3+2];
+    if(x<minX)minX=x; if(x>maxX)maxX=x;
+    if(y<minY)minY=y; if(y>maxY)maxY=y;
+    if(z<minZ)minZ=z; if(z>maxZ)maxZ=z;
+  }
+  const rx=maxX-minX||1, ry=maxY-minY||1, rz=maxZ-minZ||1;
+
+  for (let i = 0; i < count; i++) {
+    const idx = off + i;
+    const i3 = i * 3, idx3 = idx * 3;
+    // Home = model surface (target)
+    allHome[idx3]=pts[i3]; allHome[idx3+1]=pts[i3+1]; allHome[idx3+2]=pts[i3+2];
+    // Start position = very close to home, just slightly offset (thin haze)
+    const angle1 = Math.random() * Math.PI * 2;
+    const angle2 = Math.random() * Math.PI * 2;
+    const radius = 0.1 + Math.random() * 0.4;
+    allPos[idx3]   = pts[i3] + Math.cos(angle1) * radius;
+    allPos[idx3+1] = pts[i3+1] + Math.sin(angle2) * radius * 0.3;
+    allPos[idx3+2] = pts[i3+2] + Math.sin(angle1) * radius;
+
+    // Smooth position-based color using continuous gradients
+    const nx = (pts[i3] - minX) / rx;     // 0=left, 1=right
+    const ny = (pts[i3+1] - minY) / ry;   // 0=bottom, 1=top
+    const nz = (pts[i3+2] - minZ) / rz;   // 0=back, 1=front
+
+    let r, g, b;
+
+    // Use part ID to separate desk/legs from objects
+    const partId = window._particlePartIds ? window._particlePartIds[idx] : -1;
+    const isDeskTop = (partId === 5);
+    const isLeg = (partId === 16 || partId === 17 || partId === 24 || partId === 25);
+
+    if (isLeg) {
+      // Legs — very dark cold, subtle blue
+      r = 0.04 + nz * 0.02;
+      g = 0.03 + nz * 0.02;
+      b = 0.08 + nz * 0.04;
+    } else if (isDeskTop) {
+      // Desk surface — dark with warm amber glow spots, NOT pink
+      const frontMix = Math.pow(nz, 1.5);
+      const topMix = 1 - frontMix;
+      r = 0.1 * frontMix + 0.18 * topMix;
+      g = 0.06 * frontMix + 0.1 * topMix;
+      b = 0.08 * frontMix + 0.12 * topMix;
+      // Random warm amber glow spots on desk (not pink)
+      if (Math.random() < 0.06) {
+        r += 0.35; g += 0.18; b += 0.03;
+      }
+    } else {
+      // All other parts — objects and arms on the table
+      const heightBoost = Math.min(Math.max((ny - 0.42) / 0.58, 0), 1.0);
+
+      if (heightBoost > 0.5) {
+        // Arms — cool blue-violet, NOT pink
+        r = 0.2 + heightBoost * 0.15;
+        g = 0.15 + heightBoost * 0.15;
+        b = 0.65 + heightBoost * 0.3;
+        // Bright blue-white tips
+        if (heightBoost > 0.8 && Math.random() < 0.15) {
+          r = 0.75; g = 0.85; b = 1.0;
+        }
+      } else {
+        // Objects — saturated, pure colors per region
+        const leftW = Math.pow(Math.max(0, 1 - nx * 2), 1.5);
+        const rightW = Math.pow(Math.max(0, nx * 2 - 1), 1.5);
+        const centerW = Math.pow(Math.max(0, 1 - Math.abs(nx - 0.5) * 2.5), 1.2);
+
+        // Left: bright electric blue, Center: deep indigo/violet, Right: hot amber/orange
+        r = 0.08 * leftW + 0.2 * centerW + 0.95 * rightW;
+        g = 0.35 * leftW + 0.08 * centerW + 0.45 * rightW;
+        b = 0.95 * leftW + 0.6 * centerW + 0.05 * rightW;
+
+        // Normalize
+        const w = leftW + centerW + rightW + 0.001;
+        r /= w; g /= w; b /= w;
+
+        // Height brightening
+        r += heightBoost * 0.15;
+        g += heightBoost * 0.08;
+        b += heightBoost * 0.1;
+      }
+    }
+
+    // Depth tint — front warmer
+    r += nz * 0.06;
+    b -= nz * 0.04;
+
+    // Per-particle color variation (wider spread)
+    const noise = (Math.random() - 0.5) * 0.12;
+    allCol[idx3]   = Math.max(0.04, Math.min(1, r + noise));
+    allCol[idx3+1] = Math.max(0.02, Math.min(1, g + noise * 0.3));
+    allCol[idx3+2] = Math.max(0.04, Math.min(1, b + noise * 0.5));
+
+    // Bright hotspot particles on top of objects (not desk/legs)
+    if (!isDeskTop && !isLeg && ny > 0.6 && Math.random() < 0.03) {
+      const boost = 0.3 + Math.random() * 0.4;
+      allCol[idx3] = Math.min(1, allCol[idx3] + boost);
+      allCol[idx3+1] = Math.min(1, allCol[idx3+1] + boost * 0.8);
+      allCol[idx3+2] = Math.min(1, allCol[idx3+2] + boost * 0.6);
+    }
+
+    allSize[idx] = 0.4 + Math.random() * 2.6 + (Math.random() < 0.08 ? 2.0 : 0);
+    allPhase[idx] = Math.random() * Math.PI * 2;
+  }
+  off += count;
+});
+
+// (no ambient dust)
+
+// ============================================================
+// Renderer
+// ============================================================
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: false });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setClearColor(0x000000, 1);
+
+const scene = new THREE.Scene();
+const ambLight = new THREE.AmbientLight(0xffffff, 0.3);
+scene.add(ambLight);
+const dirLight = new THREE.DirectionalLight(0xffffff, 0.4);
+dirLight.position.set(3, 5, 4);
+scene.add(dirLight);
+const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.set(-0.8, 0.6, 5.5);
+camera.lookAt(-0.5, 0.4, 0);
+
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const bloomPass = new UnrealBloomPass(
+  new THREE.Vector2(window.innerWidth, window.innerHeight),
+  0.55, 0.7, 0.8
+);
+composer.addPass(bloomPass);
+
+// ============================================================
+// Particle material
+// ============================================================
+const geo = new THREE.BufferGeometry();
+geo.setAttribute('position', new THREE.BufferAttribute(allPos, 3));
+geo.setAttribute('home', new THREE.BufferAttribute(allHome, 3));
+geo.setAttribute('customColor', new THREE.BufferAttribute(allCol, 3));
+geo.setAttribute('size', new THREE.BufferAttribute(allSize, 1));
+geo.setAttribute('phase', new THREE.BufferAttribute(allPhase, 1));
+
+const mat = new THREE.ShaderMaterial({
+  vertexShader: `
+    attribute vec3 customColor;
+    attribute float size;
+    attribute float phase;
+    varying vec3 vColor;
+    varying float vAlpha;
+    uniform float uTime;
+    void main() {
+      vColor = customColor;
+      float breathe = 1.0 + sin(uTime * 0.1 + phase) * 0.02;
+      vAlpha = 0.6 * breathe;
+      vec4 mv = modelViewMatrix * vec4(position, 1.0);
+      gl_PointSize = size * breathe * (90.0 / -mv.z);
+      gl_PointSize = clamp(gl_PointSize, 0.5, 6.0);
+      gl_Position = projectionMatrix * mv;
+    }
+  `,
+  fragmentShader: `
+    varying vec3 vColor;
+    varying float vAlpha;
+    void main() {
+      float d = length(gl_PointCoord - 0.5);
+      if (d > 0.5) discard;
+      float soft = smoothstep(0.5, 0.1, d);
+      gl_FragColor = vec4(vColor, soft * vAlpha);
+    }
+  `,
+  uniforms: { uTime: { value: 0 } },
+  transparent: true,
+  depthWrite: true,
+  depthTest: true,
+  blending: THREE.NormalBlending,
+});
+
+const particlePoints = new THREE.Points(geo, mat);
+scene.add(particlePoints);
+
+// ============================================================
+// Noise for breathing
+// ============================================================
+function mod289(x){return x-Math.floor(x/289)*289;}
+function permute(x){return mod289((x*34+1)*x);}
+function lerp(t,a,b){return a+t*(b-a);}
+function snoise3(x,y,z){
+  const X=Math.floor(x)&255,Y=Math.floor(y)&255,Z=Math.floor(z)&255;
+  const xf=x-Math.floor(x),yf=y-Math.floor(y),zf=z-Math.floor(z);
+  const u=xf*xf*(3-2*xf),v=yf*yf*(3-2*yf),w=zf*zf*(3-2*zf);
+  const A=(permute(X)+Y)&255,B=(permute(X+1)+Y)&255;
+  const AA=(permute(A)+Z)&255,AB=(permute(A+1)+Z)&255;
+  const BA=(permute(B)+Z)&255,BB=(permute(B+1)+Z)&255;
+  function g(h,a,b,c){h&=15;const u=h<8?a:b,v=h<4?b:(h===12||h===14?a:c);return((h&1)?-u:u)+((h&2)?-v:v);}
+  return lerp(w,lerp(v,lerp(u,g(permute(AA),xf,yf,zf),g(permute(BA),xf-1,yf,zf)),lerp(u,g(permute(AB),xf,yf-1,zf),g(permute(BB),xf-1,yf-1,zf))),lerp(v,lerp(u,g(permute(AA+1),xf,yf,zf-1),g(permute(BA+1),xf-1,yf,zf-1)),lerp(u,g(permute(AB+1),xf,yf-1,zf-1),g(permute(BB+1),xf-1,yf-1,zf-1))));
+}
+
+// ============================================================
+// Mouse interaction
+// ============================================================
+const mouse = { x: 999, y: 999, z: 999 };
+const rc = new THREE.Raycaster();
+const ndc = new THREE.Vector2();
+const tablePlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+const hit = new THREE.Vector3();
+
+window.addEventListener('mousemove', e => {
+  ndc.x = (e.clientX / window.innerWidth) * 2 - 1;
+  ndc.y = -(e.clientY / window.innerHeight) * 2 + 1;
+  rc.setFromCamera(ndc, camera);
+  if (rc.ray.intersectPlane(tablePlane, hit)) {
+    mouse.x = hit.x; mouse.y = hit.y; mouse.z = hit.z;
+  }
+});
+
+// ============================================================
+// Keyboard
+// ============================================================
+const keys = {};
+window.addEventListener('keydown', e => {
+  keys[e.code] = true;
+  if (['Space','ArrowUp','ArrowDown','Tab'].includes(e.code)) e.preventDefault();
+});
+window.addEventListener('keyup', e => { keys[e.code] = false; });
+
+// ============================================================
+// Animate
+// ============================================================
+let time = 0;
+const clock = new THREE.Clock();
+
+// Gather state: 'floating' = nebula drift, 'gathering' = converge to model
+let gatherState = 'floating';
+let gatherStartTime = 0;
+
+// Called when user clicks CTA
+window.startGather = function() {
+  gatherState = 'gathering';
+  gatherStartTime = time;
+};
+
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = Math.min(clock.getDelta(), 0.05);
+  time += dt;
+  mat.uniforms.uTime.value = time;
+
+  const pos = geo.attributes.position.array;
+  const home = geo.attributes.home.array;
+
+  const GATHER_DURATION = 6.0;
+  let lerpSpeed;
+
+  if (gatherState === 'floating') {
+    // Nebula drift: particles wander slowly, never converge
+    lerpSpeed = 0;
+  } else {
+    // Gathering: converge to home
+    const elapsed = time - gatherStartTime;
+    const progress = Math.min(elapsed / GATHER_DURATION, 1.0);
+    const ease = progress * progress * (3 - 2 * progress);
+    lerpSpeed = 0.003 + ease * 0.077;
+  }
+
+  for (let i = 0; i < totalParticles; i++) {
+    const i3 = i * 3;
+    const hx = home[i3], hy = home[i3+1], hz = home[i3+2];
+
+    if (gatherState === 'floating') {
+      // Slow noise-based drift
+      const drift = 0.15;
+      const nx = Math.sin(time * 0.3 + i * 0.01) * drift;
+      const ny = Math.cos(time * 0.2 + i * 0.013) * drift * 0.3;
+      const nz = Math.sin(time * 0.25 + i * 0.017) * drift;
+      pos[i3]   += nx * 0.02;
+      pos[i3+1] += ny * 0.02;
+      pos[i3+2] += nz * 0.02;
+    } else {
+      let tx = hx, ty = hy, tz = hz;
+
+      // Mouse interaction after mostly gathered
+      const elapsed = time - gatherStartTime;
+      if (elapsed > GATHER_DURATION * 0.8) {
+        const mdx = pos[i3] - mouse.x;
+        const mdy = pos[i3+1] - mouse.y;
+        const mdz = pos[i3+2] - mouse.z;
+        const mDist = Math.sqrt(mdx * mdx + mdy * mdy + mdz * mdz);
+        if (mDist < 2.2 && mDist > 0.01) {
+          const falloff = (1 - mDist / 2.2);
+          const strength = falloff * falloff * 0.036;
+          tx += (-mdz / mDist) * strength;
+          tz += (mdx / mDist) * strength;
+          ty += Math.sin(time * 3.0 + mDist * 6) * strength * 0.5;
+        }
+      }
+
+      pos[i3]   += (tx - pos[i3]) * lerpSpeed;
+      pos[i3+1] += (ty - pos[i3+1]) * lerpSpeed;
+      pos[i3+2] += (tz - pos[i3+2]) * lerpSpeed;
+    }
+  }
+
+  geo.attributes.position.needsUpdate = true;
+  composer.render();
+}
+
+animate();
+
+// Click anywhere on canvas to trigger gather
+document.getElementById('c').addEventListener('click', () => {
+  if (gatherState === 'floating') window.startGather();
+});
+
+// Resize
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  composer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// Sidebar
+const sb = document.getElementById('sidebar');
+const tr = document.getElementById('sidebarTrigger');
+let sT;
+tr.addEventListener('mouseenter', () => { clearTimeout(sT); sb.classList.add('open'); });
+sb.addEventListener('mouseenter', () => { clearTimeout(sT); sb.classList.add('open'); });
+sb.addEventListener('mouseleave', () => { clearTimeout(sT); sT = setTimeout(() => sb.classList.remove('open'), 400); });
+tr.addEventListener('mouseleave', () => { clearTimeout(sT); sT = setTimeout(() => sb.classList.remove('open'), 400); });
+
+} // end async init()
+
+init().catch(e => console.error('Init failed:', e));
+</script>
+
+<!-- Page toggle -->
+<a href="landing.html" style="position:fixed;bottom:20px;right:20px;z-index:9999;padding:8px 16px;border-radius:8px;background:rgba(245,247,250,0.08);border:1px solid rgba(245,247,250,0.12);color:rgba(245,247,250,0.6);font-size:12px;font-weight:500;text-decoration:none;backdrop-filter:blur(8px);transition:all 0.2s;cursor:pointer;" onmouseover="this.style.background='rgba(245,247,250,0.15)';this.style.color='#f5f7fa'" onmouseout="this.style.background='rgba(245,247,250,0.08)';this.style.color='rgba(245,247,250,0.6)'">切换首页 V1 →</a>
+
+</body>
+</html>

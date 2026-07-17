@@ -27,8 +27,8 @@
     padding: 0 40px;
     opacity: 0; animation: fadeIn 1s ease 0.3s forwards;
   }
-  .logo { font-size: 18px; font-weight: 700; color: #f5f7fa; letter-spacing: -0.3px; }
-  .logo span { color: #6EC9FF; }
+  .logo { height: 32px; margin-left: -8px; }
+  .logo img { height: 100%; width: auto; display: block; }
   .top-links {
     display: flex; align-items: center; gap: 28px;
   }
@@ -56,7 +56,7 @@
 
   /* Hero text — LEFT side */
   .hero-left {
-    position: fixed; top: 120px; left: 48px;
+    position: fixed; top: 120px; left: 64px;
     max-width: 400px;
     opacity: 0; animation: fadeIn 1s ease 0.5s forwards;
     z-index: 12;
@@ -190,10 +190,10 @@
 
   /* Level panel — integrated into page left side */
   .level-panel {
-    position: fixed; top: 380px; left: 48px;
+    position: fixed; top: 360px; left: 48px;
     width: 28vw; min-width: 280px; max-width: 380px;
     max-height: calc(100vh - 420px);
-    z-index: 15;
+    z-index: 25;
     background: transparent;
     padding: 0;
     display: flex; flex-direction: column; gap: 10px;
@@ -209,23 +209,6 @@
   .level-cards-scroll::-webkit-scrollbar { width: 4px; }
   .level-cards-scroll::-webkit-scrollbar-track { background: transparent; }
   .level-cards-scroll::-webkit-scrollbar-thumb { background: rgba(245,247,250,0.25); border-radius: 2px; }
-  .mode-toggle {
-    display: flex; gap: 4px;
-    padding: 3px; border-radius: 10px;
-    background: rgba(245,247,250,0.04);
-    border: 1px solid rgba(245,247,250,0.06);
-    margin-bottom: 10px;
-  }
-  .mode-btn {
-    flex: 1; padding: 6px 0; border: none; border-radius: 8px;
-    font-size: 12px; font-weight: 600; font-family: inherit;
-    color: rgba(245,247,250,0.35); background: transparent;
-    cursor: pointer; transition: all 0.2s;
-  }
-  .mode-btn.active {
-    background: rgba(110,201,255,0.12); color: #6EC9FF;
-  }
-  .mode-btn:hover:not(.active) { color: rgba(245,247,250,0.6); }
   .level-panel-title {
     font-size: 18px; font-weight: 800; color: #6EC9FF;
     letter-spacing: -0.3px;
@@ -288,6 +271,13 @@
   .lv-all:hover { color: rgba(245,247,250,0.6); }
 
   @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes spinLoader {
+    0% { transform: rotate(0deg); }
+    40% { transform: rotate(180deg); }
+    50% { transform: rotate(180deg); }
+    90% { transform: rotate(360deg); }
+    100% { transform: rotate(360deg); }
+  }
   @media (max-width: 768px) {
     .hero-title { font-size: 28px; }
     .hero-left { left: 20px; top: 100px; max-width: 260px; }
@@ -296,80 +286,104 @@
     .level-panel { display: none; }
   }
 
-  /* ===== LIGHT MODE (texture version) ===== */
-  body.light-mode { background: #d4d8de; }
-  body.light-mode .logo { color: #0F172A; }
-  body.light-mode .logo span { color: #2563EB; }
-  body.light-mode .link-login { color: #64748B; }
-  body.light-mode .link-login:hover { color: #0F172A; }
-  body.light-mode .btn-get-started {
-    background: rgba(15,23,42,0.04); border-color: rgba(15,23,42,0.1); color: #0F172A;
-  }
-  body.light-mode .btn-get-started:hover { background: rgba(15,23,42,0.08); }
-  body.light-mode .hero-badge { color: #2563EB; }
-  body.light-mode .hero-title {
-    background: linear-gradient(135deg, #0F172A 0%, #2563EB 50%, #0F172A 100%);
-    -webkit-background-clip: text; background-clip: text;
-  }
-  body.light-mode .hero-sub { color: #64748B; }
-  body.light-mode .level-panel-title { color: #2563EB; }
-  body.light-mode .lv-card {
-    background: rgba(15,23,42,0.03); border-color: rgba(15,23,42,0.08);
-  }
-  body.light-mode .lv-card:hover {
-    background: rgba(15,23,42,0.06); border-color: rgba(15,23,42,0.12);
-  }
-  body.light-mode .lv-name { color: #0F172A; }
-  body.light-mode .lv-meta { color: #94A3B8; }
-  body.light-mode .lv-stars svg[fill="rgba(245,247,250,0.1)"] { fill: #E2E8F0; }
-  body.light-mode .lv-lock { color: #94A3B8; }
-  body.light-mode .lv-all { color: #94A3B8; }
-  body.light-mode .lv-all:hover { color: #475569; }
-  body.light-mode .mode-toggle {
-    background: rgba(15,23,42,0.04); border-color: rgba(15,23,42,0.08);
-  }
-  body.light-mode .mode-btn { color: #94A3B8; }
-  body.light-mode .mode-btn.active { background: rgba(37,99,235,0.08); color: #2563EB; }
-  body.light-mode .mode-btn:hover:not(.active) { color: #475569; }
-  body.light-mode .sidebar-edge { background: #2563EB; }
-  body.light-mode .sidebar-edge::after { border-top-color: #2563EB; border-right-color: #2563EB; }
-  body.light-mode .about-overlay { background: rgba(255,255,255,0.5); }
-  body.light-mode .about-panel { background: rgba(255,255,255,0.96); border-left-color: rgba(15,23,42,0.06); }
-  body.light-mode .about-panel h2 { color: #0F172A; }
-  body.light-mode .about-panel p { color: #64748B; }
-  body.light-mode .about-label { color: #2563EB; }
-  body.light-mode .about-close { background: rgba(15,23,42,0.04); color: #64748B; }
-  body.light-mode .about-tag { background: rgba(15,23,42,0.03); border-color: rgba(15,23,42,0.08); color: #64748B; }
 </style>
 </head>
 <body>
 
-<canvas id="c"></canvas>
-
-<!-- Click to gather prompt -->
-<div id="clickPrompt" style="
-  position: fixed; inset: 0; z-index: 20;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  pointer-events: auto; cursor: pointer;
-" onclick="window.startGather(); this.style.opacity='0'; this.style.pointerEvents='none'; this.style.transition='opacity 1s';">
-  <div style="
-    width: 72px; height: 72px; border-radius: 50%;
-    border: 2px solid rgba(110,201,255,0.4);
-    display: flex; align-items: center; justify-content: center;
-    animation: promptPulse 2s ease-in-out infinite;
-    background: rgba(110,201,255,0.06);
-    box-shadow: 0 0 30px rgba(110,201,255,0.15);
-  ">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="#6EC9FF" stroke="none">
-      <polygon points="8,5 19,12 8,19"/>
-    </svg>
-  </div>
-  <span style="margin-top: 14px; font-size: 12px; color: #6EC9FF; letter-spacing: 1px; font-weight: 500;">CLICK TO CONVERGE</span>
+<!-- Full-screen background image -->
+<div class="bg-image">
+  <img src="assets/landing2使用.jpg" alt="场景选择">
+  <!-- Clickable hotspot areas -->
+  <a href="javascript:void(0)" class="hotspot hotspot-office" title="办公室">
+    <span class="hotspot-label">办公室</span>
+  </a>
+  <a href="javascript:void(0)" class="hotspot hotspot-desk" title="书桌">
+    <span class="hotspot-label">书桌</span>
+  </a>
+  <a href="javascript:void(0)" class="hotspot hotspot-table" title="茶几">
+    <span class="hotspot-label">茶几</span>
+  </a>
 </div>
+
+<!-- Typewriter scene label -->
+<div class="scene-typer" id="sceneTyper">
+  <span class="scene-typer-text" id="sceneTyperText"></span>
+  <span class="scene-typer-cursor">|</span>
+</div>
+
 <style>
-  @keyframes promptPulse {
-    0%, 100% { transform: scale(1); border-color: rgba(245,247,250,0.15); }
-    50% { transform: scale(1.06); border-color: rgba(110,201,255,0.3); }
+  .bg-image {
+    position: fixed; inset: 0;
+    width: 100%; height: 100%;
+  }
+  .bg-image img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+
+  /* Scene typewriter label */
+  .scene-typer {
+    position: fixed;
+    top: 4%; left: 50%; transform: translateX(-50%);
+    z-index: 50;
+    padding: 10px 32px;
+    background: rgba(8,8,20,0.5);
+    border: 1px solid rgba(110,160,255,0.15);
+    border-radius: 8px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 0 20px rgba(80,120,255,0.08), inset 0 0 20px rgba(80,120,255,0.03);
+    display: none;
+    align-items: center;
+    min-width: 200px;
+    justify-content: center;
+  }
+  .scene-typer.active {
+    display: flex;
+  }
+  .scene-typer-text {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    color: rgba(180,210,255,0.9);
+    text-shadow: 0 0 8px rgba(110,160,255,0.4), 0 0 20px rgba(110,160,255,0.2);
+    font-family: 'Inter', monospace;
+  }
+  .scene-typer-cursor {
+    font-size: 18px;
+    font-weight: 300;
+    color: rgba(110,180,255,0.8);
+    animation: cursorBlink 0.8s ease-in-out infinite;
+    margin-left: 2px;
+  }
+  @keyframes cursorBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+  .hotspot {
+    position: absolute;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex; align-items: center; justify-content: center;
+    text-decoration: none;
+  }
+  .hotspot:hover {
+    background: rgba(110,201,255,0.03);
+  }
+  .hotspot-label {
+    display: none;
+  }
+  /* Hotspot positions based on reference image */
+  .hotspot-office {
+    top: 44%; left: 45%; width: 34%; height: 13%;
+  }
+  .hotspot-desk {
+    top: 60%; left: 43%; width: 14%; height: 20%;
+  }
+  .hotspot-table {
+    top: 62%; left: 59%; width: 22%; height: 19%;
   }
 </style>
 
@@ -377,7 +391,7 @@
   <!-- Top bar matching reference -->
   <div class="top-bar">
     <div style="display:flex;align-items:center;gap:36px;">
-      <div class="logo">Joy<span>AI</span></div>
+      <div class="logo"><img src="assets/JoyAI.png" alt="JoyAI"></div>
     </div>
     <div class="top-right">
       <a class="btn-get-started" onclick="document.getElementById('aboutOverlay').classList.add('open')" style="cursor:pointer;">关于</a>
@@ -391,120 +405,166 @@
     <p class="hero-sub">进入具身仿真世界，完成抓取任务，<br>同场竞技，看人类直觉能否胜过机器算法。</p>
   </div>
 
-  <!-- Level Panel — RIGHT BOTTOM -->
-  <div class="level-panel">
-    <div class="mode-toggle">
-      <button class="mode-btn active" id="modeParticle">粒子版</button>
-      <button class="mode-btn" id="modeTexture">贴图版</button>
-    </div>
-    <div class="level-panel-title">关卡选择</div>
-
-    <div class="level-cards-scroll">
-    <a href="onboarding.html?level=tutorial&name=%E6%96%B0%E6%89%8B%E6%95%99%E5%AD%A6&objects=3&time=0" class="lv-card">
-      <div class="lv-info">
-        <div class="lv-name">新手教学</div>
-        <div class="lv-row">
-          <div class="lv-stars">
-            <svg viewBox="0 0 24 24" fill="#FBBF24" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
-            <svg viewBox="0 0 24 24" fill="rgba(245,247,250,0.1)" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
-            <svg viewBox="0 0 24 24" fill="rgba(245,247,250,0.1)" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
-          </div>
-          <span class="lv-badge">已通关</span>
-          <span class="lv-meta">不限时 · 3 物体</span>
-        </div>
-      </div>
-    </a>
-
-    <a href="onboarding.html?level=desk-1&name=%E4%B9%A6%E6%A1%8C%C2%B7%E5%88%9D%E7%BA%A7&objects=3&time=900&shuffle=1" class="lv-card">
-      <div class="lv-info">
-        <div class="lv-name">书桌 · 初级</div>
-        <div class="lv-row">
-          <div class="lv-stars">
-            <svg viewBox="0 0 24 24" fill="#FBBF24" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
-            <svg viewBox="0 0 24 24" fill="rgba(245,247,250,0.1)" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
-            <svg viewBox="0 0 24 24" fill="rgba(245,247,250,0.1)" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
-          </div>
-          <span class="lv-meta">15min · 3物体</span>
-        </div>
-      </div>
-    </a>
-
-    <a href="onboarding.html?level=desk-2&name=%E4%B9%A6%E6%A1%8C%C2%B7%E4%B8%AD%E7%BA%A7&objects=5&time=1080&shuffle=1&obstacles=1" class="lv-card">
-      <div class="lv-info">
-        <div class="lv-name">书桌 · 中级</div>
-        <div class="lv-row">
-          <div class="lv-stars">
-            <svg viewBox="0 0 24 24" fill="#FBBF24" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
-            <svg viewBox="0 0 24 24" fill="#FBBF24" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
-            <svg viewBox="0 0 24 24" fill="rgba(245,247,250,0.1)" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
-          </div>
-          <span class="lv-meta">18min · 5物体</span>
-        </div>
-      </div>
-    </a>
-
-    <a href="onboarding.html?level=table-1&name=%E8%8C%B6%E5%87%A0%C2%B7%E5%88%9D%E7%BA%A7&objects=5&time=900&shuffle=1" class="lv-card">
-      <div class="lv-info">
-        <div class="lv-name">茶几 · 初级</div>
-        <div class="lv-row">
-          <div class="lv-stars">
-            <svg viewBox="0 0 24 24" fill="#FBBF24" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
-            <svg viewBox="0 0 24 24" fill="rgba(245,247,250,0.1)" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
-            <svg viewBox="0 0 24 24" fill="rgba(245,247,250,0.1)" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
-          </div>
-          <span class="lv-meta">15min · 3物体</span>
-        </div>
-      </div>
-    </a>
-
-    <a href="onboarding.html?level=table-2&name=%E8%8C%B6%E5%87%A0%C2%B7%E4%B8%AD%E7%BA%A7&objects=8&time=1080&shuffle=1&obstacles=1" class="lv-card">
-      <div class="lv-info">
-        <div class="lv-name">茶几 · 中级</div>
-        <div class="lv-row">
-          <div class="lv-stars">
-            <svg viewBox="0 0 24 24" fill="#FBBF24" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
-            <svg viewBox="0 0 24 24" fill="#FBBF24" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
-            <svg viewBox="0 0 24 24" fill="rgba(245,247,250,0.1)" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
-          </div>
-          <span class="lv-meta">18min · 8物体</span>
-        </div>
-      </div>
-    </a>
-
-    <div class="lv-card locked">
-      <div class="lv-info">
-        <div class="lv-name">厨房 · 初级</div>
-        <div class="lv-row">
-          <span class="lv-meta">即将开放</span>
-        </div>
-      </div>
-      <span class="lv-lock"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
-    </div>
-
-    <div class="lv-card locked">
-      <div class="lv-info">
-        <div class="lv-name">厨房 · 中级</div>
-        <div class="lv-row">
-          <span class="lv-meta">即将开放</span>
-        </div>
-      </div>
-      <span class="lv-lock"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
-    </div>
-
-    <div class="lv-card locked">
-      <div class="lv-info">
-        <div class="lv-name">仓库 · 分拣</div>
-        <div class="lv-row">
-          <span class="lv-meta">即将开放</span>
-        </div>
-      </div>
-      <span class="lv-lock"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
-    </div>
-
-    </div><!-- end level-cards-scroll -->
-    <a href="#" class="lv-all">查看全部关卡 →</a>
   </div>
 </div>
+
+<!-- Mission Panel — bottom left -->
+<div class="mission-panel">
+  <div class="mission-header">TODAY'S MISSION</div>
+
+  <div class="mission-scroll">
+    <a href="onboarding.html?level=table-1&name=%E8%8C%B6%E5%87%A0%C2%B7%E5%88%9D%E7%BA%A7&objects=5&time=900&shuffle=1" class="mission-card">
+      <div class="mission-thumb"><img src="assets/任务卡茶几.jpg" alt="茶几"></div>
+      <div class="mission-info">
+        <div class="mission-name-row">
+          <svg class="mission-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9D7CFF" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          <span class="mission-name">茶几场景</span>
+        </div>
+        <div class="mission-count">3 个可玩任务</div>
+      </div>
+      <svg class="mission-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(160,170,255,0.5)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+    </a>
+
+    <a href="onboarding.html?level=desk-1&name=%E4%B9%A6%E6%A1%8C%C2%B7%E5%88%9D%E7%BA%A7&objects=3&time=900&shuffle=1" class="mission-card">
+      <div class="mission-thumb"><img src="assets/任务卡书桌.jpg" alt="书桌"></div>
+      <div class="mission-info">
+        <div class="mission-name-row">
+          <svg class="mission-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9D7CFF" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          <span class="mission-name">书桌场景</span>
+        </div>
+        <div class="mission-count">2 个可玩任务</div>
+      </div>
+      <svg class="mission-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(160,170,255,0.5)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+    </a>
+
+    <div class="mission-card locked">
+      <div class="mission-thumb locked-thumb"></div>
+      <div class="mission-info">
+        <div class="mission-name-row">
+          <svg class="mission-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(160,170,200,0.3)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span class="mission-name">办公室场景</span>
+        </div>
+        <div class="mission-count">即将开放</div>
+      </div>
+    </div>
+
+    <div class="mission-card locked">
+      <div class="mission-thumb locked-thumb"></div>
+      <div class="mission-info">
+        <div class="mission-name-row">
+          <svg class="mission-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(160,170,200,0.2)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <span class="mission-name">???</span>
+        </div>
+        <div class="mission-count">敬请期待</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mission-footer">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9D7CFF" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+    <span class="mission-footer-open">2 个世界已开放</span>
+    <span class="mission-footer-lock">更多世界即将解锁...</span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(160,170,255,0.4)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+  </div>
+</div>
+
+<style>
+  .mission-panel {
+    position: fixed;
+    bottom: 60px; left: 64px;
+    z-index: 50;
+    width: 380px;
+    background: rgba(12,12,28,0.75);
+    border: 1px solid rgba(110,160,255,0.1);
+    border-radius: 16px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    padding: 22px 24px 14px;
+    display: flex; flex-direction: column; gap: 14px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    opacity: 0; animation: fadeIn 1s ease 1s forwards;
+  }
+  .mission-header {
+    font-size: 11px; font-weight: 700;
+    color: rgba(200,210,255,0.6);
+    letter-spacing: 1.5px;
+  }
+  .mission-scroll {
+    position: relative;
+    max-height: 310px;
+    overflow-y: auto;
+    display: flex; flex-direction: column; gap: 10px;
+    padding-right: 4px;
+    mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+  }
+  .mission-scroll::-webkit-scrollbar { width: 3px; }
+  .mission-scroll::-webkit-scrollbar-track { background: transparent; }
+  .mission-scroll::-webkit-scrollbar-thumb { background: rgba(110,160,255,0.15); border-radius: 3px; }
+  .mission-scroll::-webkit-scrollbar-thumb:hover { background: rgba(110,160,255,0.3); }
+  .mission-card {
+    display: flex; align-items: center; gap: 14px;
+    padding: 10px 12px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .mission-card:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(110,160,255,0.2);
+  }
+  .mission-card.locked {
+    cursor: default;
+    opacity: 0.5;
+  }
+  .mission-card.locked:hover {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(255,255,255,0.06);
+  }
+  .mission-thumb {
+    width: 72px; height: 72px; border-radius: 10px; overflow: hidden; flex-shrink: 0;
+  }
+  .mission-thumb img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+  .locked-thumb {
+    background: rgba(20,20,35,0.9);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .mission-info {
+    flex: 1; display: flex; flex-direction: column; gap: 4px;
+  }
+  .mission-name-row {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .mission-icon { flex-shrink: 0; }
+  .mission-name {
+    font-size: 14px; font-weight: 600; color: rgba(240,245,255,0.9);
+  }
+  .mission-count {
+    font-size: 11px; color: rgba(180,190,220,0.5);
+    padding-left: 22px;
+  }
+  .mission-arrow {
+    flex-shrink: 0;
+  }
+  .mission-footer {
+    display: flex; align-items: center; gap: 8px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .mission-footer-open {
+    font-size: 13px; font-weight: 600; color: rgba(220,230,255,0.8);
+  }
+  .mission-footer-lock {
+    font-size: 11px; color: rgba(160,170,200,0.4);
+    margin-left: auto; margin-right: 4px;
+  }
+</style>
+</style>
 
 <!-- Sidebar -->
 <div class="sidebar-edge" id="sidebarEdge"></div>
@@ -535,6 +595,337 @@
   </div>
 </div>
 
+<script>
+// Sidebar
+const sb = document.getElementById('sidebar');
+const tr = document.getElementById('sidebarTrigger');
+let sT;
+tr.addEventListener('mouseenter', () => { clearTimeout(sT); sb.classList.add('open'); });
+sb.addEventListener('mouseenter', () => { clearTimeout(sT); sb.classList.add('open'); });
+sb.addEventListener('mouseleave', () => { clearTimeout(sT); sT = setTimeout(() => sb.classList.remove('open'), 400); });
+tr.addEventListener('mouseleave', () => { clearTimeout(sT); sT = setTimeout(() => sb.classList.remove('open'), 400); });
+
+// Cursor trail effect on hotspots — ethereal starfield style
+const trailCanvas = document.createElement('canvas');
+trailCanvas.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9998;';
+document.body.appendChild(trailCanvas);
+const tCtx = trailCanvas.getContext('2d');
+let trails = [];
+let inHotspot = false;
+
+function resizeTrailCanvas() {
+  trailCanvas.width = window.innerWidth * devicePixelRatio;
+  trailCanvas.height = window.innerHeight * devicePixelRatio;
+  tCtx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+}
+resizeTrailCanvas();
+window.addEventListener('resize', resizeTrailCanvas);
+
+document.querySelectorAll('.hotspot').forEach(el => {
+  el.addEventListener('mouseenter', () => { inHotspot = true; });
+  el.addEventListener('mouseleave', () => { inHotspot = false; });
+});
+
+document.addEventListener('mousemove', e => {
+  if (!inHotspot) return;
+  for (let i = 0; i < 5; i++) {
+    const isBright = Math.random() < 0.15;
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 0.2 + Math.random() * 0.8;
+    trails.push({
+      x: e.clientX + (Math.random() - 0.5) * 12,
+      y: e.clientY + (Math.random() - 0.5) * 12,
+      life: 1,
+      decay: 0.008 + Math.random() * 0.012,
+      size: isBright ? (1 + Math.random() * 2) : (0.5 + Math.random() * 1.2),
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - 0.3 * Math.random(),
+      bright: isBright,
+      hue: 220 + Math.random() * 60,
+      sat: isBright ? (30 + Math.random() * 30) : (60 + Math.random() * 30),
+      light: isBright ? (85 + Math.random() * 15) : (55 + Math.random() * 25),
+    });
+  }
+});
+
+function animateTrail() {
+  tCtx.clearRect(0, 0, trailCanvas.width / devicePixelRatio, trailCanvas.height / devicePixelRatio);
+  for (let i = trails.length - 1; i >= 0; i--) {
+    const p = trails[i];
+    p.life -= p.decay;
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.01;
+    p.vx *= 0.99;
+    if (p.life <= 0) { trails.splice(i, 1); continue; }
+
+    const alpha = p.life * p.life;
+
+    if (p.bright) {
+      // Outer glow
+      const grad = tCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 6);
+      grad.addColorStop(0, `hsla(${p.hue}, ${p.sat}%, ${p.light}%, ${alpha * 0.3})`);
+      grad.addColorStop(0.4, `hsla(${p.hue}, ${p.sat}%, ${p.light}%, ${alpha * 0.1})`);
+      grad.addColorStop(1, `hsla(${p.hue}, ${p.sat}%, ${p.light}%, 0)`);
+      tCtx.beginPath();
+      tCtx.arc(p.x, p.y, p.size * 6, 0, Math.PI * 2);
+      tCtx.fillStyle = grad;
+      tCtx.fill();
+      // Core
+      tCtx.beginPath();
+      tCtx.arc(p.x, p.y, p.size * 0.8, 0, Math.PI * 2);
+      tCtx.fillStyle = `hsla(${p.hue}, 20%, 95%, ${alpha * 0.9})`;
+      tCtx.fill();
+    } else {
+      // Soft dot with subtle glow
+      const grad = tCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 3);
+      grad.addColorStop(0, `hsla(${p.hue}, ${p.sat}%, ${p.light}%, ${alpha * 0.6})`);
+      grad.addColorStop(0.5, `hsla(${p.hue}, ${p.sat}%, ${p.light}%, ${alpha * 0.2})`);
+      grad.addColorStop(1, `hsla(${p.hue}, ${p.sat}%, ${p.light}%, 0)`);
+      tCtx.beginPath();
+      tCtx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2);
+      tCtx.fillStyle = grad;
+      tCtx.fill();
+      // Tiny core
+      tCtx.beginPath();
+      tCtx.arc(p.x, p.y, p.size * 0.5, 0, Math.PI * 2);
+      tCtx.fillStyle = `hsla(${p.hue}, ${p.sat}%, ${p.light + 20}%, ${alpha * 0.8})`;
+      tCtx.fill();
+    }
+  }
+  requestAnimationFrame(animateTrail);
+}
+animateTrail();
+
+// Scene typewriter
+const sceneTyper = document.getElementById('sceneTyper');
+const sceneTyperText = document.getElementById('sceneTyperText');
+let currentScene = '';
+let typeTimer = null;
+let typeIndex = 0;
+let targetText = '';
+
+const SCENE_NAMES = {
+  'hotspot-office': '// OFFICE_SCENE',
+  'hotspot-desk': '// DESK_SCENE',
+  'hotspot-table': '// TABLE_SCENE',
+};
+
+function typeWrite() {
+  if (typeIndex <= targetText.length) {
+    sceneTyperText.textContent = targetText.slice(0, typeIndex);
+    typeIndex++;
+    typeTimer = setTimeout(typeWrite, 60 + Math.random() * 40);
+  }
+}
+
+function startTyping(scene) {
+  if (scene === currentScene) return;
+  currentScene = scene;
+  clearTimeout(typeTimer);
+  sceneTyperText.textContent = '';
+  typeIndex = 0;
+  targetText = SCENE_NAMES[scene] || '';
+  sceneTyper.classList.add('active');
+  typeWrite();
+}
+
+function stopTyping() {
+  currentScene = '';
+  clearTimeout(typeTimer);
+  sceneTyper.classList.remove('active');
+  sceneTyperText.textContent = '';
+}
+
+document.querySelectorAll('.hotspot').forEach(el => {
+  const scene = el.classList[1];
+  el.addEventListener('mouseenter', () => startTyping(scene));
+  el.addEventListener('mouseleave', () => stopTyping());
+});
+</script>
+
+<!-- Page toggle -->
+<a href="landing2.html" style="position:fixed;bottom:20px;right:20px;z-index:9999;padding:8px 16px;border-radius:8px;background:rgba(245,247,250,0.08);border:1px solid rgba(245,247,250,0.12);color:rgba(245,247,250,0.6);font-size:12px;font-weight:500;text-decoration:none;backdrop-filter:blur(8px);transition:all 0.2s;cursor:pointer;" onmouseover="this.style.background='rgba(245,247,250,0.15)';this.style.color='#f5f7fa'" onmouseout="this.style.background='rgba(245,247,250,0.08)';this.style.color='rgba(245,247,250,0.6)'">切换首页 V2 →</a>
+
+<!-- Transition overlay: warp streaks + scene preview + particle canvas -->
+<canvas id="warpCanvas" style="position:fixed;inset:0;width:100%;height:100%;z-index:9998;pointer-events:none;display:none;"></canvas>
+<div id="scenePreview" style="position:fixed;inset:0;z-index:9999;display:none;flex-direction:column;align-items:center;justify-content:center;background:transparent;gap:28px;">
+  <img id="scenePreviewImg" src="assets/书桌场景示例.jpg" style="max-width:60%;max-height:55%;border-radius:16px;border:1px solid rgba(110,201,255,0.2);box-shadow:0 0 60px rgba(110,201,255,0.15);object-fit:cover;transition:opacity 1.5s ease;">
+  <div id="sceneLoadingIndicator" style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(110,201,255,0.7)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="animation:spinLoader 2s ease-in-out infinite;">
+      <path d="M5 3h14"/>
+      <path d="M5 21h14"/>
+      <path d="M7 3v3.5a5 5 0 0 0 5 5 5 5 0 0 0 5-5V3"/>
+      <path d="M7 21v-3.5a5 5 0 0 1 5-5 5 5 0 0 1 5 5V21"/>
+    </svg>
+    <span style="font-size:12px;font-weight:500;color:rgba(245,247,250,0.35);letter-spacing:1px;">LOADING SCENE</span>
+  </div>
+</div>
+<canvas id="particleCanvas" style="position:fixed;inset:0;width:100%;height:100%;z-index:10001;pointer-events:none;display:none;"></canvas>
+<canvas id="lineCanvas" style="position:fixed;inset:0;width:100%;height:100%;z-index:10002;pointer-events:none;display:none;"></canvas>
+
+<style>
+  .task-card {
+    position: fixed; z-index: 10003; display: none;
+    padding: 0; border-radius: 16px;
+    background: rgba(10, 14, 30, 0.75);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(110, 201, 255, 0.2);
+    box-shadow:
+      0 0 40px rgba(110, 201, 255, 0.08),
+      0 0 80px rgba(110, 201, 255, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 12px 40px rgba(0, 0, 0, 0.5);
+    cursor: pointer; pointer-events: auto;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 200px;
+    overflow: hidden;
+  }
+  .task-card::before {
+    content: '';
+    position: absolute; inset: 0; border-radius: 16px;
+    background: linear-gradient(135deg, rgba(110, 201, 255, 0.08) 0%, transparent 50%, rgba(157, 124, 255, 0.05) 100%);
+    pointer-events: none;
+  }
+  .task-card::after {
+    content: '';
+    position: absolute; top: -1px; left: 20%; right: 20%; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(110, 201, 255, 0.5), transparent);
+  }
+  .task-card:hover {
+    border-color: rgba(110, 201, 255, 0.45);
+    box-shadow:
+      0 0 60px rgba(110, 201, 255, 0.15),
+      0 0 120px rgba(110, 201, 255, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 16px 48px rgba(0, 0, 0, 0.5);
+    transform: translateY(-2px);
+  }
+  .task-card:hover .task-card-icon {
+    box-shadow: 0 0 20px rgba(110, 201, 255, 0.3);
+  }
+  .task-card-inner { position: relative; padding: 18px 22px; }
+  .task-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .task-card-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: linear-gradient(135deg, rgba(110, 201, 255, 0.15), rgba(157, 124, 255, 0.1));
+    border: 1px solid rgba(110, 201, 255, 0.2);
+    display: flex; align-items: center; justify-content: center;
+    transition: box-shadow 0.3s;
+    flex-shrink: 0;
+  }
+  .task-card-title { font-size: 16px; font-weight: 700; color: #f5f7fa; letter-spacing: -0.3px; }
+  .task-card-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .task-card-tag {
+    font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 6px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .task-card-tag.difficulty {
+    background: rgba(110, 201, 255, 0.1);
+    color: #6EC9FF;
+    border: 1px solid rgba(110, 201, 255, 0.15);
+  }
+  .task-card-tag.mode {
+    background: rgba(157, 124, 255, 0.1);
+    color: #a78bfa;
+    border: 1px solid rgba(157, 124, 255, 0.15);
+  }
+  .task-card-stats {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; color: rgba(245, 247, 250, 0.4);
+  }
+  .task-card-stats svg { opacity: 0.5; }
+  .task-card-stats strong { color: rgba(245, 247, 250, 0.7); font-weight: 600; }
+  .task-card-cta {
+    margin-top: 14px; padding-top: 14px;
+    border-top: 1px solid rgba(245, 247, 250, 0.06);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .task-card-cta-text { font-size: 12px; color: rgba(110, 201, 255, 0.7); font-weight: 500; }
+  .task-card-cta-arrow {
+    width: 24px; height: 24px; border-radius: 6px;
+    background: rgba(110, 201, 255, 0.08);
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+  }
+  .task-card:hover .task-card-cta-arrow { background: rgba(110, 201, 255, 0.15); }
+</style>
+
+<div class="task-card" id="taskCard47">
+  <div class="task-card-inner">
+    <div class="task-card-header">
+      <div class="task-card-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6EC9FF" stroke-width="2" stroke-linecap="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+      </div>
+      <div class="task-card-title">垃圾收纳</div>
+    </div>
+    <div class="task-card-meta">
+      <span class="task-card-tag difficulty">初级</span>
+      <span class="task-card-tag mode">新手教学</span>
+    </div>
+    <div class="task-card-stats">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      最佳：<strong>120s</strong>
+    </div>
+    <div class="task-card-cta">
+      <span class="task-card-cta-text">点击进入教学</span>
+      <div class="task-card-cta-arrow">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6EC9FF" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="task-card" id="taskCard0">
+  <div class="task-card-inner">
+    <div class="task-card-header">
+      <div class="task-card-icon" style="background:linear-gradient(135deg, rgba(52,211,153,0.15), rgba(16,185,129,0.1)); border-color:rgba(52,211,153,0.2);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      </div>
+      <div class="task-card-title">文具盒</div>
+    </div>
+    <div class="task-card-meta">
+      <span class="task-card-tag difficulty" style="background:rgba(52,211,153,0.1);color:#34d399;border-color:rgba(52,211,153,0.15);">初级</span>
+      <span class="task-card-tag mode">初级关卡</span>
+    </div>
+    <div class="task-card-stats">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      最佳：<strong>90s</strong>
+    </div>
+    <div class="task-card-cta">
+      <span class="task-card-cta-text">点击进入关卡</span>
+      <div class="task-card-cta-arrow">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="task-card" id="taskCard4">
+  <div class="task-card-inner">
+    <div class="task-card-header">
+      <div class="task-card-icon" style="background:linear-gradient(135deg, rgba(251,191,36,0.15), rgba(245,158,11,0.1)); border-color:rgba(251,191,36,0.2);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
+      <div class="task-card-title">涂改液</div>
+    </div>
+    <div class="task-card-meta">
+      <span class="task-card-tag difficulty" style="background:rgba(251,191,36,0.1);color:#fbbf24;border-color:rgba(251,191,36,0.15);">中级</span>
+      <span class="task-card-tag mode" style="background:rgba(251,191,36,0.08);color:#f59e0b;border-color:rgba(251,191,36,0.12);">进阶关卡</span>
+    </div>
+    <div class="task-card-stats">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      最佳：<strong>180s</strong>
+    </div>
+    <div class="task-card-cta">
+      <span class="task-card-cta-text">点击进入关卡</span>
+      <div class="task-card-cta-arrow">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script type="importmap">
 { "imports": {
   "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
@@ -551,68 +942,9 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 
 // ============================================================
-// Core: Surface Sampler Pipeline
-// sampleMesh() works with any THREE.Mesh — from primitives or GLB
-// sampleGroup() handles a Group/Scene from GLTFLoader
+// Pre-load GLB + sample particles in background
 // ============================================================
-
-function sampleMesh(mesh, count) {
-  mesh.updateMatrixWorld(true);
-  const geo = mesh.geometry.clone();
-  geo.applyMatrix4(mesh.matrixWorld);
-  const tempMesh = new THREE.Mesh(geo);
-  const sampler = new MeshSurfaceSampler(tempMesh).build();
-  const pts = new Float32Array(count * 3);
-  const pos = new THREE.Vector3();
-  for (let i = 0; i < count; i++) {
-    sampler.sample(pos);
-    pts[i * 3]     = pos.x;
-    pts[i * 3 + 1] = pos.y;
-    pts[i * 3 + 2] = pos.z;
-  }
-  return pts;
-}
-
-function sampleGroup(group, totalCount) {
-  group.updateMatrixWorld(true);
-  const meshes = [];
-  let totalArea = 0;
-  group.traverse(child => {
-    if (child.isMesh && child.geometry) {
-      const geo = child.geometry.clone();
-      geo.applyMatrix4(child.matrixWorld);
-      const m = new THREE.Mesh(geo);
-      const sampler = new MeshSurfaceSampler(m).build();
-      // Estimate surface area from triangle count
-      const triCount = geo.index ? geo.index.count / 3 : geo.attributes.position.count / 3;
-      meshes.push({ sampler, area: triCount });
-      totalArea += triCount;
-    }
-  });
-  if (meshes.length === 0) return new Float32Array(0);
-  const pts = new Float32Array(totalCount * 3);
-  const pos = new THREE.Vector3();
-  let idx = 0;
-  meshes.forEach(({ sampler, area }) => {
-    const count = Math.round((area / totalArea) * totalCount);
-    for (let i = 0; i < count && idx < totalCount; i++, idx++) {
-      sampler.sample(pos);
-      pts[idx * 3]     = pos.x;
-      pts[idx * 3 + 1] = pos.y;
-      pts[idx * 3 + 2] = pos.z;
-    }
-  });
-  // Fill remaining if rounding left gaps
-  if (idx < totalCount && meshes.length > 0) {
-    const fallback = meshes[0].sampler;
-    while (idx < totalCount) {
-      fallback.sample(pos);
-      pts[idx * 3] = pos.x; pts[idx * 3 + 1] = pos.y; pts[idx * 3 + 2] = pos.z;
-      idx++;
-    }
-  }
-  return pts;
-}
+let particleData = null;
 
 function loadGLB(url) {
   return new Promise((resolve, reject) => {
@@ -620,20 +952,12 @@ function loadGLB(url) {
   });
 }
 
-// ============================================================
-// Scene: load GLB as the COMPLETE scene, sample as particles
-// ============================================================
-
-async function buildScene() {
-  const objects = [];
-
+async function preloadParticles() {
   const glbScene = await loadGLB('assets/desk-split.glb');
-
   const box = new THREE.Box3().setFromObject(glbScene);
   const size = new THREE.Vector3();
   const center = new THREE.Vector3();
-  box.getSize(size);
-  box.getCenter(center);
+  box.getSize(size); box.getCenter(center);
   const maxDim = Math.max(size.x, size.y, size.z);
   const autoScale = 6 / maxDim;
   glbScene.scale.set(autoScale, autoScale, autoScale);
@@ -641,8 +965,7 @@ async function buildScene() {
   glbScene.position.set(-center.x * autoScale, -center.y * autoScale, -center.z * autoScale);
   glbScene.updateMatrixWorld(true);
 
-  // Sample per-mesh to track part ownership
-  const TOTAL_SAMPLES = 500000;
+  const TOTAL = 500000;
   const meshInfos = [];
   let totalTris = 0;
   glbScene.traverse(child => {
@@ -659,456 +982,572 @@ async function buildScene() {
     }
   });
 
-  const allPts = new Float32Array(TOTAL_SAMPLES * 3);
-  window._particlePartIds = new Int16Array(TOTAL_SAMPLES); // track which part each particle belongs to
+  const homePts = new Float32Array(TOTAL * 3);
+  const partIds = new Int16Array(TOTAL);
   const pos = new THREE.Vector3();
   let idx = 0;
   meshInfos.forEach(({ sampler, triCount, partId }) => {
-    const count = Math.round((triCount / totalTris) * TOTAL_SAMPLES);
-    for (let i = 0; i < count && idx < TOTAL_SAMPLES; i++, idx++) {
+    const count = Math.round((triCount / totalTris) * TOTAL);
+    for (let i = 0; i < count && idx < TOTAL; i++, idx++) {
       sampler.sample(pos);
-      allPts[idx * 3] = pos.x;
-      allPts[idx * 3 + 1] = pos.y;
-      allPts[idx * 3 + 2] = pos.z;
-      window._particlePartIds[idx] = partId;
+      homePts[idx * 3] = pos.x;
+      homePts[idx * 3 + 1] = pos.y;
+      homePts[idx * 3 + 2] = pos.z;
+      partIds[idx] = partId;
     }
   });
-  // Fill remaining
-  while (idx < TOTAL_SAMPLES) {
-    window._particlePartIds[idx] = -1;
-    allPts[idx * 3] = 0; allPts[idx * 3 + 1] = 0; allPts[idx * 3 + 2] = 0;
-    idx++;
-  }
+  while (idx < TOTAL) { partIds[idx] = -1; homePts[idx*3]=0; homePts[idx*3+1]=0; homePts[idx*3+2]=0; idx++; }
 
-  // Store original home positions
-  window._particleOrigHome = new Float32Array(allPts);
-
-  // ---- Load textured GLB for mesh rendering mode ----
-  try {
-    const texScene = await loadGLB('assets/desk-textured.glb');
-    texScene.scale.set(autoScale, autoScale, autoScale);
-    texScene.rotation.y = Math.PI * 3 / 2;
-    texScene.position.set(-center.x * autoScale, -center.y * autoScale, -center.z * autoScale);
-    texScene.updateMatrixWorld(true);
-    window._texSceneGroup = texScene;
-  } catch (e) {
-    console.warn('Textured GLB failed to load:', e);
-    window._texSceneGroup = null;
-  }
-
-  objects.push({ pts: allPts, color: [0.45, 0.2, 0.12], id: 'scene', presampled: true });
-  return objects;
+  particleData = { homePts, partIds, total: TOTAL };
 }
 
+preloadParticles();
+
 // ============================================================
-// ASYNC INIT — everything starts here
+// Warp particles (2D canvas) — dots flying outward from center
 // ============================================================
-async function init() {
+function playWarpEffect(duration) {
+  return new Promise(resolve => {
+    const cv = document.getElementById('warpCanvas');
+    cv.style.display = 'block';
+    cv.width = window.innerWidth * devicePixelRatio;
+    cv.height = window.innerHeight * devicePixelRatio;
+    const ctx = cv.getContext('2d');
+    ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
 
-const sceneObjects = await buildScene();
+    const W = window.innerWidth, H = window.innerHeight;
+    const cx = W / 2, cy = H / 2;
+    const particles = [];
+    for (let i = 0; i < 600; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const isBright = Math.random() < 0.12;
+      particles.push({
+        angle,
+        r: 20 + Math.random() * 150,
+        speed: 200 + Math.random() * 400,
+        size: isBright ? (2 + Math.random() * 3) : (0.8 + Math.random() * 2),
+        hue: 220 + Math.random() * 50,
+        sat: isBright ? (30 + Math.random() * 30) : (60 + Math.random() * 30),
+        light: isBright ? (80 + Math.random() * 20) : (50 + Math.random() * 30),
+        alpha: 0.3 + Math.random() * 0.7,
+        bright: isBright,
+      });
+    }
 
-let totalParticles = 0;
-const sampledData = [];
+    const start = performance.now();
+    function tick() {
+      const elapsed = (performance.now() - start) / 1000;
+      const progress = Math.min(elapsed / duration, 1);
+      ctx.clearRect(0, 0, W, H);
 
-sceneObjects.forEach(obj => {
-  let pts, count;
-  if (obj.presampled) {
-    pts = obj.pts;
-    count = pts.length / 3;
-  } else {
-    count = obj.count;
-    pts = sampleMesh(obj.mesh, count);
-  }
-  sampledData.push({ pts, color: obj.color, count, id: obj.id });
-  totalParticles += count;
-});
+      ctx.fillStyle = `rgba(0,0,0,${progress * 0.85})`;
+      ctx.fillRect(0, 0, W, H);
 
-// No ambient dust — particles only exist on object surfaces
-const AMBIENT_COUNT = 0;
-totalParticles += AMBIENT_COUNT;
+      const accel = 1 + progress * progress * 10;
+      particles.forEach(p => {
+        p.r += p.speed * accel * (1/60);
+        const x = cx + Math.cos(p.angle) * p.r;
+        const y = cy + Math.sin(p.angle) * p.r;
+        const alpha = p.alpha * (1 - progress * 0.4);
+        const sz = p.size * (1 + progress * 0.5);
 
-const allPos = new Float32Array(totalParticles * 3);
-const allHome = new Float32Array(totalParticles * 3);
-const allCol = new Float32Array(totalParticles * 3);
-const allSize = new Float32Array(totalParticles);
-const allPhase = new Float32Array(totalParticles);
-
-let off = 0;
-sampledData.forEach(({ pts, color, count }) => {
-  let minX=Infinity, maxX=-Infinity, minY=Infinity, maxY=-Infinity, minZ=Infinity, maxZ=-Infinity;
-  for (let i = 0; i < count; i++) {
-    const x=pts[i*3], y=pts[i*3+1], z=pts[i*3+2];
-    if(x<minX)minX=x; if(x>maxX)maxX=x;
-    if(y<minY)minY=y; if(y>maxY)maxY=y;
-    if(z<minZ)minZ=z; if(z>maxZ)maxZ=z;
-  }
-  const rx=maxX-minX||1, ry=maxY-minY||1, rz=maxZ-minZ||1;
-
-  for (let i = 0; i < count; i++) {
-    const idx = off + i;
-    const i3 = i * 3, idx3 = idx * 3;
-    // Home = model surface (target)
-    allHome[idx3]=pts[i3]; allHome[idx3+1]=pts[i3+1]; allHome[idx3+2]=pts[i3+2];
-    // Start position = very close to home, just slightly offset (thin haze)
-    const angle1 = Math.random() * Math.PI * 2;
-    const angle2 = Math.random() * Math.PI * 2;
-    const radius = 0.1 + Math.random() * 0.4;
-    allPos[idx3]   = pts[i3] + Math.cos(angle1) * radius;
-    allPos[idx3+1] = pts[i3+1] + Math.sin(angle2) * radius * 0.3;
-    allPos[idx3+2] = pts[i3+2] + Math.sin(angle1) * radius;
-
-    // Smooth position-based color using continuous gradients
-    const nx = (pts[i3] - minX) / rx;     // 0=left, 1=right
-    const ny = (pts[i3+1] - minY) / ry;   // 0=bottom, 1=top
-    const nz = (pts[i3+2] - minZ) / rz;   // 0=back, 1=front
-
-    let r, g, b;
-
-    // Use part ID to separate desk/legs from objects
-    const partId = window._particlePartIds ? window._particlePartIds[idx] : -1;
-    const isDeskTop = (partId === 5);
-    const isLeg = (partId === 16 || partId === 17 || partId === 24 || partId === 25);
-
-    if (isLeg) {
-      // Legs — very dark cold, subtle blue
-      r = 0.04 + nz * 0.02;
-      g = 0.03 + nz * 0.02;
-      b = 0.08 + nz * 0.04;
-    } else if (isDeskTop) {
-      // Desk surface — dark with warm amber glow spots, NOT pink
-      const frontMix = Math.pow(nz, 1.5);
-      const topMix = 1 - frontMix;
-      r = 0.1 * frontMix + 0.18 * topMix;
-      g = 0.06 * frontMix + 0.1 * topMix;
-      b = 0.08 * frontMix + 0.12 * topMix;
-      // Random warm amber glow spots on desk (not pink)
-      if (Math.random() < 0.06) {
-        r += 0.35; g += 0.18; b += 0.03;
-      }
-    } else {
-      // All other parts — objects and arms on the table
-      const heightBoost = Math.min(Math.max((ny - 0.42) / 0.58, 0), 1.0);
-
-      if (heightBoost > 0.5) {
-        // Arms — cool blue-violet, NOT pink
-        r = 0.2 + heightBoost * 0.15;
-        g = 0.15 + heightBoost * 0.15;
-        b = 0.65 + heightBoost * 0.3;
-        // Bright blue-white tips
-        if (heightBoost > 0.8 && Math.random() < 0.15) {
-          r = 0.75; g = 0.85; b = 1.0;
+        if (p.bright) {
+          // Glow
+          const grad = ctx.createRadialGradient(x, y, 0, x, y, sz * 5);
+          grad.addColorStop(0, `hsla(${p.hue}, ${p.sat}%, ${p.light}%, ${alpha * 0.4})`);
+          grad.addColorStop(0.5, `hsla(${p.hue}, ${p.sat}%, ${p.light}%, ${alpha * 0.1})`);
+          grad.addColorStop(1, `hsla(${p.hue}, ${p.sat}%, ${p.light}%, 0)`);
+          ctx.beginPath();
+          ctx.arc(x, y, sz * 5, 0, Math.PI * 2);
+          ctx.fillStyle = grad;
+          ctx.fill();
+          // Core
+          ctx.beginPath();
+          ctx.arc(x, y, sz * 0.8, 0, Math.PI * 2);
+          ctx.fillStyle = `hsla(${p.hue}, 20%, 95%, ${alpha * 0.9})`;
+          ctx.fill();
+        } else {
+          // Soft dot with glow
+          const grad = ctx.createRadialGradient(x, y, 0, x, y, sz * 3);
+          grad.addColorStop(0, `hsla(${p.hue}, ${p.sat}%, ${p.light}%, ${alpha * 0.7})`);
+          grad.addColorStop(0.5, `hsla(${p.hue}, ${p.sat}%, ${p.light}%, ${alpha * 0.2})`);
+          grad.addColorStop(1, `hsla(${p.hue}, ${p.sat}%, ${p.light}%, 0)`);
+          ctx.beginPath();
+          ctx.arc(x, y, sz * 3, 0, Math.PI * 2);
+          ctx.fillStyle = grad;
+          ctx.fill();
         }
-      } else {
-        // Objects — saturated, pure colors per region
-        const leftW = Math.pow(Math.max(0, 1 - nx * 2), 1.5);
-        const rightW = Math.pow(Math.max(0, nx * 2 - 1), 1.5);
-        const centerW = Math.pow(Math.max(0, 1 - Math.abs(nx - 0.5) * 2.5), 1.2);
+      });
 
-        // Left: bright electric blue, Center: deep indigo/violet, Right: hot amber/orange
-        r = 0.08 * leftW + 0.2 * centerW + 0.95 * rightW;
-        g = 0.35 * leftW + 0.08 * centerW + 0.45 * rightW;
-        b = 0.95 * leftW + 0.6 * centerW + 0.05 * rightW;
-
-        // Normalize
-        const w = leftW + centerW + rightW + 0.001;
-        r /= w; g /= w; b /= w;
-
-        // Height brightening
-        r += heightBoost * 0.15;
-        g += heightBoost * 0.08;
-        b += heightBoost * 0.1;
-      }
+      if (progress < 1) requestAnimationFrame(tick);
+      else { cv.style.display = 'none'; resolve(); }
     }
-
-    // Depth tint — front warmer
-    r += nz * 0.06;
-    b -= nz * 0.04;
-
-    // Per-particle color variation (wider spread)
-    const noise = (Math.random() - 0.5) * 0.12;
-    allCol[idx3]   = Math.max(0.04, Math.min(1, r + noise));
-    allCol[idx3+1] = Math.max(0.02, Math.min(1, g + noise * 0.3));
-    allCol[idx3+2] = Math.max(0.04, Math.min(1, b + noise * 0.5));
-
-    // Bright hotspot particles on top of objects (not desk/legs)
-    if (!isDeskTop && !isLeg && ny > 0.6 && Math.random() < 0.03) {
-      const boost = 0.3 + Math.random() * 0.4;
-      allCol[idx3] = Math.min(1, allCol[idx3] + boost);
-      allCol[idx3+1] = Math.min(1, allCol[idx3+1] + boost * 0.8);
-      allCol[idx3+2] = Math.min(1, allCol[idx3+2] + boost * 0.6);
-    }
-
-    allSize[idx] = 0.4 + Math.random() * 2.6 + (Math.random() < 0.08 ? 2.0 : 0);
-    allPhase[idx] = Math.random() * Math.PI * 2;
-  }
-  off += count;
-});
-
-// (no ambient dust)
-
-// ============================================================
-// Renderer
-// ============================================================
-const canvas = document.getElementById('c');
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: false });
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setClearColor(0x000000, 1);
-
-const scene = new THREE.Scene();
-const ambLight = new THREE.AmbientLight(0xffffff, 0.3);
-scene.add(ambLight);
-const dirLight = new THREE.DirectionalLight(0xffffff, 0.4);
-dirLight.position.set(3, 5, 4);
-scene.add(dirLight);
-const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(-0.8, 0.6, 5.5);
-camera.lookAt(-0.5, 0.4, 0);
-
-const composer = new EffectComposer(renderer);
-composer.addPass(new RenderPass(scene, camera));
-const bloomPass = new UnrealBloomPass(
-  new THREE.Vector2(window.innerWidth, window.innerHeight),
-  0.55, 0.7, 0.8
-);
-composer.addPass(bloomPass);
-
-// ============================================================
-// Particle material
-// ============================================================
-const geo = new THREE.BufferGeometry();
-geo.setAttribute('position', new THREE.BufferAttribute(allPos, 3));
-geo.setAttribute('home', new THREE.BufferAttribute(allHome, 3));
-geo.setAttribute('customColor', new THREE.BufferAttribute(allCol, 3));
-geo.setAttribute('size', new THREE.BufferAttribute(allSize, 1));
-geo.setAttribute('phase', new THREE.BufferAttribute(allPhase, 1));
-
-const mat = new THREE.ShaderMaterial({
-  vertexShader: `
-    attribute vec3 customColor;
-    attribute float size;
-    attribute float phase;
-    varying vec3 vColor;
-    varying float vAlpha;
-    uniform float uTime;
-    void main() {
-      vColor = customColor;
-      float breathe = 1.0 + sin(uTime * 0.1 + phase) * 0.02;
-      vAlpha = 0.6 * breathe;
-      vec4 mv = modelViewMatrix * vec4(position, 1.0);
-      gl_PointSize = size * breathe * (90.0 / -mv.z);
-      gl_PointSize = clamp(gl_PointSize, 0.5, 6.0);
-      gl_Position = projectionMatrix * mv;
-    }
-  `,
-  fragmentShader: `
-    varying vec3 vColor;
-    varying float vAlpha;
-    void main() {
-      float d = length(gl_PointCoord - 0.5);
-      if (d > 0.5) discard;
-      float soft = smoothstep(0.5, 0.1, d);
-      gl_FragColor = vec4(vColor, soft * vAlpha);
-    }
-  `,
-  uniforms: { uTime: { value: 0 } },
-  transparent: true,
-  depthWrite: true,
-  depthTest: true,
-  blending: THREE.NormalBlending,
-});
-
-const particlePoints = new THREE.Points(geo, mat);
-scene.add(particlePoints);
-
-// Load textured mesh version (hidden initially)
-let texMeshGroup = null;
-if (window._texSceneGroup) {
-  texMeshGroup = window._texSceneGroup;
-  texMeshGroup.visible = false;
-  scene.add(texMeshGroup);
+    requestAnimationFrame(tick);
+  });
 }
 
 // ============================================================
-// Noise for breathing
+// Scene preview (fade in then out)
 // ============================================================
-function mod289(x){return x-Math.floor(x/289)*289;}
-function permute(x){return mod289((x*34+1)*x);}
-function lerp(t,a,b){return a+t*(b-a);}
-function snoise3(x,y,z){
-  const X=Math.floor(x)&255,Y=Math.floor(y)&255,Z=Math.floor(z)&255;
-  const xf=x-Math.floor(x),yf=y-Math.floor(y),zf=z-Math.floor(z);
-  const u=xf*xf*(3-2*xf),v=yf*yf*(3-2*yf),w=zf*zf*(3-2*zf);
-  const A=(permute(X)+Y)&255,B=(permute(X+1)+Y)&255;
-  const AA=(permute(A)+Z)&255,AB=(permute(A+1)+Z)&255;
-  const BA=(permute(B)+Z)&255,BB=(permute(B+1)+Z)&255;
-  function g(h,a,b,c){h&=15;const u=h<8?a:b,v=h<4?b:(h===12||h===14?a:c);return((h&1)?-u:u)+((h&2)?-v:v);}
-  return lerp(w,lerp(v,lerp(u,g(permute(AA),xf,yf,zf),g(permute(BA),xf-1,yf,zf)),lerp(u,g(permute(AB),xf,yf-1,zf),g(permute(BB),xf-1,yf-1,zf))),lerp(v,lerp(u,g(permute(AA+1),xf,yf,zf-1),g(permute(BA+1),xf-1,yf,zf-1)),lerp(u,g(permute(AB+1),xf,yf-1,zf-1),g(permute(BB+1),xf-1,yf-1,zf-1))));
+function playScenePreview(duration) {
+  return new Promise(resolve => {
+    const el = document.getElementById('scenePreview');
+    const img = document.getElementById('scenePreviewImg');
+    const loader = document.getElementById('sceneLoadingIndicator');
+    el.style.display = 'flex';
+    el.style.opacity = '0';
+    el.style.transition = 'opacity 0.8s ease';
+    img.style.opacity = '1';
+    loader.style.opacity = '1';
+    loader.style.transition = 'opacity 0.8s ease';
+    requestAnimationFrame(() => { el.style.opacity = '1'; });
+
+    // Start fading out 1.5s before end
+    setTimeout(() => {
+      img.style.opacity = '0';
+      loader.style.opacity = '0';
+      setTimeout(() => { el.style.display = 'none'; resolve(); }, 1500);
+    }, duration * 1000 - 1500);
+  });
 }
 
 // ============================================================
-// Mouse interaction
+// Particle gather + scatter (Three.js)
 // ============================================================
-const mouse = { x: 999, y: 999, z: 999 };
-const rc = new THREE.Raycaster();
-const ndc = new THREE.Vector2();
-const tablePlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
-const hit = new THREE.Vector3();
+function playParticleTransition(floatDuration, gatherDuration, holdDuration, scatterDuration) {
+  return new Promise(resolve => {
+    if (!particleData) { resolve(); return; }
 
-window.addEventListener('mousemove', e => {
-  ndc.x = (e.clientX / window.innerWidth) * 2 - 1;
-  ndc.y = -(e.clientY / window.innerHeight) * 2 + 1;
-  rc.setFromCamera(ndc, camera);
-  if (rc.ray.intersectPlane(tablePlane, hit)) {
-    mouse.x = hit.x; mouse.y = hit.y; mouse.z = hit.z;
-  }
-});
-
-// ============================================================
-// Keyboard
-// ============================================================
-const keys = {};
-window.addEventListener('keydown', e => {
-  keys[e.code] = true;
-  if (['Space','ArrowUp','ArrowDown','Tab'].includes(e.code)) e.preventDefault();
-});
-window.addEventListener('keyup', e => { keys[e.code] = false; });
-
-// ============================================================
-// Animate
-// ============================================================
-let time = 0;
-const clock = new THREE.Clock();
-
-// Gather state: 'floating' = nebula drift, 'gathering' = converge to model
-let gatherState = 'floating';
-let gatherStartTime = 0;
-
-// Called when user clicks CTA
-window.startGather = function() {
-  gatherState = 'gathering';
-  gatherStartTime = time;
-};
-
-function animate() {
-  requestAnimationFrame(animate);
-  const dt = Math.min(clock.getDelta(), 0.05);
-  time += dt;
-  mat.uniforms.uTime.value = time;
-
-  const pos = geo.attributes.position.array;
-  const home = geo.attributes.home.array;
-
-  const GATHER_DURATION = 6.0;
-  let lerpSpeed;
-
-  if (gatherState === 'floating') {
-    // Nebula drift: particles wander slowly, never converge
-    lerpSpeed = 0;
-  } else {
-    // Gathering: converge to home
-    const elapsed = time - gatherStartTime;
-    const progress = Math.min(elapsed / GATHER_DURATION, 1.0);
-    const ease = progress * progress * (3 - 2 * progress);
-    lerpSpeed = 0.003 + ease * 0.077;
-  }
-
-  for (let i = 0; i < totalParticles; i++) {
-    const i3 = i * 3;
-    const hx = home[i3], hy = home[i3+1], hz = home[i3+2];
-
-    if (gatherState === 'floating') {
-      // Slow noise-based drift
-      const drift = 0.15;
-      const nx = Math.sin(time * 0.3 + i * 0.01) * drift;
-      const ny = Math.cos(time * 0.2 + i * 0.013) * drift * 0.3;
-      const nz = Math.sin(time * 0.25 + i * 0.017) * drift;
-      pos[i3]   += (pos[i3] + nx - pos[i3]) * 0.02;
-      pos[i3+1] += (pos[i3+1] + ny - pos[i3+1]) * 0.02;
-      pos[i3+2] += (pos[i3+2] + nz - pos[i3+2]) * 0.02;
-    } else {
-      let tx = hx, ty = hy, tz = hz;
-
-      // Mouse interaction after mostly gathered
-      const elapsed = time - gatherStartTime;
-      if (elapsed > GATHER_DURATION * 0.8) {
-        const mdx = pos[i3] - mouse.x;
-        const mdy = pos[i3+1] - mouse.y;
-        const mdz = pos[i3+2] - mouse.z;
-        const mDist = Math.sqrt(mdx * mdx + mdy * mdy + mdz * mdz);
-        if (mDist < 2.2 && mDist > 0.01) {
-          const falloff = (1 - mDist / 2.2);
-          const strength = falloff * falloff * 0.036;
-          tx += (-mdz / mDist) * strength;
-          tz += (mdx / mDist) * strength;
-          ty += Math.sin(time * 3.0 + mDist * 6) * strength * 0.5;
-        }
-      }
-
-      pos[i3]   += (tx - pos[i3]) * lerpSpeed;
-      pos[i3+1] += (ty - pos[i3+1]) * lerpSpeed;
-      pos[i3+2] += (tz - pos[i3+2]) * lerpSpeed;
-    }
-  }
-
-  geo.attributes.position.needsUpdate = true;
-  composer.render();
-}
-
-animate();
-
-// Click anywhere on canvas to trigger gather
-document.getElementById('c').addEventListener('click', () => {
-  if (gatherState === 'floating') window.startGather();
-});
-
-// Resize
-window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  composer.setSize(window.innerWidth, window.innerHeight);
-});
-
-// Sidebar
-const sb = document.getElementById('sidebar');
-const tr = document.getElementById('sidebarTrigger');
-let sT;
-tr.addEventListener('mouseenter', () => { clearTimeout(sT); sb.classList.add('open'); });
-sb.addEventListener('mouseenter', () => { clearTimeout(sT); sb.classList.add('open'); });
-sb.addEventListener('mouseleave', () => { clearTimeout(sT); sT = setTimeout(() => sb.classList.remove('open'), 400); });
-tr.addEventListener('mouseleave', () => { clearTimeout(sT); sT = setTimeout(() => sb.classList.remove('open'), 400); });
-
-// Color mode switching — toggle particles vs textured mesh + theme
-function doSwitch(mode) {
-  if (mode === 'texture' && texMeshGroup) {
-    particlePoints.visible = false;
-    texMeshGroup.visible = true;
-    renderer.setClearColor(0xd4d8de, 1);
-    bloomPass.strength = 0;
-    ambLight.intensity = 1.2;
-    dirLight.intensity = 1.5;
-    document.body.classList.add('light-mode');
-    document.getElementById('modeTexture').classList.add('active');
-    document.getElementById('modeParticle').classList.remove('active');
-  } else {
-    particlePoints.visible = true;
-    if (texMeshGroup) texMeshGroup.visible = false;
+    const canvas = document.getElementById('particleCanvas');
+    canvas.style.display = 'block';
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
     renderer.setClearColor(0x000000, 1);
-    bloomPass.strength = 0.55;
-    ambLight.intensity = 0.3;
-    dirLight.intensity = 0.4;
-    document.body.classList.remove('light-mode');
-    document.getElementById('modeParticle').classList.add('active');
-    document.getElementById('modeTexture').classList.remove('active');
-  }
+
+    const scene = new THREE.Scene();
+    scene.add(new THREE.AmbientLight(0xffffff, 0.3));
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.4);
+    dirLight.position.set(3, 5, 4);
+    scene.add(dirLight);
+
+    const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(-0.8, 0.6, 5.5);
+    camera.lookAt(-0.5, 0.4, 0);
+
+    const composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
+    composer.addPass(new UnrealBloomPass(
+      new THREE.Vector2(window.innerWidth, window.innerHeight), 0.55, 0.7, 0.8
+    ));
+
+    const { homePts, partIds, total } = particleData;
+    const allPos = new Float32Array(total * 3);
+    const allHome = new Float32Array(total * 3);
+    const allCol = new Float32Array(total * 3);
+    const allSize = new Float32Array(total);
+    const allPhase = new Float32Array(total);
+
+    let minX=Infinity, maxX=-Infinity, minY=Infinity, maxY=-Infinity, minZ=Infinity, maxZ=-Infinity;
+    for (let i = 0; i < total; i++) {
+      const x=homePts[i*3], y=homePts[i*3+1], z=homePts[i*3+2];
+      if(x<minX)minX=x; if(x>maxX)maxX=x;
+      if(y<minY)minY=y; if(y>maxY)maxY=y;
+      if(z<minZ)minZ=z; if(z>maxZ)maxZ=z;
+    }
+    const rx=maxX-minX||1, ry=maxY-minY||1, rz=maxZ-minZ||1;
+
+    for (let i = 0; i < total; i++) {
+      const i3 = i * 3;
+      allHome[i3]=homePts[i3]; allHome[i3+1]=homePts[i3+1]; allHome[i3+2]=homePts[i3+2];
+
+      // Start as thin haze near model surface (same as landing.html)
+      const angle1 = Math.random() * Math.PI * 2;
+      const angle2 = Math.random() * Math.PI * 2;
+      const radius = 0.1 + Math.random() * 0.4;
+      allPos[i3]   = homePts[i3] + Math.cos(angle1) * radius;
+      allPos[i3+1] = homePts[i3+1] + Math.sin(angle2) * radius * 0.3;
+      allPos[i3+2] = homePts[i3+2] + Math.sin(angle1) * radius;
+
+      // Color — identical to landing.html
+      const nx = (homePts[i3] - minX) / rx;
+      const ny = (homePts[i3+1] - minY) / ry;
+      const nz = (homePts[i3+2] - minZ) / rz;
+      const partId = partIds[i];
+      const isDeskTop = (partId === 5);
+      const isLeg = (partId === 16 || partId === 17 || partId === 24 || partId === 25);
+
+      let r, g, b;
+      if (isLeg) {
+        r = 0.04 + nz * 0.02; g = 0.03 + nz * 0.02; b = 0.08 + nz * 0.04;
+      } else if (isDeskTop) {
+        const frontMix = Math.pow(nz, 1.5); const topMix = 1 - frontMix;
+        r = 0.1 * frontMix + 0.18 * topMix; g = 0.06 * frontMix + 0.1 * topMix; b = 0.08 * frontMix + 0.12 * topMix;
+        if (Math.random() < 0.06) { r += 0.35; g += 0.18; b += 0.03; }
+      } else {
+        const heightBoost = Math.min(Math.max((ny - 0.42) / 0.58, 0), 1.0);
+        if (heightBoost > 0.5) {
+          r = 0.2 + heightBoost * 0.15; g = 0.15 + heightBoost * 0.15; b = 0.65 + heightBoost * 0.3;
+          if (heightBoost > 0.8 && Math.random() < 0.15) { r = 0.75; g = 0.85; b = 1.0; }
+        } else {
+          const leftW = Math.pow(Math.max(0, 1 - nx * 2), 1.5);
+          const rightW = Math.pow(Math.max(0, nx * 2 - 1), 1.5);
+          const centerW = Math.pow(Math.max(0, 1 - Math.abs(nx - 0.5) * 2.5), 1.2);
+          r = 0.08 * leftW + 0.2 * centerW + 0.95 * rightW;
+          g = 0.35 * leftW + 0.08 * centerW + 0.45 * rightW;
+          b = 0.95 * leftW + 0.6 * centerW + 0.05 * rightW;
+          const w = leftW + centerW + rightW + 0.001;
+          r /= w; g /= w; b /= w;
+          r += heightBoost * 0.15; g += heightBoost * 0.08; b += heightBoost * 0.1;
+        }
+      }
+      r += nz * 0.06; b -= nz * 0.04;
+      const noise = (Math.random() - 0.5) * 0.12;
+      allCol[i3]   = Math.max(0.04, Math.min(1, r + noise));
+      allCol[i3+1] = Math.max(0.02, Math.min(1, g + noise * 0.3));
+      allCol[i3+2] = Math.max(0.04, Math.min(1, b + noise * 0.5));
+
+      if (!isDeskTop && !isLeg && ny > 0.6 && Math.random() < 0.03) {
+        const boost = 0.3 + Math.random() * 0.4;
+        allCol[i3] = Math.min(1, allCol[i3] + boost);
+        allCol[i3+1] = Math.min(1, allCol[i3+1] + boost * 0.8);
+        allCol[i3+2] = Math.min(1, allCol[i3+2] + boost * 0.6);
+      }
+
+      allSize[i] = 0.4 + Math.random() * 2.6 + (Math.random() < 0.08 ? 2.0 : 0);
+      allPhase[i] = Math.random() * Math.PI * 2;
+    }
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(allPos, 3));
+    geo.setAttribute('home', new THREE.BufferAttribute(allHome, 3));
+    geo.setAttribute('customColor', new THREE.BufferAttribute(allCol, 3));
+    geo.setAttribute('size', new THREE.BufferAttribute(allSize, 1));
+    geo.setAttribute('phase', new THREE.BufferAttribute(allPhase, 1));
+
+    const mat = new THREE.ShaderMaterial({
+      vertexShader: `
+        attribute vec3 customColor;
+        attribute float size;
+        attribute float phase;
+        varying vec3 vColor;
+        varying float vAlpha;
+        uniform float uTime;
+        uniform float uAlpha;
+        void main() {
+          vColor = customColor;
+          float breathe = 1.0 + sin(uTime * 0.1 + phase) * 0.02;
+          vAlpha = 0.6 * breathe * uAlpha;
+          vec4 mv = modelViewMatrix * vec4(position, 1.0);
+          gl_PointSize = size * breathe * (90.0 / -mv.z);
+          gl_PointSize = clamp(gl_PointSize, 0.5, 6.0);
+          gl_Position = projectionMatrix * mv;
+        }
+      `,
+      fragmentShader: `
+        varying vec3 vColor;
+        varying float vAlpha;
+        void main() {
+          float d = length(gl_PointCoord - 0.5);
+          if (d > 0.5) discard;
+          float soft = smoothstep(0.5, 0.1, d);
+          gl_FragColor = vec4(vColor, soft * vAlpha);
+        }
+      `,
+      uniforms: { uTime: { value: 0 }, uAlpha: { value: 1.0 } },
+      transparent: true, depthWrite: true, depthTest: true,
+      blending: THREE.NormalBlending,
+    });
+
+    const points = new THREE.Points(geo, mat);
+    scene.add(points);
+
+    // Scatter velocities (for final scatter phase)
+    const scatterVel = new Float32Array(total * 3);
+    for (let i = 0; i < total; i++) {
+      const a1 = Math.random() * Math.PI * 2;
+      const a2 = Math.random() * Math.PI * 2;
+      const spd = 3 + Math.random() * 8;
+      scatterVel[i*3]   = Math.cos(a1) * spd;
+      scatterVel[i*3+1] = Math.sin(a2) * spd * 0.5;
+      scatterVel[i*3+2] = Math.sin(a1) * spd;
+    }
+
+    const startTime = performance.now() / 1000;
+    let phase = 'float';
+
+    const clock = new THREE.Clock();
+
+    function animate() {
+      const now = performance.now() / 1000;
+      const elapsed = now - startTime;
+      const dt = Math.min(clock.getDelta(), 0.05);
+      mat.uniforms.uTime.value = elapsed;
+
+      const posArr = geo.attributes.position.array;
+      const homeArr = geo.attributes.home.array;
+
+      if (phase === 'float') {
+        // Nebula breathing drift — same as landing.html floating state
+        for (let i = 0; i < total; i++) {
+          const i3 = i * 3;
+          const drift = 0.15;
+          const nx = Math.sin(elapsed * 0.3 + i * 0.01) * drift;
+          const ny = Math.cos(elapsed * 0.2 + i * 0.013) * drift * 0.3;
+          const nz = Math.sin(elapsed * 0.25 + i * 0.017) * drift;
+          posArr[i3]   += nx * 0.02;
+          posArr[i3+1] += ny * 0.02;
+          posArr[i3+2] += nz * 0.02;
+        }
+        if (elapsed >= floatDuration) {
+          phase = 'gather';
+        }
+      } else if (phase === 'gather') {
+        const gatherElapsed = elapsed - floatDuration;
+        const progress = Math.min(gatherElapsed / gatherDuration, 1.0);
+        const ease = progress * progress * (3 - 2 * progress);
+        const lerpSpeed = 0.003 + ease * 0.077;
+
+        for (let i = 0; i < total; i++) {
+          const i3 = i * 3;
+          posArr[i3]   += (homeArr[i3]   - posArr[i3])   * lerpSpeed;
+          posArr[i3+1] += (homeArr[i3+1] - posArr[i3+1]) * lerpSpeed;
+          posArr[i3+2] += (homeArr[i3+2] - posArr[i3+2]) * lerpSpeed;
+        }
+
+        if (gatherElapsed >= gatherDuration + holdDuration) {
+          if (scatterDuration <= 0) {
+            // Keep rendering particles in hold state, show task card
+            phase = 'hold';
+            showTaskCard(camera, homePts, partIds, total);
+          } else {
+            phase = 'scatter';
+          }
+        }
+      } else if (phase === 'hold') {
+        // Keep breathing — gentle drift near home
+        for (let i = 0; i < total; i++) {
+          const i3 = i * 3;
+          posArr[i3]   += (homeArr[i3] - posArr[i3]) * 0.05;
+          posArr[i3+1] += (homeArr[i3+1] - posArr[i3+1]) * 0.05;
+          posArr[i3+2] += (homeArr[i3+2] - posArr[i3+2]) * 0.05;
+        }
+      } else if (phase === 'scatter') {
+        const scatterElapsed = elapsed - floatDuration - gatherDuration - holdDuration;
+        const progress = Math.min(scatterElapsed / scatterDuration, 1.0);
+        mat.uniforms.uAlpha.value = 1.0 - progress;
+
+        for (let i = 0; i < total; i++) {
+          const i3 = i * 3;
+          posArr[i3]   += scatterVel[i3]   * dt;
+          posArr[i3+1] += scatterVel[i3+1] * dt;
+          posArr[i3+2] += scatterVel[i3+2] * dt;
+        }
+
+        if (progress >= 1) {
+          canvas.style.display = 'none';
+          renderer.dispose();
+          resolve();
+          return;
+        }
+      }
+
+      geo.attributes.position.needsUpdate = true;
+      composer.render();
+      requestAnimationFrame(animate);
+    }
+    requestAnimationFrame(animate);
+  });
 }
-document.getElementById('modeParticle').addEventListener('click', () => doSwitch('particle'));
-document.getElementById('modeTexture').addEventListener('click', () => doSwitch('texture'));
 
-} // end async init()
+// ============================================================
+// Task card overlay — glowing line from part 47 to card
+// ============================================================
+function showTaskCard(camera, homePts, partIds, total) {
+  const CARDS = [
+    { partId: 47, cardId: 'taskCard47', color: [110,201,255], offsetX: -260, offsetY: -100,
+      url: 'onboarding.html?level=tutorial&name=%E6%96%B0%E6%89%8B%E6%95%99%E5%AD%A6&objects=1&time=0', delay: 0 },
+    { partId: 0, cardId: 'taskCard0', color: [52,211,153], offsetX: 40, offsetY: -120,
+      url: 'onboarding.html?level=desk-1&name=%E4%B9%A6%E6%A1%8C%C2%B7%E5%88%9D%E7%BA%A7&objects=3&time=900&shuffle=1', delay: 200 },
+    { partId: 4, cardId: 'taskCard4', color: [251,191,36], offsetX: 60, offsetY: 20,
+      url: 'onboarding.html?level=desk-2&name=%E4%B9%A6%E6%A1%8C%C2%B7%E4%B8%AD%E7%BA%A7&objects=5&time=1080&shuffle=1&obstacles=1', delay: 400 },
+  ];
 
-init().catch(e => console.error('Init failed:', e));
+  // Compute screen positions for each part
+  const cardPositions = CARDS.map(cfg => {
+    let cx = 0, cy = 0, cz = 0, count = 0;
+    for (let i = 0; i < total; i++) {
+      if (partIds[i] === cfg.partId) {
+        cx += homePts[i * 3]; cy += homePts[i * 3 + 1]; cz += homePts[i * 3 + 2]; count++;
+      }
+    }
+    if (count > 0) { cx /= count; cy /= count; cz /= count; }
+    const v = new THREE.Vector3(cx, cy, cz);
+    v.project(camera);
+    const sx = (v.x * 0.5 + 0.5) * window.innerWidth;
+    const sy = (-v.y * 0.5 + 0.5) * window.innerHeight;
+    return { ...cfg, screenX: sx, screenY: sy };
+  });
+
+  // Show cards with staggered animation
+  cardPositions.forEach(cp => {
+    setTimeout(() => {
+      const card = document.getElementById(cp.cardId);
+      const cardX = cp.screenX + cp.offsetX;
+      const cardY = cp.screenY + cp.offsetY;
+      card.style.left = cardX + 'px';
+      card.style.top = cardY + 'px';
+      card.style.display = 'block';
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(12px) scale(0.95)';
+      card.style.transition = 'opacity 0.6s cubic-bezier(0.4,0,0.2,1), transform 0.6s cubic-bezier(0.4,0,0.2,1)';
+      requestAnimationFrame(() => {
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0) scale(1)';
+      });
+      card.onclick = () => { window.location.href = cp.url; };
+      card._lineFrom = { x: cardX + (cp.offsetX < 0 ? 200 : 0), y: cardY + 50 };
+    }, cp.delay);
+  });
+
+  // Draw animated connection lines for all cards
+  const lineCv = document.getElementById('lineCanvas');
+  lineCv.style.display = 'block';
+  lineCv.width = window.innerWidth * devicePixelRatio;
+  lineCv.height = window.innerHeight * devicePixelRatio;
+  const ctx = lineCv.getContext('2d');
+  ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+
+  const lineStartTime = performance.now();
+
+  function drawLines() {
+    const t = (performance.now() - lineStartTime) / 1000;
+    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+    cardPositions.forEach(cp => {
+      const card = document.getElementById(cp.cardId);
+      if (card.style.display === 'none') return;
+
+      const delayS = cp.delay / 1000;
+      const lt = Math.max(0, t - delayS);
+      if (lt <= 0) return;
+
+      const cardX = cp.screenX + cp.offsetX;
+      const lineFromX = cardX + (cp.offsetX < 0 ? 200 : 0);
+      const lineFromY = cp.screenY + cp.offsetY + 50;
+      const [cr, cg, cb] = cp.color;
+
+      // Draw-in animation
+      const drawProgress = Math.min(lt / 0.5, 1);
+      const ease = drawProgress * drawProgress * (3 - 2 * drawProgress);
+      const curX = lineFromX + (cp.screenX - lineFromX) * ease;
+      const curY = lineFromY + (cp.screenY - lineFromY) * ease;
+
+      // Outer glow
+      ctx.save();
+      ctx.shadowColor = `rgba(${cr},${cg},${cb}, 0.6)`;
+      ctx.shadowBlur = 16;
+      ctx.strokeStyle = `rgba(${cr},${cg},${cb}, 0.35)`;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(lineFromX, lineFromY);
+      ctx.lineTo(curX, curY);
+      ctx.stroke();
+      ctx.restore();
+
+      // Core line
+      ctx.strokeStyle = `rgba(${cr},${cg},${cb}, 0.8)`;
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(lineFromX, lineFromY);
+      ctx.lineTo(curX, curY);
+      ctx.stroke();
+
+      if (drawProgress >= 1) {
+        // Traveling energy particle
+        const travelT = (lt * 1.5) % 1;
+        const px = lineFromX + (cp.screenX - lineFromX) * travelT;
+        const py = lineFromY + (cp.screenY - lineFromY) * travelT;
+        const grad = ctx.createRadialGradient(px, py, 0, px, py, 8);
+        grad.addColorStop(0, `rgba(${Math.min(cr+90,255)},${Math.min(cg+30,255)},${Math.min(cb+30,255)}, 0.9)`);
+        grad.addColorStop(0.3, `rgba(${cr},${cg},${cb}, 0.4)`);
+        grad.addColorStop(1, `rgba(${cr},${cg},${cb}, 0)`);
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(px, py, 8, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Pulse rings at part location
+        const pulse1 = (lt * 0.8) % 1;
+        const pulse2 = ((lt * 0.8) + 0.5) % 1;
+        [pulse1, pulse2].forEach(p => {
+          ctx.strokeStyle = `rgba(${cr},${cg},${cb}, ${0.4 * (1 - p)})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.arc(cp.screenX, cp.screenY, 5 + p * 20, 0, Math.PI * 2);
+          ctx.stroke();
+        });
+
+        // Inner glow dot
+        const dotGrad = ctx.createRadialGradient(cp.screenX, cp.screenY, 0, cp.screenX, cp.screenY, 10);
+        dotGrad.addColorStop(0, `rgba(${Math.min(cr+90,255)},${Math.min(cg+40,255)},${Math.min(cb+40,255)}, 0.9)`);
+        dotGrad.addColorStop(0.4, `rgba(${cr},${cg},${cb}, 0.3)`);
+        dotGrad.addColorStop(1, `rgba(${cr},${cg},${cb}, 0)`);
+        ctx.fillStyle = dotGrad;
+        ctx.beginPath();
+        ctx.arc(cp.screenX, cp.screenY, 10, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Core dot
+        ctx.fillStyle = `rgba(${Math.min(cr+90,255)},${Math.min(cg+50,255)},${Math.min(cb+50,255)}, 0.95)`;
+        ctx.beginPath();
+        ctx.arc(cp.screenX, cp.screenY, 3, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Dot at card connection
+      ctx.fillStyle = `rgba(${cr},${cg},${cb}, 0.6)`;
+      ctx.beginPath();
+      ctx.arc(lineFromX, lineFromY, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    requestAnimationFrame(drawLines);
+  }
+  drawLines();
+}
+
+// ============================================================
+// Orchestration
+// ============================================================
+let transitioning = false;
+
+async function startTransition() {
+  if (transitioning) return;
+  transitioning = true;
+
+  // Hard cut — immediately hide all landing UI
+  document.querySelectorAll('.bg-image, .ui-overlay, .hero-left, .top-bar, .level-panel, .sidebar-edge, .sidebar-trigger, .sidebar, .mission-panel, .controls-box, .bottom-hint, .scene-typer')
+    .forEach(el => { el.style.display = 'none'; });
+
+  // Phase 1: Warp particles + scene preview (simultaneous, 5s)
+  await Promise.all([
+    playWarpEffect(5),
+    playScenePreview(5),
+  ]);
+
+  // Phase 2: Particle float (1.5s) + gather (4s), instant task card on complete
+  playParticleTransition(1.5, 4, 0, 0);
+}
+
+// Intercept hotspot clicks
+document.querySelectorAll('.hotspot').forEach(el => {
+  el.addEventListener('click', e => {
+    e.preventDefault();
+    startTransition();
+  });
+});
 </script>
+
 </body>
 </html>
