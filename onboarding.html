@@ -24,8 +24,8 @@
     height: 56px; display: flex; align-items: center; justify-content: space-between;
     padding: 0 40px;
   }
-  .logo { font-size: 18px; font-weight: 700; color: #f5f7fa; letter-spacing: -0.3px; }
-  .logo span { color: #6EC9FF; }
+  .logo { height: 32px; margin-left: -8px; }
+  .logo img { height: 100%; width: auto; display: block; }
   .skip-btn {
     padding: 8px 18px; border-radius: 10px;
     background: rgba(245,247,250,0.06); border: 1px solid rgba(245,247,250,0.1);
@@ -178,7 +178,7 @@
 <canvas id="particles"></canvas>
 
 <div class="top-bar">
-  <div class="logo">Joy<span>AI</span></div>
+  <div class="logo"><img src="assets/JoyAI.png" alt="JoyAI"></div>
   <a onclick="window.location.href='game.html'+window.location.search" class="skip-btn" style="cursor:pointer;">跳过</a>
 </div>
 
@@ -204,28 +204,32 @@
     <h2>操控方式</h2>
     <div class="controls">
       <div class="ctrl">
-        <div class="ctrl-keys-group"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></div>
-        <span class="ctrl-label">移动</span>
+        <div class="ctrl-keys-group"><kbd>Tab</kbd></div>
+        <span class="ctrl-label">切换左/右臂</span>
       </div>
       <div class="ctrl">
-        <div class="ctrl-keys-group"><kbd>E</kbd><span style="font-size:11px;color:rgba(245,247,250,0.3);margin:0 2px;">按住</span></div>
-        <span class="ctrl-label">抓取</span>
+        <div class="ctrl-keys-group"><kbd>W</kbd><kbd>S</kbd></div>
+        <span class="ctrl-label">前进 / 后退</span>
+      </div>
+      <div class="ctrl">
+        <div class="ctrl-keys-group"><kbd>A</kbd><kbd>D</kbd></div>
+        <span class="ctrl-label">左移 / 右移</span>
       </div>
       <div class="ctrl">
         <div class="ctrl-keys-group"><kbd>↑</kbd><kbd>↓</kbd></div>
-        <span class="ctrl-label">升降</span>
-      </div>
-      <div class="ctrl">
-        <div class="ctrl-keys-group"><kbd>Q</kbd><span style="font-size:11px;color:rgba(245,247,250,0.3);margin:0 2px;">按住</span></div>
-        <span class="ctrl-label">释放</span>
+        <span class="ctrl-label">上升 / 下降</span>
       </div>
       <div class="ctrl">
         <div class="ctrl-keys-group"><kbd>←</kbd><kbd>→</kbd></div>
-        <span class="ctrl-label">旋转</span>
+        <span class="ctrl-label">俯仰旋转</span>
       </div>
       <div class="ctrl">
-        <div class="ctrl-keys-group"><kbd>Tab</kbd></div>
-        <span class="ctrl-label">切换左右臂</span>
+        <div class="ctrl-keys-group"><kbd>Space</kbd></div>
+        <span class="ctrl-label">夹爪开合</span>
+      </div>
+      <div class="ctrl">
+        <div class="ctrl-keys-group"><kbd>Q</kbd><kbd>E</kbd></div>
+        <span class="ctrl-label">旋转视角</span>
       </div>
       <div class="ctrl">
         <div class="ctrl-keys-group"><kbd>H</kbd></div>
@@ -332,7 +336,7 @@ if (isT) {
 document.getElementById('briefingTags').innerHTML = tags.join('');
 
 let desc = isT
-  ? '跟随引导学习机械臂操控，前 2 个物体有教学提示。'
+  ? '跟随引导学习机械臂操控，完成 1 个物体的抓取放置任务。'
   : ['物体位置每局随机', shuffle ? '物体分值每局变化' : '', obstacles ? '含障碍物，需规划路径' : ''].filter(Boolean).join('，') + '。';
 document.getElementById('briefingDesc').textContent = desc;
 document.getElementById('phase2Desc').textContent = '桌面上 ' + objects + ' 个物体等你归位';
