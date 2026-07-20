@@ -131,29 +131,29 @@
 
   /* Phase dots */
   .dots {
-    position: fixed; bottom: 48px; left: 50%; transform: translateX(-50%);
-    display: flex; gap: 8px; z-index: 20;
+    position: fixed; bottom: 56px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 10px; z-index: 20;
   }
   .dot {
-    width: 6px; height: 6px; border-radius: 50%;
+    width: 8px; height: 8px; border-radius: 50%;
     background: rgba(245,247,250,0.15);
     transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
   .dot.active {
-    background: #6EC9FF; width: 24px; border-radius: 3px;
-    box-shadow: 0 0 8px rgba(110,201,255,0.4);
+    background: #6EC9FF; width: 32px; border-radius: 4px;
+    box-shadow: 0 0 10px rgba(110,201,255,0.5);
   }
 
   /* Progress bar */
   .progress {
-    position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
-    width: 200px; height: 3px; border-radius: 2px;
-    background: rgba(245,247,250,0.06); z-index: 20;
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+    width: 320px; height: 5px; border-radius: 3px;
+    background: rgba(245,247,250,0.08); z-index: 20;
   }
   .progress-bar {
-    height: 100%; width: 0%; border-radius: 2px;
+    height: 100%; width: 0%; border-radius: 3px;
     background: linear-gradient(90deg, #6EC9FF, #a78bfa);
-    box-shadow: 0 0 8px rgba(110,201,255,0.3);
+    box-shadow: 0 0 12px rgba(110,201,255,0.4);
     transition: width 0.3s ease;
   }
 
@@ -178,7 +178,7 @@
 <canvas id="particles"></canvas>
 
 <div class="top-bar">
-  <div class="logo"><img src="assets/JoyAI.png" alt="JoyAI"></div>
+  <div class="logo"><img src="assets/ui/JoyAI.png" alt="JoyAI"></div>
   <a onclick="window.location.href='game.html'+window.location.search" class="skip-btn" style="cursor:pointer;">跳过</a>
 </div>
 
@@ -188,6 +188,9 @@
     <h2 id="briefingTitle">书桌 · 初级</h2>
     <div class="tags" id="briefingTags"></div>
     <p id="briefingDesc"></p>
+    <div class="preview-frame" style="margin-top:20px;">
+      <img src="assets/scenes/书桌场景示例.jpg" alt="scene" style="width:100%;height:100%;left:0;" />
+    </div>
   </div>
 
   <!-- Phase 2: Scene Preview -->
@@ -195,7 +198,7 @@
     <h2>即将进入挑战</h2>
     <p id="phase2Desc">桌面上的物体等你归位</p>
     <div class="preview-frame">
-      <img src="assets/sim-grab.gif" alt="scene preview" />
+      <img src="assets/scenes/sim-grab.gif" alt="scene preview" />
     </div>
   </div>
 
