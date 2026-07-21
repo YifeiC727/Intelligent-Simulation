@@ -432,58 +432,12 @@
     background: linear-gradient(90deg, #7350FF, #B35CFF);
   }
 
-  /* Stats panel — bottom of page */
-  .stats-bottom {
-    position: fixed; bottom: 48px; right: 24px;
-    z-index: 45;
-    opacity: 0; animation: fadeIn 1s ease 1.4s forwards;
-  }
-  .stats-bottom-card {
-    width: 280px;
-    padding: 20px;
-    border-radius: 16px;
-    background: rgba(10, 13, 24, 0.82);
-    border: 1px solid rgba(145, 130, 255, 0.16);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.04),
-      0 -8px 32px rgba(0, 0, 0, 0.28);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    transition: border-color 0.3s;
-  }
-  .stats-bottom-card:hover { border-color: rgba(143, 95, 255, 0.30); }
-  .stats-title {
-    font-size: 14px; font-weight: 600;
-    color: #F4F1FF;
-    letter-spacing: 0.01em;
-    margin-bottom: 16px;
-  }
-  .stats-row { display: flex; gap: 0; }
-  .stat-item { flex: 1; text-align: center; }
-  .stat-item + .stat-item {
-    border-left: 1px solid rgba(255,255,255,0.06);
-  }
-  .stat-value {
-    font-size: 26px; font-weight: 600;
-    color: #fff; line-height: 1;
-  }
-  .stat-unit {
-    font-size: 11px; font-weight: 400;
-    color: rgba(255,255,255,0.40);
-    margin-left: 2px;
-  }
-  .stat-label {
-    font-size: 10px; color: rgba(255,255,255,0.35);
-    margin-top: 6px;
-  }
-
   @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   @media (max-width: 768px) {
     .hero-title { font-size: 28px; }
     .hero-left { left: 20px; top: 100px; max-width: 260px; }
     .mission-panel { display: none; }
     .right-sidebar { display: none; }
-    .stats-bottom { display: none; }
   }
 </style>
 </head>
@@ -554,7 +508,7 @@
 <div class="top-bar">
   <div class="logo"><img src="assets/ui/JoyAI.png" alt="JoyAI"></div>
   <div class="top-right">
-    <a class="btn-about" onclick="document.getElementById('aboutOverlay').classList.add('open')">了解平台</a>
+    <a class="btn-about" onclick="document.getElementById('aboutOverlay').classList.add('open')">关于</a>
   </div>
 </div>
 
@@ -565,7 +519,7 @@
   <p class="hero-sub">从桌面开始，逐步探索更大的世界。<br>同场竞技，看人类直觉能否胜过机器算法。</p>
   <div class="hero-actions">
     <button class="btn-explore" id="btnExplore">立即挑战</button>
-    <a class="btn-platform" onclick="document.getElementById('aboutOverlay').classList.add('open')">了解平台</a>
+    <a class="btn-platform" onclick="document.getElementById('aboutOverlay').classList.add('open')">关于</a>
   </div>
 </div>
 
@@ -637,23 +591,6 @@
           <span class="tl-count">0 / 6</span>
         </div>
         <div class="tl-bar"><div class="tl-bar-fill" style="width:0%"></div></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Stats panel — fixed bottom full width -->
-<div class="stats-bottom">
-  <div class="stats-bottom-card">
-    <div class="stats-title">你的探索数据</div>
-    <div class="stats-row">
-      <div class="stat-item">
-        <div class="stat-value">--<span class="stat-unit">小时</span></div>
-        <div class="stat-label">探索时长</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-value">--<span class="stat-unit">个</span></div>
-        <div class="stat-label">完成任务</div>
       </div>
     </div>
   </div>
