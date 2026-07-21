@@ -319,27 +319,6 @@
   .about-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
   .about-tag { padding: 6px 14px; border-radius: 10px; background: rgba(245,247,250,0.03); border: 1px solid rgba(245,247,250,0.06); font-size: 12px; font-weight: 500; color: rgba(245,247,250,0.4); }
 
-  /* Version switcher */
-  .version-switcher {
-    position: fixed; bottom: 20px; right: 20px; z-index: 9999;
-    display: flex; gap: 6px; padding: 4px;
-    border-radius: 10px; background: rgba(10,10,20,0.7);
-    backdrop-filter: blur(12px); border: 1px solid rgba(245,247,250,0.08);
-  }
-  .ver-active {
-    padding: 6px 14px; border-radius: 7px;
-    font-size: 12px; font-weight: 600;
-    color: #6EC9FF; background: rgba(110,201,255,0.12);
-    border: 1px solid rgba(110,201,255,0.2);
-  }
-  .ver-link {
-    padding: 6px 14px; border-radius: 7px;
-    font-size: 12px; font-weight: 500;
-    color: rgba(245,247,250,0.4); text-decoration: none;
-    transition: all 0.2s;
-  }
-  .ver-link:hover { color: #f5f7fa; background: rgba(245,247,250,0.06); }
-
   /* Right sidebar container */
   .right-sidebar {
     position: fixed; top: 90px; right: 24px;
@@ -695,16 +674,6 @@
       <img src="assets/scenes/sim-grab.gif" alt="仿真抓取演示" style="width: 100%; display: block; object-fit: cover;">
     </div>
   </div>
-</div>
-
-<!-- Version switcher -->
-<div class="version-switcher">
-  <span class="ver-active">V1</span>
-  <a href="landing2.html" class="ver-link">V2</a>
-  <a href="landing3.html" class="ver-link">V3</a>
-  <a href="landing4.html" class="ver-link">V4</a>
-  <a href="landing5.html" class="ver-link">V5</a>
-  <a href="landing6.html" class="ver-link">V6</a>
 </div>
 
 <script>
