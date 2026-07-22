@@ -326,7 +326,6 @@
     font-size: 10px; font-weight: 600; padding: 4px 10px; border-radius: 6px;
     letter-spacing: 0.3px;
   }
-  .badge-tutorial { background: rgba(140,82,255,0.12); color: #B88FFF; border: 1px solid rgba(140,82,255,0.2); }
   .badge-open { background: rgba(52,211,153,0.12); color: #34d399; border: 1px solid rgba(52,211,153,0.25); }
   .badge-locked { background: rgba(255,255,255,0.03); color: rgba(255,255,255,0.30); border: 1px solid rgba(255,255,255,0.08); }
 
@@ -695,8 +694,7 @@ function renderMissionPanel(sceneKey, highlightFirst) {
     if (t.locked) cls += ' locked';
     if (highlightFirst && i === 0 && !t.locked) cls += ' highlight';
     let badge;
-    if (t.badge === 'tutorial') badge = '<span class="mission-card-badge badge-tutorial">教学</span>';
-    else if (t.badge === 'open') badge = '<span class="mission-card-badge badge-open">开始</span>';
+    if (t.badge === 'open') badge = '<span class="mission-card-badge badge-open">开始</span>';
     else badge = '<span class="mission-card-badge badge-locked">即将开放</span>';
     const tag = t.href ? 'a' : 'div';
     const hrefAttr = t.href ? ` href="${t.href}"` : '';
