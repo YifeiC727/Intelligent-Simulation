@@ -146,14 +146,9 @@
   .demo-btn:last-child { margin-bottom: 0; }
   .demo-btn:hover { background: rgba(110,201,255,0.06); border-color: rgba(110,201,255,0.15); color: #6EC9FF; }
 
-  /* Mini leaderboard — positioned top-right, below AI PiP */
+  /* Mini leaderboard — hidden (placeholder for future) */
   .mini-lb {
-    position: fixed; top: 60px; right: 16px; z-index: 500;
-    width: 260px; background: rgba(20,24,32,0.82);
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border-radius: 16px;
-    padding: 18px 20px 14px; border: 1px solid rgba(255,255,255,0.06);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    display: none;
   }
   .mini-lb-title {
     font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.6);
@@ -226,7 +221,7 @@
   .game-panel.ai-panel {
     position: absolute;
     top: 16px; left: 16px; z-index: 60;
-    width: 280px; height: 200px;
+    width: 320px; height: 228px;
     border-radius: 14px;
     background: #0a0a0f;
     border: 1px solid rgba(245,247,250,0.1);
@@ -320,7 +315,7 @@
     background: rgba(245,247,250,0.04); border: 1px solid rgba(245,247,250,0.08);
     font-size: 10px; font-weight: 700; color: rgba(245,247,250,0.6);
   }
-  .combo-info { display: flex; align-items: center; gap: 12px; }
+  .combo-info { display: none; }
   .combo-badge {
     padding: 5px 12px; border-radius: 8px;
     background: rgba(110,201,255,0.06);
@@ -356,6 +351,162 @@
     display: none; flex-direction: column;
     align-items: center; justify-content: center;
     padding: 40px;
+  }
+  #tutResultOverlay {
+    background: url('assets/新手关结果页背景.png') center/cover no-repeat;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    justify-content: center;
+    align-items: center;
+    padding-left: 38%;
+    padding-right: 4%;
+  }
+  .tut-result-content {
+    display: flex; flex-direction: column;
+    align-items: center;
+    width: 66%;
+  }
+  #tutResultOverlay .result-title {
+    font-size: 52px; font-weight: 800;
+    margin-bottom: 10px;
+  }
+  #tutResultOverlay .result-sub {
+    font-size: 18px; color: rgba(255,255,255,0.65);
+    margin-bottom: 44px;
+  }
+  .tut-stat-blocks {
+    display: flex; gap: 18px;
+    margin-bottom: 44px;
+    width: 100%;
+  }
+  .tut-stat-block {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    flex: 1;
+    padding: 32px 20px;
+    background: rgba(14,16,30,0.65);
+    border: 1px solid rgba(140,120,255,0.12);
+    border-radius: 18px;
+    backdrop-filter: blur(12px);
+    min-height: 160px;
+  }
+  .tut-stat-icon {
+    width: 32px; height: 32px;
+    color: #6EC9FF;
+    margin-bottom: 12px;
+  }
+  .tut-stat-label {
+    font-size: 14px; font-weight: 500;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 10px;
+  }
+  .tut-stat-value {
+    font-size: 36px; font-weight: 700;
+    color: #fff;
+  }
+  #tutResultOverlay .result-btns {
+    width: 100%;
+    display: flex; gap: 16px;
+  }
+  #tutResultOverlay .rbtn {
+    flex: 1;
+    padding: 18px 0;
+    font-size: 16px;
+    text-align: center;
+    border-radius: 14px;
+  }
+
+  /* Normal result page */
+  #resultOverlay {
+    background: url('assets/茶几关结果页背景.png') center/cover no-repeat;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    justify-content: center;
+    align-items: center;
+    padding-left: 38%;
+    padding-right: 4%;
+  }
+  .normal-result-content {
+    display: flex; flex-direction: column;
+    align-items: center;
+    width: 66%;
+  }
+  #resultOverlay .result-title {
+    font-size: 52px; font-weight: 800;
+    margin-bottom: 8px;
+  }
+  #resultOverlay .result-sub {
+    font-size: 17px; color: rgba(255,255,255,0.65);
+    margin-bottom: 36px;
+  }
+  .vs-compare {
+    display: flex; align-items: stretch;
+    width: 100%;
+    margin-bottom: 28px;
+    background: rgba(14,16,30,0.65);
+    border: 1px solid rgba(140,120,255,0.12);
+    border-radius: 18px;
+    backdrop-filter: blur(12px);
+    overflow: hidden;
+    min-height: 160px;
+  }
+  .vs-col {
+    flex: 1;
+    display: flex; flex-direction: column;
+    align-items: center;
+    padding: 28px 20px;
+    gap: 16px;
+  }
+  .vs-col-label {
+    font-size: 12px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .vs-col.you-col .vs-col-label { color: #6EC9FF; }
+  .vs-col.ai-col .vs-col-label { color: rgba(255,255,255,0.35); }
+  .vs-divider {
+    display: flex; align-items: center; justify-content: center;
+    padding: 0 12px;
+  }
+  .vs-badge {
+    font-size: 12px; font-weight: 800;
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 1px;
+  }
+  .vs-stat {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .vs-stat-label {
+    font-size: 12px; color: rgba(255,255,255,0.4);
+  }
+  .vs-stat-value {
+    font-size: 28px; font-weight: 700; color: #fff;
+  }
+  .vs-col.ai-col .vs-stat-value { color: rgba(255,255,255,0.35); }
+  #resultOverlay .result-summary-line {
+    margin-bottom: 32px;
+  }
+  #resultOverlay .result-btns {
+    width: 100%;
+    display: flex; gap: 16px;
+  }
+  #resultOverlay .rbtn {
+    flex: 1;
+    padding: 18px 0;
+    font-size: 16px;
+    text-align: center;
+  }
+  .result-toggle {
+    position: absolute; bottom: 24px; right: 24px;
+    padding: 8px 16px; border-radius: 8px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.5);
+    font-size: 12px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .result-toggle:hover {
+    background: rgba(255,255,255,0.12);
+    color: #fff;
   }
   .result-overlay.active { display: flex; }
   .result-title {
@@ -742,7 +893,7 @@
   }
   .gif-half.left { border-right: 1px solid rgba(245,247,250,0.06); display: none; }
   .gif-half.left img { left: 0; width: 200%; }
-  .gif-half.right img { left: 0; width: 100%; }
+  .gif-half.right img { left: 0; width: 200%; height: 100%; top: 0; object-fit: cover; }
   .gif-label {
     position: absolute; top: 14px; left: 18px; z-index: 10;
     font-size: 12px; font-weight: 700; color: #fff;
@@ -1026,29 +1177,18 @@
     </div>
     <div class="timer" id="countdownTimer">--:--</div>
     <div class="placed-dots" id="placedDots"></div>
-    <div class="score-area">
-      <div class="score-chip ai"><span class="label">AI</span> <span id="aiScore">0</span></div>
-      <div class="score-vs">VS</div>
-      <div class="score-chip you"><span class="label">You</span> <span id="yourScore">0</span></div>
-      <button class="pause-btn-header" onclick="pauseGame()" title="暂停 (Esc)">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
-      </button>
-    </div>
+    <button class="pause-btn-header" onclick="pauseGame()" title="暂停 (Esc)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+    </button>
     <div class="header-progress" id="headerProgress"></div>
   </div>
   <div class="game-main" style="position:relative;">
     <!-- GIF Preview / Tutorial Overview — covers game area only -->
     <div class="gif-preview" id="gifPreview">
-      <!-- Normal level: split GIF view -->
-      <div class="gif-half left gif-normal-only">
-        <div class="gif-label">AI Opponent</div>
-        <img src="assets/scenes/sim-grab.gif" alt="ai" />
-      </div>
+      <!-- Normal level: single GIF view (player only) -->
       <div class="gif-half right gif-normal-only">
-        <div class="gif-label">Your Control</div>
         <img src="assets/scenes/sim-grab.gif" alt="player" />
       </div>
-      <button class="gif-view-toggle gif-normal-only" id="gifViewToggle" onclick="toggleGifView()">切换分屏对比</button>
 
       <!-- Tutorial level: static image + annotated overview -->
       <div class="tut-overview" id="tutOverview">
@@ -1103,8 +1243,6 @@
 
       </div>
 
-      <!-- Normal level CTA -->
-      <button class="gif-start-btn gif-normal-only" id="gifStartBtn" onclick="dismissGifPreview()">进入 2D 模拟 →</button>
     </div>
 
     <!-- Controls floating button (appears after tutorial) -->
@@ -1142,11 +1280,7 @@
         <div class="ai-pip-label"><span class="ai-pip-dot"></span> AI Opponent</div>
         <div class="ai-pip-score" id="aiPipScore">0 pts</div>
       </div>
-      <div class="ai-demo-notice">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-        <span>Demo · 正式版展示仿真画面</span>
-      </div>
-      <canvas id="aiCanvas"></canvas>
+      <img src="assets/scenes/sim-grab.gif" alt="AI" style="position:absolute;top:0;left:0;width:200%;height:100%;object-fit:cover;" />
     </div>
   </div>
 
@@ -1211,65 +1345,71 @@
 
 <!-- Result Overlay — Tutorial -->
 <div class="result-overlay" id="tutResultOverlay">
-  <div class="result-title" id="tutResultTitle">完成了！</div>
-  <div class="result-sub" id="tutResultSub"></div>
+  <div class="tut-result-content">
+    <div class="result-title" id="tutResultTitle">太棒了！</div>
+    <div class="result-sub" id="tutResultSub">你成功完成了新手关卡！</div>
 
-  <div class="result-table">
-    <div class="rt-row">
-      <div class="rt-dim">完成数</div>
-      <div class="rt-val you-val" id="tutRPlaced">-</div>
+    <div class="tut-stat-blocks">
+      <div class="tut-stat-block">
+        <svg class="tut-stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <div class="tut-stat-label">用时</div>
+        <div class="tut-stat-value" id="tutRTime">-</div>
+      </div>
+      <div class="tut-stat-block">
+        <svg class="tut-stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <div class="tut-stat-label">完成数</div>
+        <div class="tut-stat-value" id="tutRPlaced">-</div>
+      </div>
     </div>
-    <div class="rt-row">
-      <div class="rt-dim">用时</div>
-      <div class="rt-val you-val" id="tutRTime">-</div>
+
+    <div class="result-btns">
+      <a class="rbtn primary" href="landing.html">进入下一关 ›</a>
+      <a class="rbtn ghost" href="landing.html">返回首页</a>
     </div>
-  </div>
-  <div class="result-btns">
-    <a class="rbtn primary" href="landing.html">进入下一关</a>
-    <a class="rbtn ghost" href="landing.html">返回首页</a>
   </div>
 </div>
 
-<!-- Result Overlay — Normal -->
+<!-- Result Overlay — Normal (formal level) -->
 <div class="result-overlay" id="resultOverlay">
-  <div class="result-title" id="resultTitle">挑战完成！</div>
-  <div class="result-sub" id="resultSub"></div>
+  <div class="normal-result-content">
+    <div class="result-title" id="resultTitle">挑战完成！</div>
+    <div class="result-sub" id="resultSub"></div>
 
-  <div class="result-scores">
-    <div class="result-score-block">
-      <div class="result-score-label you-label">You</div>
-      <div class="result-score-num you-num" id="rYouScore">-</div>
+    <div class="vs-compare">
+      <div class="vs-col you-col">
+        <div class="vs-col-label">You</div>
+        <div class="vs-stat">
+          <div class="vs-stat-label">用时</div>
+          <div class="vs-stat-value" id="rYouTime">-</div>
+        </div>
+        <div class="vs-stat">
+          <div class="vs-stat-label">完成数</div>
+          <div class="vs-stat-value" id="rYouPlaced">-</div>
+        </div>
+      </div>
+      <div class="vs-divider">
+        <span class="vs-badge">VS</span>
+      </div>
+      <div class="vs-col ai-col">
+        <div class="vs-col-label">AI</div>
+        <div class="vs-stat">
+          <div class="vs-stat-label">用时</div>
+          <div class="vs-stat-value" id="rAiTime">-</div>
+        </div>
+        <div class="vs-stat">
+          <div class="vs-stat-label">完成数</div>
+          <div class="vs-stat-value" id="rAiPlaced">-</div>
+        </div>
+      </div>
     </div>
-    <div class="result-vs">VS</div>
-    <div class="result-score-block">
-      <div class="result-score-label ai-label">AI</div>
-      <div class="result-score-num ai-num" id="rAiScore">-</div>
-    </div>
-  </div>
 
-  <div class="result-table">
-    <div class="rt-row">
-      <div class="rt-val you-val" id="rYouPlaced">-</div>
-      <div class="rt-dim">完成数</div>
-      <div class="rt-val ai-val" id="rAiPlaced">-</div>
-    </div>
-    <div class="rt-row">
-      <div class="rt-val you-val" id="rYouTime">-</div>
-      <div class="rt-dim">用时</div>
-      <div class="rt-val ai-val" id="rAiTime">-</div>
-    </div>
-    <div class="rt-row">
-      <div class="rt-val you-val" id="rYouCombo">-</div>
-      <div class="rt-dim">最佳连击</div>
-      <div class="rt-val ai-val" id="rAiCombo">-</div>
+    <div class="result-summary-line" id="resultSummary"></div>
+    <div class="result-btns">
+      <button class="rbtn primary" id="resultPrimaryBtn" onclick="location.reload()">再来一局 ›</button>
+      <a class="rbtn ghost" id="resultSecondaryBtn" href="landing.html">返回首页</a>
     </div>
   </div>
-  <div class="result-summary-line" id="resultSummary"></div>
-  <div class="result-hook-line" id="resultHook"></div>
-  <div class="result-btns">
-    <button class="rbtn primary" onclick="location.reload()">再来一局</button>
-    <a class="rbtn ghost" href="landing.html">返回首页</a>
-  </div>
+  <button class="result-toggle" onclick="toggleResultState()">切换胜负</button>
 </div>
 
 <script>
@@ -1278,7 +1418,7 @@ function dismissGifPreview() {
   const preview = document.getElementById('gifPreview');
   preview.classList.add('hidden');
   const params = new URLSearchParams(window.location.search);
-  const isTutorial = params.get('level') === 'tutorial';
+  const isTutorial = (params.get('level') || '').includes('tutorial');
   if (isTutorial) {
     document.querySelector('.game-main').classList.add('solo');
   }
@@ -1556,6 +1696,10 @@ function positionSpotlight(step) {
     if (rect.top - pad - 140 < 10) {
       tooltip.style.top = (rect.bottom + pad + 16) + 'px';
     }
+  } else if (step.pos === 'right') {
+    tooltip.style.left = (rect.right + pad + 16) + 'px';
+    tooltip.style.top = (cy) + 'px';
+    tooltip.style.transform = 'translateY(-50%)';
   }
 }
 
@@ -1613,36 +1757,32 @@ function advancePostSpotlight() {
   }
 }
 
-// ==================== DESK-1 SPOTLIGHT (formal level intro) ====================
-const DESK1_SPOTLIGHT_STEPS = [
-  { target: '#gifPreview', text: '欢迎来到正式关卡！在这里你将和 AI 操控的机械臂实时对战', pos: 'center' },
-  { target: '#aiPanel', text: '左上角小窗是你的 AI 对手，游戏中它会实时操作', pos: 'below' },
-  { target: '.game-panel.player-panel', text: '全屏是你的操作区，用你在新手关学到的键位操作', pos: 'center' },
-  { target: '#objLegend', text: '每个物体都有对应的分数，这里可以查看本关的物体种类、数量和分数', pos: 'above' },
-  { target: null, text: '试试点击第一个物体图标！', pos: 'center', waitForObjClick: true },
-  { target: '.combo-info', text: '这是连击倍率——连续成功放置物体且中途不掉落，分数倍率会逐步提升（×2 → ×3 → ×5）', pos: 'above' },
-  { target: '.score-area', text: '这里是你和 AI 的实时分数对比', pos: 'below' },
-  { target: '#miniLb', text: '这里可以看到本关前三玩家的分数，以及你当前的分数、排名和历史最佳', pos: 'center' },
-  { target: null, text: '准备好了吗？点击开始挑战！', pos: 'center', endDesk1: true },
+// ==================== LEVEL INTRO SPOTLIGHT (formal level intro) ====================
+const LEVEL_INTRO_STEPS = [
+  { target: '#gifPreview', text: '仔细观察场景中的物体位置，待会你需要操控机械臂完成归位', pos: 'center' },
+  { target: '#aiPanel', text: '这里是你的 AI 对手！它已经准备好了！', pos: 'right' },
+  { target: '.game-panel.player-panel', text: '这里是你的操作区，要尝试和机器算法比一比吗？', pos: 'center' },
+  { target: null, text: '准备...开始！', pos: 'center', endDesk1: true },
 ];
 
-function startDesk1Spotlight() {
+function startLevelIntroSpotlight() {
   spotlightActive = true;
   spotlightPhase = 0;
   const overlay = document.getElementById('spotlightOverlay');
   overlay.classList.add('active');
-  positionSpotlight(DESK1_SPOTLIGHT_STEPS[0]);
-  overlay.onclick = advanceDesk1Spotlight;
+  positionSpotlight(LEVEL_INTRO_STEPS[0]);
+  overlay.onclick = advanceLevelIntroSpotlight;
 }
 
-function advanceDesk1Spotlight() {
+function advanceLevelIntroSpotlight() {
   spotlightPhase++;
-  if (spotlightPhase >= DESK1_SPOTLIGHT_STEPS.length) {
+  if (spotlightPhase >= LEVEL_INTRO_STEPS.length) {
     dismissSpotlight();
-    dismissGifPreview();
+    // Keep GIF preview visible as the game view, start timer
+    playerStarted = true;
     return;
   }
-  const step = DESK1_SPOTLIGHT_STEPS[spotlightPhase];
+  const step = LEVEL_INTRO_STEPS[spotlightPhase];
 
   if (step.waitForObjClick) {
     const firstItem = document.querySelector('.obj-legend-item');
@@ -1667,12 +1807,12 @@ function advanceDesk1Spotlight() {
         const r = firstItem.getBoundingClientRect();
         if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) {
           tooltip.dataset.hint = '';
-          overlay.onclick = advanceDesk1Spotlight;
-          advanceDesk1Spotlight();
+          overlay.onclick = advanceLevelIntroSpotlight;
+          advanceLevelIntroSpotlight();
         }
       };
     } else {
-      advanceDesk1Spotlight();
+      advanceLevelIntroSpotlight();
     }
     return;
   }
@@ -1872,13 +2012,14 @@ function showGuideStep() {
 // ==================== TUTORIAL INIT (must run after all let/const declarations above) ====================
 (function() {
   const params = new URLSearchParams(window.location.search);
-  if (params.get('level') === 'tutorial') {
+  if ((params.get('level') || '').includes('tutorial')) {
     const preview = document.getElementById('gifPreview');
     const toggle = document.getElementById('gifViewToggle');
     if (preview) {
       preview.classList.add('tutorial');
     }
     if (toggle) toggle.style.display = 'none';
+    document.querySelector('.game-main').classList.add('solo');
     const lb = document.getElementById('miniLb');
     if (lb) lb.style.display = 'none';
     const currentStep = document.getElementById('tutCurrentStep');
@@ -1896,7 +2037,7 @@ function showGuideStep() {
 // ==================== LEVEL CONFIG FROM URL ====================
 const urlParams = new URLSearchParams(window.location.search);
 const LEVEL_CONFIG = {
-  level: urlParams.get('level') || 'desk-1',
+  level: (urlParams.get('level') || 'desk-1').includes('tutorial') ? 'tutorial' : (urlParams.get('level') || 'desk-1'),
   name: decodeURIComponent(urlParams.get('name') || '书桌·初级'),
   objects: parseInt(urlParams.get('objects')) || 5,
   time: parseInt(urlParams.get('time')) || 720,
@@ -1930,6 +2071,7 @@ const OBJ_TYPES = [
 const LEVEL_OBJ_CONFIGS = {
   'desk-1':  [{ type: 0, count: 1 }, { type: 1, count: 1 }, { type: 2, count: 1 }],
   'desk-2':  [{ type: 0, count: 1 }, { type: 1, count: 1 }, { type: 2, count: 1 }, { type: 3, count: 2 }],
+  'table-toycar': [{ type: 0, count: 1 }],
   'table-1': [{ type: 0, count: 1 }, { type: 1, count: 2 }, { type: 2, count: 1 }, { type: 3, count: 1 }],
   'table-2': [{ type: 0, count: 2 }, { type: 1, count: 2 }, { type: 2, count: 2 }, { type: 3, count: 2 }],
 };
@@ -1948,9 +2090,9 @@ if (LEVEL_CONFIG.level !== 'tutorial') {
   }).join('');
 }
 
-// Start desk-1 spotlight after legend is populated
-if (LEVEL_CONFIG.level === 'desk-1') {
-  requestAnimationFrame(() => startDesk1Spotlight());
+// Start level intro spotlight for formal levels with intro guidance
+if (LEVEL_CONFIG.level === 'desk-1' || LEVEL_CONFIG.level === 'table-toycar') {
+  requestAnimationFrame(() => startLevelIntroSpotlight());
 }
 
 const BASE_COLORS = ['#60a5fa','#f87171','#fbbf24','#34d399','#a78bfa','#f472b6','#fb923c','#34d399','#818cf8','#fca5a5','#a3e635','#67e8f9'];
@@ -2112,6 +2254,10 @@ class ClawGame {
     if (this.tutorialPhase === 'success') {
       this.tutorialSuccessTimer++;
       if (this.tutorialSuccessTimer === 1 && LEVEL_CONFIG.level === 'tutorial') {
+        if (this.placed >= TOTAL_OBJECTS) {
+          triggerEndGame();
+          return;
+        }
         const btn = document.getElementById('skipTaskBtn');
         btn.textContent = '跳过 →';
         btn.onclick = () => { window.location.href = 'landing.html'; };
@@ -2495,7 +2641,11 @@ function init() {
   if (rect.width === 0 || rect.height === 0) { requestAnimationFrame(init); return; }
 
   playerGame = new ClawGame(playerCanvas, false);
-  aiGame = new ClawGame(aiCanvas, true);
+  if (aiCanvas) {
+    aiGame = new ClawGame(aiCanvas, true);
+  } else {
+    aiGame = { placed: 0, score: 0, maxCombo: 0, update() {}, aiThink() {}, aiThinkDelay: 60, resize() {} };
+  }
   gameOver = false;
   aiCooldown = 60;
 
@@ -2542,13 +2692,20 @@ function init() {
       if (remainingTime <= 60) timerEl.classList.add('urgent');
       if (remainingTime <= 0) {
         timerEl.textContent = '0:00';
-        document.getElementById('skipTaskBtn').classList.add('visible');
+        triggerEndGame();
       }
     }
   }, 1000);
 }
 
-requestAnimationFrame(init);
+if (LEVEL_CONFIG.level === 'tutorial') {
+  requestAnimationFrame(init);
+} else {
+  playerGame = { placed: 0, score: 0, combo: 0, maxCombo: 0, update() {}, updateTutorial() {}, draw() {}, resize() {} };
+  aiGame = { placed: 0, score: 0, combo: 0, maxCombo: 0, update() {}, aiThink() {}, aiThinkDelay: 60, draw() {}, resize() {} };
+  gameOver = false;
+  aiCooldown = 60;
+}
 
 function aiTick() {
   if (gameOver || !playerStarted) return;
@@ -2572,9 +2729,12 @@ function gameLoop() {
   playerGame.draw();
   aiGame.draw();
 
-  document.getElementById('yourScore').textContent = Math.round(playerGame.score);
-  document.getElementById('aiScore').textContent = Math.round(aiGame.score);
-  document.getElementById('comboBadge').textContent = `x${playerGame.combo}`;
+  const yourScoreEl = document.getElementById('yourScore');
+  const aiScoreEl = document.getElementById('aiScore');
+  const comboBadgeEl = document.getElementById('comboBadge');
+  if (yourScoreEl) yourScoreEl.textContent = Math.round(playerGame.score);
+  if (aiScoreEl) aiScoreEl.textContent = Math.round(aiGame.score);
+  if (comboBadgeEl) comboBadgeEl.textContent = `x${playerGame.combo}`;
   const pipScoreEl = document.getElementById('aiPipScore');
   if (pipScoreEl) pipScoreEl.textContent = Math.round(aiGame.score) + ' pts';
   // Update placed dots + progress bar
@@ -2594,15 +2754,17 @@ function triggerEndGame() {
   if (gameOver) return;
   gameOver = true;
 
+  document.getElementById('skipTaskBtn').classList.remove('visible');
+
   const keyTut = document.getElementById('keyTutorial');
   if (keyTut) keyTut.classList.remove('active');
 
   if (LEVEL_CONFIG.level === 'tutorial') {
     // Tutorial result — no AI comparison
     const placed = playerGame.placed;
-    const title = placed >= TOTAL_OBJECTS ? '完成了！' : '就差一点！';
+    const title = placed >= TOTAL_OBJECTS ? '太棒了！' : '就差一点！';
     document.getElementById('tutResultTitle').textContent = title;
-    document.getElementById('tutResultSub').textContent = `用时 ${formatTime(elapsedSeconds)}，完成 ${placed}/${TOTAL_OBJECTS} 个物体归位`;
+    document.getElementById('tutResultSub').textContent = placed >= TOTAL_OBJECTS ? '你成功完成了新手关卡！' : `用时 ${formatTime(elapsedSeconds)}，完成 ${placed}/${TOTAL_OBJECTS} 个物体归位`;
     document.getElementById('tutRPlaced').textContent = placed + '/' + TOTAL_OBJECTS;
     document.getElementById('tutRTime').textContent = formatTime(elapsedSeconds);
     setTimeout(() => { document.getElementById('tutResultOverlay').classList.add('active'); }, 600);
@@ -2612,62 +2774,56 @@ function triggerEndGame() {
   const robotTime = 45 + Math.floor(Math.random() * 30);
 
   document.getElementById('rYouPlaced').textContent = playerGame.placed + '/' + TOTAL_OBJECTS;
-  document.getElementById('rAiPlaced').textContent = aiGame.placed + '/' + TOTAL_OBJECTS;
+  document.getElementById('rAiPlaced').textContent = TOTAL_OBJECTS + '/' + TOTAL_OBJECTS;
   document.getElementById('rYouTime').textContent = formatTime(elapsedSeconds);
   document.getElementById('rAiTime').textContent = formatTime(robotTime);
-  document.getElementById('rYouCombo').textContent = 'x' + playerGame.maxCombo;
-  document.getElementById('rAiCombo').textContent = 'x' + aiGame.maxCombo;
-  document.getElementById('rYouScore').textContent = Math.round(playerGame.score);
-  document.getElementById('rAiScore').textContent = Math.round(aiGame.score);
 
-  const rows = document.querySelectorAll('#resultOverlay .rt-row');
-  const youVals = [playerGame.placed, -elapsedSeconds, playerGame.maxCombo, playerGame.score];
-  const aiVals = [aiGame.placed, -robotTime, aiGame.maxCombo, aiGame.score];
-  let youWins = 0;
-  rows.forEach((row, i) => {
-    const yv = row.querySelector('.you-val');
-    const av = row.querySelector('.ai-val');
-    if (youVals[i] >= aiVals[i]) { yv.classList.add('win'); av.classList.add('lose'); youWins++; }
-    else { av.classList.add('win'); yv.classList.add('lose'); }
-  });
-
-  document.getElementById('resultSummary').textContent = `你在 ${youWins}/3 项中超越了 AI`;
-  document.getElementById('resultSub').textContent = `用时 ${formatTime(elapsedSeconds)}，完成 ${playerGame.placed}/${TOTAL_OBJECTS} 个物体归位`;
-
-  const pScore = Math.round(playerGame.score);
-  const aScore = Math.round(aiGame.score);
-  const gap = (pScore - aScore) / Math.max(aScore, 1);
-  let hook, title;
-  if (gap > 0.2) {
+  const youWon = elapsedSeconds <= robotTime && playerGame.placed >= TOTAL_OBJECTS;
+  let title, summary;
+  if (playerGame.placed >= TOTAL_OBJECTS && elapsedSeconds < robotTime) {
     title = '你赢了！';
-    hook = `你比机器人高了 ${pScore - aScore} 分 — 物体多了之后还能赢吗？`;
-  } else if (gap > -0.2) {
-    title = '不相上下！';
-    hook = '和机器人不相上下 — 进阶赛中一决高下？';
+    summary = `你比 AI 快了 ${formatTime(robotTime - elapsedSeconds)}！`;
+  } else if (playerGame.placed >= TOTAL_OBJECTS) {
+    title = 'AI 这次更快';
+    summary = `AI 比你快了 ${formatTime(elapsedSeconds - robotTime)}，再试一次？`;
   } else {
-    title = 'AI 这次赢了';
-    hook = '机器人这次赢了 — 再试一次还是直接挑战进阶？';
+    title = '时间到！';
+    summary = `完成了 ${playerGame.placed}/${TOTAL_OBJECTS} 个物体，下次加油！`;
   }
   document.getElementById('resultTitle').textContent = title;
-  document.getElementById('resultHook').textContent = hook;
+  document.getElementById('resultSub').textContent = `用时 ${formatTime(elapsedSeconds)}，完成 ${playerGame.placed}/${TOTAL_OBJECTS} 个物体归位`;
+  document.getElementById('resultSummary').textContent = summary;
 
   setTimeout(() => { document.getElementById('resultOverlay').classList.add('active'); }, 600);
 }
 
-function simulateAllDone() {
-  if (gameOver) return;
-  const scenario = Math.floor(Math.random() * 3);
-  playerGame.placed = TOTAL_OBJECTS;
-  aiGame.placed = TOTAL_OBJECTS;
-  if (scenario === 0) {
-    elapsedSeconds = 90; playerGame.score = 220; playerGame.maxCombo = 5; aiGame.score = 160; aiGame.maxCombo = 3;
-  } else if (scenario === 1) {
-    elapsedSeconds = 140; playerGame.score = 175; playerGame.maxCombo = 3; aiGame.score = 170; aiGame.maxCombo = 3;
-  } else {
-    elapsedSeconds = 250; playerGame.score = 130; playerGame.maxCombo = 2; aiGame.score = 190; aiGame.maxCombo = 4;
-  }
-  triggerEndGame();
+// Toggle between 3 result states for demo
+let resultStateIndex = 0;
+const RESULT_STATES = [
+  { title: '你赢了！', youTime: '2:30', aiTime: '3:15', youPlaced: '1/1', aiPlaced: '1/1', summary: '你比 AI 快了 0:45！', primaryText: '进入下一关 ›', primaryAction: "location.href='landing.html'", secondaryText: '再来一局', secondaryHref: null },
+  { title: 'AI 这次更快', youTime: '3:45', aiTime: '2:10', youPlaced: '1/1', aiPlaced: '1/1', summary: 'AI 比你快了 1:35，再试一次？', primaryText: '再来一局 ›', primaryAction: 'location.reload()', secondaryText: '返回首页', secondaryHref: 'landing.html' },
+  { title: '时间到！', youTime: '12:00', aiTime: '4:20', youPlaced: '0/1', aiPlaced: '1/1', summary: '完成了 0/1 个物体，下次加油！', primaryText: '再来一局 ›', primaryAction: 'location.reload()', secondaryText: '返回首页', secondaryHref: 'landing.html' },
+];
+
+function toggleResultState() {
+  resultStateIndex = (resultStateIndex + 1) % RESULT_STATES.length;
+  const s = RESULT_STATES[resultStateIndex];
+  document.getElementById('resultTitle').textContent = s.title;
+  document.getElementById('resultSub').textContent = `用时 ${s.youTime}，完成 ${s.youPlaced} 个物体归位`;
+  document.getElementById('rYouTime').textContent = s.youTime;
+  document.getElementById('rAiTime').textContent = s.aiTime;
+  document.getElementById('rYouPlaced').textContent = s.youPlaced;
+  document.getElementById('rAiPlaced').textContent = s.aiPlaced;
+  document.getElementById('resultSummary').textContent = s.summary;
+  const primaryBtn = document.getElementById('resultPrimaryBtn');
+  const secondaryBtn = document.getElementById('resultSecondaryBtn');
+  primaryBtn.textContent = s.primaryText;
+  primaryBtn.setAttribute('onclick', s.primaryAction);
+  secondaryBtn.textContent = s.secondaryText;
+  if (s.secondaryHref) { secondaryBtn.href = s.secondaryHref; secondaryBtn.removeAttribute('onclick'); }
+  else { secondaryBtn.removeAttribute('href'); secondaryBtn.setAttribute('onclick', 'location.reload()'); }
 }
+
 function simulateTimeout() {
   elapsedSeconds = TOTAL_TIME;
   remainingTime = 0;
@@ -2713,6 +2869,41 @@ function buildLevelNote() {
 window.addEventListener('resize', () => {
   if (playerGame && aiGame) { playerGame.resize(); aiGame.resize(); }
 });
+
+// Initialize timer (runs independently of 2D game canvas)
+(function() {
+  const timerEl = document.getElementById('countdownTimer');
+  const isTutorialLevel = LEVEL_CONFIG.level === 'tutorial';
+  if (isTutorialLevel) {
+    timerEl.textContent = '0:00';
+  } else {
+    const initMins = Math.floor(TOTAL_TIME / 60);
+    const initSecs = TOTAL_TIME % 60;
+    timerEl.textContent = `${initMins}:${initSecs.toString().padStart(2,'0')}`;
+  }
+  setInterval(() => {
+    if (gameOver || !playerStarted || paused) return;
+    elapsedSeconds++;
+    if (isTutorialLevel) {
+      const m = Math.floor(elapsedSeconds / 60);
+      const s = elapsedSeconds % 60;
+      timerEl.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+      if (elapsedSeconds >= 600) {
+        document.getElementById('skipTaskBtn').classList.add('visible');
+      }
+    } else {
+      remainingTime = TOTAL_TIME - elapsedSeconds;
+      const m = Math.floor(remainingTime / 60);
+      const s = remainingTime % 60;
+      timerEl.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+      if (remainingTime <= 60) timerEl.classList.add('urgent');
+      if (remainingTime <= 0) {
+        timerEl.textContent = '0:00';
+        triggerEndGame();
+      }
+    }
+  }, 1000);
+})();
 </script>
 </body>
 </html>

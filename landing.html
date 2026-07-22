@@ -81,20 +81,25 @@
 
   /* Hero LEFT */
   .hero-left {
-    position: fixed; top: 120px; left: 64px;
-    max-width: 400px;
-    opacity: 0; animation: fadeIn 1s ease 0.5s forwards;
+    position: fixed; top: 0; bottom: 0; left: 64px;
+    display: flex; flex-direction: column;
+    max-width: 345px;
+    opacity: 0; animation: heroFadeIn 1s ease 0.5s forwards;
     z-index: 50;
+    padding-top: 18vh;
+    padding-bottom: 24px;
   }
   .hero-badge {
     font-size: 12px; font-weight: 600; color: #9D7CFF;
     text-transform: uppercase; letter-spacing: 2px;
     margin-bottom: 20px;
+    flex-shrink: 0;
   }
   .hero-title {
     font-size: 44px; font-weight: 800;
     line-height: 1.1; letter-spacing: -1.5px;
     margin-bottom: 16px;
+    flex-shrink: 0;
     background: linear-gradient(135deg, #f5f7fa 0%, #a78bfa 40%, #6EC9FF 70%, #f5f7fa 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -104,8 +109,9 @@
     font-size: 15px; font-weight: 400;
     color: rgba(245,247,250,0.35);
     line-height: 1.7; margin-bottom: 28px;
+    flex-shrink: 0;
   }
-  .hero-actions { display: flex; gap: 16px; align-items: center; }
+  .hero-actions { display: flex; gap: 16px; align-items: center; flex-shrink: 0; }
   .btn-explore {
     padding: 14px 32px; border-radius: 12px;
     background: linear-gradient(135deg, #6B2FF7, #8B5CF6, #7C3AED);
@@ -217,65 +223,84 @@
   .sl-cbd    { top: 68%; left: 27%; }
   .sl-cbd .scene-label-line    { left: calc(100% + 10px); width: 50px; }
 
-  /* Mission panel — bottom left, fixed height */
-  .mission-panel {
-    position: fixed;
-    bottom: 60px; left: 64px;
-    z-index: 50;
-    width: 380px;
-    height: 420px;
-    background: rgba(10, 13, 24, 0.82);
-    border: 1px solid rgba(145, 130, 255, 0.16);
-    border-radius: 16px;
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    padding: 24px 20px 16px;
-    display: flex; flex-direction: column;
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.04),
-      0 16px 40px rgba(0, 0, 0, 0.28);
-    opacity: 0; animation: fadeIn 1s ease 1s forwards;
-    transition: border-color 0.3s;
-  }
-  .mission-panel:hover { border-color: rgba(143, 95, 255, 0.30); }
-  .mission-header {
-    font-size: 15px; font-weight: 600;
-    color: #F4F1FF;
-    letter-spacing: 0.01em;
-    margin-bottom: 18px;
+  /* Mission cards — floating panel */
+  .mission-section {
+    margin-top: 24px;
+    width: 345px;
+    height: 300px;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
     flex-shrink: 0;
+    overflow: hidden;
+    background: rgba(8, 10, 20, 0.75);
+    border: 1px solid rgba(140, 120, 255, 0.14);
+    border-radius: 18px;
+    padding: 20px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow:
+      0 8px 32px rgba(0,0,0,0.35),
+      inset 0 1px 0 rgba(255,255,255,0.04);
   }
-  .mission-scroll {
+  .mission-header {
+    font-size: 11px; font-weight: 700;
+    color: rgba(255,255,255,0.40);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 14px;
+    flex-shrink: 0;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .mission-header::before {
+    content: '';
+    width: 3px; height: 12px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, #8C52FF, #6EC9FF);
+  }
+  .mission-list {
+    display: flex; flex-direction: column; gap: 6px;
     flex: 1;
-    display: flex; flex-direction: column; gap: 8px;
+    min-height: 0;
     overflow-y: auto;
-    padding-right: 4px;
+    padding-right: 6px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(140,82,255,0.4) transparent;
   }
-  .mission-scroll::-webkit-scrollbar { width: 3px; }
-  .mission-scroll::-webkit-scrollbar-track { background: transparent; }
-  .mission-scroll::-webkit-scrollbar-thumb { background: rgba(145,130,255,0.2); border-radius: 3px; }
+  .mission-list.scrollable {
+    -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 24px), transparent 100%);
+    mask-image: linear-gradient(to bottom, black calc(100% - 24px), transparent 100%);
+  }
+  .mission-list.scrollable.at-bottom {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .mission-list::-webkit-scrollbar { width: 5px; }
+  .mission-list::-webkit-scrollbar-track { background: transparent; }
+  .mission-list::-webkit-scrollbar-thumb { background: rgba(140,82,255,0.4); border-radius: 3px; }
+  .mission-list::-webkit-scrollbar-thumb:hover { background: rgba(140,82,255,0.6); }
   .mission-card {
     display: flex; align-items: center; gap: 14px;
-    padding: 14px 16px;
-    background: rgba(255,255,255,0.02);
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.03);
     border: 1px solid rgba(255,255,255,0.06);
     border-radius: 12px;
     text-decoration: none; color: inherit;
     cursor: pointer;
     transition: all 0.25s;
-    flex-shrink: 0;
   }
   .mission-card:hover {
-    background: rgba(140,82,255,0.06);
-    border-color: rgba(140,82,255,0.25);
+    background: rgba(140,82,255,0.10);
+    border-color: rgba(140,82,255,0.30);
+    transform: translateX(3px);
   }
   .mission-card.locked {
-    cursor: default; opacity: 0.35; pointer-events: none;
+    cursor: default; opacity: 0.32; pointer-events: none;
   }
   .mission-card.highlight {
-    border-color: rgba(140,82,255,0.5);
-    background: rgba(140,82,255,0.08);
-    box-shadow: 0 0 16px rgba(140,82,255,0.15);
+    border-color: rgba(140,82,255,0.45);
+    background: rgba(140,82,255,0.10);
+    box-shadow: 0 0 16px rgba(140,82,255,0.12);
     animation: pulseGlow 2.5s ease-in-out infinite;
   }
   @keyframes pulseGlow {
@@ -283,12 +308,17 @@
     50% { box-shadow: 0 0 28px rgba(140,82,255,0.25); }
   }
   .mission-card-icon {
-    width: 36px; height: 36px; border-radius: 10px;
+    width: 38px; height: 38px; border-radius: 10px;
     background: rgba(10,13,24,0.9);
     border: 1px solid rgba(145,130,255,0.25);
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
   }
+  .mission-card-icon.icon-cyan    { border-color: rgba(110,201,255,0.3); box-shadow: 0 0 8px rgba(110,201,255,0.1); }
+  .mission-card-icon.icon-purple  { border-color: rgba(167,139,250,0.3); box-shadow: 0 0 8px rgba(167,139,250,0.1); }
+  .mission-card-icon.icon-amber   { border-color: rgba(251,191,36,0.3);  box-shadow: 0 0 8px rgba(251,191,36,0.1); }
+  .mission-card-icon.icon-green   { border-color: rgba(52,211,153,0.3);  box-shadow: 0 0 8px rgba(52,211,153,0.1); }
+  .mission-card-icon.icon-rose    { border-color: rgba(251,113,133,0.3); box-shadow: 0 0 8px rgba(251,113,133,0.1); }
   .mission-card-info { flex: 1; }
   .mission-card-name { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.88); }
   .mission-card-meta { font-size: 11px; color: rgba(255,255,255,0.40); margin-top: 3px; }
@@ -297,14 +327,8 @@
     letter-spacing: 0.3px;
   }
   .badge-tutorial { background: rgba(140,82,255,0.12); color: #B88FFF; border: 1px solid rgba(140,82,255,0.2); }
+  .badge-open { background: rgba(52,211,153,0.12); color: #34d399; border: 1px solid rgba(52,211,153,0.25); }
   .badge-locked { background: rgba(255,255,255,0.03); color: rgba(255,255,255,0.30); border: 1px solid rgba(255,255,255,0.08); }
-  .mission-footer {
-    display: flex; align-items: center; gap: 8px;
-    padding-top: 12px; margin-top: auto;
-    border-top: 1px solid rgba(255,255,255,0.06);
-    font-size: 11px; color: rgba(255,255,255,0.35);
-    flex-shrink: 0;
-  }
 
   /* About overlay */
   .about-overlay { position: fixed; inset: 0; z-index: 2000; background: rgba(0,0,0,0.5); backdrop-filter: blur(6px); opacity: 0; visibility: hidden; transition: all 0.3s; }
@@ -326,7 +350,7 @@
     width: 280px;
     z-index: 50;
     display: flex; flex-direction: column; gap: 16px;
-    opacity: 0; animation: fadeIn 1s ease 1.2s forwards;
+    opacity: 0; animation: sidebarFadeIn 1s ease 1.2s forwards;
   }
 
   /* Shared card base */
@@ -434,10 +458,12 @@
   }
 
   @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes sidebarFadeIn { from { opacity: 0; transform: translateY(calc(-50% + 10px)); } to { opacity: 1; transform: translateY(-50%); } }
+  @keyframes heroFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   @media (max-width: 768px) {
     .hero-title { font-size: 28px; }
-    .hero-left { left: 20px; top: 100px; max-width: 260px; }
-    .mission-panel { display: none; }
+    .hero-left { left: 20px; top: 80px; max-width: 260px; }
+    .mission-section { display: none; }
     .right-sidebar { display: none; }
   }
 </style>
@@ -522,15 +548,10 @@
     <button class="btn-explore" id="btnExplore">立即挑战</button>
     <a class="btn-platform" onclick="document.getElementById('aboutOverlay').classList.add('open')">关于</a>
   </div>
-</div>
-
-<!-- Mission panel — bottom left, always visible -->
-<div class="mission-panel" id="missionPanel">
-  <div class="mission-header" id="missionHeader">书桌场景</div>
-  <div class="mission-scroll" id="missionScroll"></div>
-  <div class="mission-footer">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(110,201,255,0.6)" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-    <span>点击右侧场景切换关卡</span>
+  <!-- Mission cards inline -->
+  <div class="mission-section" id="missionSection">
+    <div class="mission-header" id="missionHeader">书桌场景</div>
+    <div class="mission-list" id="missionScroll"></div>
   </div>
 </div>
 
@@ -543,17 +564,17 @@
       <svg width="112" height="112" viewBox="0 0 112 112">
         <circle cx="56" cy="56" r="48" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="8"/>
         <circle cx="56" cy="56" r="48" fill="none" stroke="url(#ringGrad)" stroke-width="8"
-          stroke-dasharray="301.6" stroke-dashoffset="232" stroke-linecap="round"/>
+          stroke-dasharray="301.6" stroke-dashoffset="301.6" stroke-linecap="round"/>
         <defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stop-color="#7A4DFF"/><stop offset="100%" stop-color="#A45BFF"/>
         </linearGradient></defs>
       </svg>
       <div class="progress-ring-center">
         <span class="progress-ring-label">探索进度</span>
-        <span class="progress-ring-value">23%</span>
+        <span class="progress-ring-value">0%</span>
       </div>
     </div>
-    <div class="progress-summary">已完成 8 / 35 个任务</div>
+    <div class="progress-summary">已完成 0 / 5 个任务</div>
 
     <!-- Timeline -->
     <div class="timeline">
@@ -562,34 +583,34 @@
         <div class="tl-chapter">Chapter 01</div>
         <div class="tl-head">
           <span class="tl-name">Desk Exploration</span>
-          <span class="tl-count">3 / 8</span>
+          <span class="tl-count">0 / 3</span>
         </div>
-        <div class="tl-bar"><div class="tl-bar-fill" style="width:37.5%"></div></div>
+        <div class="tl-bar"><div class="tl-bar-fill" style="width:0%"></div></div>
       </div>
       <div class="tl-item">
         <div class="tl-dot unlocked"></div>
         <div class="tl-chapter">Chapter 02</div>
         <div class="tl-head">
           <span class="tl-name">Tea Table Exploration</span>
-          <span class="tl-count">2 / 8</span>
+          <span class="tl-count">0 / 2</span>
         </div>
-        <div class="tl-bar"><div class="tl-bar-fill" style="width:25%"></div></div>
+        <div class="tl-bar"><div class="tl-bar-fill" style="width:0%"></div></div>
       </div>
       <div class="tl-item">
         <div class="tl-dot locked"></div>
         <div class="tl-chapter">Chapter 03</div>
         <div class="tl-head">
           <span class="tl-name">Office Tasks</span>
-          <span class="tl-count">1 / 9</span>
+          <span class="tl-count">0 / ???</span>
         </div>
-        <div class="tl-bar"><div class="tl-bar-fill" style="width:11%"></div></div>
+        <div class="tl-bar"><div class="tl-bar-fill" style="width:0%"></div></div>
       </div>
       <div class="tl-item">
         <div class="tl-dot locked"></div>
         <div class="tl-chapter">Chapter 04</div>
         <div class="tl-head">
           <span class="tl-name">CBD Exploration</span>
-          <span class="tl-count">0 / 6</span>
+          <span class="tl-count">0 / ???</span>
         </div>
         <div class="tl-bar"><div class="tl-bar-fill" style="width:0%"></div></div>
       </div>
@@ -621,34 +642,44 @@ const SCENES = {
     title: '书桌场景',
     typer: '// DESK_SCENE',
     tasks: [
-      { name: '新手教学', meta: '教学模式 · 不限时 · 1个物品', badge: 'tutorial', href: 'onboarding.html?level=desk-tutorial&name=%E6%96%B0%E6%89%8B%E6%95%99%E5%AD%A6&objects=1&time=0' },
-      { name: '文具盒', meta: '初级关卡', badge: 'locked', locked: true },
-      { name: '涂改液', meta: '进阶关卡', badge: 'locked', locked: true },
+      { name: '新手教学', meta: '教学模式 · 不限时 · 1个物体', badge: 'open', icon: 'compass', href: 'onboarding.html?level=desk-tutorial&name=%E6%96%B0%E6%89%8B%E6%95%99%E5%AD%A6&objects=1&time=0' },
+      { name: '文具盒', meta: '初级关卡', badge: 'locked', icon: 'cube', locked: true },
+      { name: '涂改液', meta: '中级关卡', badge: 'locked', icon: 'flask', locked: true },
     ]
   },
   table: {
     title: '茶几场景',
     typer: '// TABLE_SCENE',
     tasks: [
-      { name: '茶几·初级', meta: '5个物品 · 15分钟', badge: 'locked', locked: true },
-      { name: '茶几·中级', meta: '8个物品 · 10分钟', badge: 'locked', locked: true },
-      { name: '茶几·高级', meta: '12个物品 · 8分钟', badge: 'locked', locked: true },
+      { name: '玩具车', meta: '初级关卡 · 12分钟 · 1个物体', badge: 'open', icon: 'target', href: 'onboarding.html?level=table-toycar&name=%E7%8E%A9%E5%85%B7%E8%BD%A6&objects=1&time=720' },
+      { name: '纸巾盒', meta: '中级关卡', badge: 'locked', icon: 'diamond', locked: true },
     ]
   },
   office: {
     title: '办公室场景',
     typer: '// OFFICE_SCENE',
     tasks: [
-      { name: '即将开放', meta: '敬请期待', badge: 'locked', locked: true },
+      { name: '即将开放', meta: '敬请期待', badge: 'locked', icon: 'hexagon', locked: true },
     ]
   },
   cbd: {
     title: 'CBD场景',
     typer: '// CBD_SCENE',
     tasks: [
-      { name: '即将开放', meta: '敬请期待', badge: 'locked', locked: true },
+      { name: '即将开放', meta: '敬请期待', badge: 'locked', icon: 'globe', locked: true },
     ]
   },
+};
+
+const ICONS = {
+  compass: { color: 'cyan', stroke: '#6EC9FF', svg: '<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="rgba(110,201,255,0.25)"/>' },
+  cube: { color: 'purple', stroke: '#a78bfa', svg: '<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>' },
+  flask: { color: 'amber', stroke: '#fbbf24', svg: '<path d="M9 3h6v5.34l4.24 7.42A2 2 0 0 1 17.5 19H6.5a2 2 0 0 1-1.74-3.24L9 8.34V3z"/><line x1="9" y1="3" x2="15" y2="3"/><path d="M7 14h10" stroke-dasharray="2 2"/>' },
+  target: { color: 'cyan', stroke: '#6EC9FF', svg: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2" fill="rgba(110,201,255,0.4)"/>' },
+  diamond: { color: 'rose', stroke: '#fb7185', svg: '<path d="M6 3h12l4 6-10 13L2 9z" fill="rgba(251,113,133,0.1)"/><path d="M2 9h20"/><path d="M12 22L6 9"/><path d="M12 22l6-13"/>' },
+  star: { color: 'amber', stroke: '#fbbf24', svg: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="rgba(251,191,36,0.12)"/>' },
+  hexagon: { color: 'purple', stroke: '#a78bfa', svg: '<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>' },
+  globe: { color: 'green', stroke: '#34d399', svg: '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>' },
 };
 
 let currentScene = 'desk';
@@ -663,14 +694,16 @@ function renderMissionPanel(sceneKey, highlightFirst) {
     let cls = 'mission-card';
     if (t.locked) cls += ' locked';
     if (highlightFirst && i === 0 && !t.locked) cls += ' highlight';
-    const badge = t.locked
-      ? '<span class="mission-card-badge badge-locked">即将开放</span>'
-      : '<span class="mission-card-badge badge-tutorial">教学</span>';
+    let badge;
+    if (t.badge === 'tutorial') badge = '<span class="mission-card-badge badge-tutorial">教学</span>';
+    else if (t.badge === 'open') badge = '<span class="mission-card-badge badge-open">开始</span>';
+    else badge = '<span class="mission-card-badge badge-locked">即将开放</span>';
     const tag = t.href ? 'a' : 'div';
     const hrefAttr = t.href ? ` href="${t.href}"` : '';
+    const ic = ICONS[t.icon] || ICONS.hexagon;
     return `<${tag}${hrefAttr} class="${cls}">
-      <div class="mission-card-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6EC9FF" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      <div class="mission-card-icon icon-${ic.color}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${ic.stroke}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ic.svg}</svg>
       </div>
       <div class="mission-card-info">
         <div class="mission-card-name">${t.name}</div>
@@ -679,7 +712,23 @@ function renderMissionPanel(sceneKey, highlightFirst) {
       ${badge}
     </${tag}>`;
   }).join('');
+  updateScrollHint(scroll);
 }
+
+// Toggle fade mask based on overflow + scroll position
+function updateScrollHint(el) {
+  const overflowing = el.scrollHeight > el.clientHeight + 1;
+  el.classList.toggle('scrollable', overflowing);
+  if (overflowing) {
+    const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 2;
+    el.classList.toggle('at-bottom', atBottom);
+  } else {
+    el.classList.remove('at-bottom');
+  }
+}
+document.getElementById('missionScroll').addEventListener('scroll', function () {
+  updateScrollHint(this);
+});
 
 // Default: show desk tasks
 renderMissionPanel('desk', false);

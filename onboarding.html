@@ -320,7 +320,7 @@ const objects = parseInt(urlParams.get('objects')) || 5;
 const time = parseInt(urlParams.get('time')) || 720;
 const shuffle = urlParams.get('shuffle') === '1';
 const obstacles = urlParams.get('obstacles') === '1';
-const isT = urlParams.get('level') === 'tutorial';
+const isT = (urlParams.get('level') || '').includes('tutorial');
 
 document.getElementById('briefingTitle').textContent = levelName;
 
@@ -330,17 +330,20 @@ if (isT) {
   tags.push('<span class="tag">不限时</span>');
   tags.push('<span class="tag">' + objects + ' 个物体</span>');
 } else {
+  tags.push('<span class="tag hl">初级关卡</span>');
   tags.push('<span class="tag">' + Math.floor(time/60) + ' 分钟</span>');
   tags.push('<span class="tag">' + objects + ' 个物体</span>');
-  if (shuffle) tags.push('<span class="tag hl">分值随机</span>');
-  if (obstacles) tags.push('<span class="tag hl">障碍物</span>');
-  tags.push('<span class="tag">位置随机</span>');
 }
 document.getElementById('briefingTags').innerHTML = tags.join('');
 
+const levelParam = urlParams.get('level') || '';
+if (levelParam.includes('table')) {
+  document.querySelector('#phase1 .preview-frame img').src = 'assets/scenes/茶几场景示例.png';
+}
+
 let desc = isT
   ? '跟随引导学习机械臂操控，完成 1 个物体的抓取放置任务。'
-  : ['物体位置每局随机', shuffle ? '物体分值每局变化' : '', obstacles ? '含障碍物，需规划路径' : ''].filter(Boolean).join('，') + '。';
+  : '操控机械臂完成物体的抓取与放置，和 AI 比一比谁更快！';
 document.getElementById('briefingDesc').textContent = desc;
 document.getElementById('phase2Desc').textContent = '桌面上 ' + objects + ' 个物体等你归位';
 
