@@ -38,14 +38,6 @@
   }
   .logo { height: 32px; }
   .logo img { height: 100%; width: auto; display: block; }
-  .top-right { display: flex; align-items: center; gap: 16px; }
-  .btn-about {
-    padding: 8px 20px; border-radius: 8px;
-    background: rgba(245,247,250,0.08); border: 1px solid rgba(245,247,250,0.12);
-    font-size: 13px; font-weight: 600; color: #f5f7fa;
-    text-decoration: none; cursor: pointer; transition: all 0.2s;
-  }
-  .btn-about:hover { background: rgba(245,247,250,0.14); }
 
   /* Scene typewriter label — top center on hover */
   .scene-typer {
@@ -100,10 +92,7 @@
     line-height: 1.1; letter-spacing: -1.5px;
     margin-bottom: 16px;
     flex-shrink: 0;
-    background: linear-gradient(135deg, #f5f7fa 0%, #a78bfa 40%, #6EC9FF 70%, #f5f7fa 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #ffffff;
   }
   .hero-sub {
     font-size: 15px; font-weight: 400;
@@ -114,18 +103,18 @@
   .hero-actions { display: flex; gap: 16px; align-items: center; flex-shrink: 0; }
   .btn-explore {
     padding: 14px 32px; border-radius: 12px;
-    background: linear-gradient(135deg, #6B2FF7, #8B5CF6, #7C3AED);
+    background: #7C3AED;
     border: none;
     color: #fff;
     font-size: 15px; font-weight: 600;
     text-decoration: none; cursor: pointer; font-family: inherit;
     transition: all 0.3s;
-    box-shadow: 0 4px 20px rgba(124,58,237,0.35), 0 0 0 1px rgba(139,92,246,0.3);
+    box-shadow: 0 4px 20px rgba(124,58,237,0.35);
     display: flex; align-items: center; gap: 8px;
   }
   .btn-explore:hover {
-    background: linear-gradient(135deg, #7C3AED, #9B6DFF, #8B5CF6);
-    box-shadow: 0 6px 28px rgba(124,58,237,0.5), 0 0 0 1px rgba(139,92,246,0.5);
+    background: #8B5CF6;
+    box-shadow: 0 6px 28px rgba(124,58,237,0.5);
     transform: translateY(-1px);
   }
   .btn-explore::after {
@@ -524,15 +513,12 @@
 <!-- Top bar -->
 <div class="top-bar">
   <div class="logo"><img src="assets/ui/JoyAI.png" alt="JoyAI"></div>
-  <div class="top-right">
-    <a class="btn-about" onclick="document.getElementById('aboutOverlay').classList.add('open')">关于</a>
-  </div>
 </div>
 
 <!-- Hero LEFT -->
 <div class="hero-left">
   <div class="hero-badge">JoyAI-Sim 具身智能仿真平台</div>
-  <h1 class="hero-title">操控机器人，<br>探索<span style="-webkit-text-fill-color:#a78bfa;">真实</span>世界。</h1>
+  <h1 class="hero-title">操控机器人，<br>探索<span style="color:#a78bfa;">真实</span>世界。</h1>
   <p class="hero-sub">从桌面开始，逐步探索更大的世界。<br>同场竞技，看人类直觉能否胜过机器算法。</p>
   <div class="hero-actions">
     <button class="btn-explore" id="btnExplore">立即挑战</button>

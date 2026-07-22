@@ -58,9 +58,7 @@
 
   .phase h2 {
     font-size: 36px; font-weight: 800; letter-spacing: -1px; line-height: 1.2;
-    background: linear-gradient(135deg, #f5f7fa 0%, #a78bfa 50%, #6EC9FF 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #ffffff;
   }
   .phase p {
     font-size: 16px; color: rgba(245,247,250,0.4); line-height: 1.7; font-weight: 400;
@@ -157,14 +155,23 @@
     transition: width 0.3s ease;
   }
 
-  /* Demo next button */
-  .demo-btn {
-    margin-top: 8px; padding: 8px 18px; border-radius: 10px;
-    background: rgba(245,247,250,0.05); border: 1px solid rgba(245,247,250,0.1);
-    font-size: 13px; font-weight: 500; color: rgba(245,247,250,0.4);
-    cursor: pointer; font-family: inherit; transition: all 0.2s;
+  /* Nav arrows */
+  .nav-arrows {
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 620px;
+    display: flex; justify-content: space-between;
+    z-index: 20; pointer-events: none;
   }
-  .demo-btn:hover { background: rgba(245,247,250,0.1); color: rgba(245,247,250,0.7); }
+  .nav-arrow {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: rgba(245,247,250,0.06); border: 1px solid rgba(245,247,250,0.12);
+    font-size: 24px; color: rgba(245,247,250,0.6);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; pointer-events: auto;
+    transition: all 0.2s; font-family: inherit;
+  }
+  .nav-arrow:hover { background: rgba(245,247,250,0.12); color: #fff; }
 
   @media (max-width: 768px) {
     .phase h2 { font-size: 26px; }
@@ -255,7 +262,11 @@
     </div>
   </div>
 
-  <button onclick="skipToNextPhase()" class="demo-btn">下一步 →</button>
+</div>
+
+<div class="nav-arrows">
+  <button class="nav-arrow left" id="navLeft" onclick="goPhase(-1)">‹</button>
+  <button class="nav-arrow right" id="navRight" onclick="goPhase(1)">›</button>
 </div>
 
 <div class="dots">
@@ -347,50 +358,52 @@ let desc = isT
 document.getElementById('briefingDesc').textContent = desc;
 document.getElementById('phase2Desc').textContent = '桌面上 ' + objects + ' 个物体等你归位';
 
-// Phase rotation
+// Phase navigation — manual only
 const phases = ['phase1','phase2','phase3','phase4'].map(id => document.getElementById(id));
 const dots = ['dot0','dot1','dot2','dot3'].map(id => document.getElementById(id));
 const progressBar = document.getElementById('progressBar');
 
 let currentPhase = 0;
-const phaseDuration = 15000;
-const totalDuration = phaseDuration * 4;
-let startTime = Date.now();
+updateNav();
 
-function updateProgress() {
-  const elapsed = Date.now() - startTime;
-  const progress = Math.min((elapsed / totalDuration) * 100, 100);
-  progressBar.style.width = progress + '%';
-
-  const newPhase = Math.min(Math.floor(elapsed / phaseDuration), 3);
-  if (newPhase !== currentPhase) {
-    phases[currentPhase].classList.remove('active');
-    dots[currentPhase].classList.remove('active');
-    phases[newPhase].classList.add('active');
-    dots[newPhase].classList.add('active');
-    currentPhase = newPhase;
-  }
-
-  if (elapsed < totalDuration) {
-    requestAnimationFrame(updateProgress);
-  } else {
-    setTimeout(() => { window.location.href = 'game.html' + window.location.search; }, 400);
-  }
-}
-requestAnimationFrame(updateProgress);
-
-window.skipToNextPhase = function() {
-  if (currentPhase >= 3) {
+function goPhase(dir) {
+  const next = currentPhase + dir;
+  if (next < 0) return;
+  if (next > 3) {
     window.location.href = 'game.html' + window.location.search;
     return;
   }
   phases[currentPhase].classList.remove('active');
   dots[currentPhase].classList.remove('active');
-  currentPhase++;
+  currentPhase = next;
   phases[currentPhase].classList.add('active');
   dots[currentPhase].classList.add('active');
-  startTime = Date.now() - (currentPhase * phaseDuration);
-};
+  updateNav();
+}
+
+function updateNav() {
+  document.getElementById('navLeft').style.visibility = currentPhase === 0 ? 'hidden' : 'visible';
+}
+
+window.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') goPhase(1);
+  if (e.key === 'ArrowLeft') goPhase(-1);
+});
+
+// Progress bar — 60s independent countdown
+const totalTime = 60000;
+const startTime = Date.now();
+function tickProgress() {
+  const elapsed = Date.now() - startTime;
+  const progress = Math.min((elapsed / totalTime) * 100, 100);
+  progressBar.style.width = progress + '%';
+  if (elapsed >= totalTime) {
+    window.location.href = 'game.html' + window.location.search;
+  } else {
+    requestAnimationFrame(tickProgress);
+  }
+}
+requestAnimationFrame(tickProgress);
 </script>
 
 </body>
