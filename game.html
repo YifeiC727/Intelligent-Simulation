@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JoyAI-Sim - Challenge</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="leaderboard.css">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -961,6 +962,9 @@
 </head>
 <body>
 
+<!-- Mini Leaderboard -->
+<div class="mini-lb" id="miniLb"></div>
+
 <!-- Demo Panel -->
 <div class="demo-panel" id="demoPanel">
   <div class="demo-panel-header">
@@ -1819,6 +1823,8 @@ const LEVEL_CONFIG = {
 document.getElementById('headerTitle').textContent = LEVEL_CONFIG.name;
 
 if (LEVEL_CONFIG.level === 'tutorial') {
+  const lb = document.getElementById('miniLb');
+  if (lb) lb.style.display = 'none';
 }
 
 // ==================== GAME ENGINE ====================
@@ -2038,5 +2044,6 @@ function buildLevelNote() {
   }, 1000);
 })();
 </script>
+<script src="leaderboard.js"></script>
 </body>
 </html>

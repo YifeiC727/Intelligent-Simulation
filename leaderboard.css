@@ -1,0 +1,50 @@
+/* Mini Leaderboard — floating panel in game page */
+.mini-lb {
+  position: fixed; top: 60px; right: 16px; z-index: 500;
+  width: 220px; background: rgba(10,10,15,0.85);
+  backdrop-filter: blur(16px);
+  border-radius: 14px;
+  padding: 16px 16px 12px;
+  border: 1px solid rgba(124,58,237,0.12);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+.mini-lb-title {
+  font-size: 10px; font-weight: 700; color: #a78bfa;
+  text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px;
+  padding-bottom: 8px; border-bottom: 1px solid rgba(245,247,250,0.06);
+}
+.mini-lb-row {
+  display: flex; align-items: center;
+  padding: 7px 8px; margin-bottom: 2px; border-radius: 8px;
+  transition: background 0.15s;
+}
+.mini-lb-row:hover { background: rgba(245,247,250,0.03); }
+.mini-lb-row.you-row {
+  background: rgba(124,58,237,0.08);
+  border: 1px solid rgba(124,58,237,0.15);
+  margin-top: 6px;
+}
+.mini-lb-rank {
+  font-size: 12px; font-weight: 800; width: 20px; text-align: center;
+  color: rgba(245,247,250,0.2);
+}
+.mini-lb-rank.gold { color: #fbbf24; }
+.mini-lb-rank.silver { color: #94a3b8; }
+.mini-lb-rank.bronze { color: #cd7f32; }
+.mini-lb-name {
+  font-size: 12px; font-weight: 500; color: rgba(245,247,250,0.55);
+  flex: 1; margin-left: 10px;
+}
+.mini-lb-name.you { color: #a78bfa; font-weight: 700; }
+.mini-lb-time {
+  font-size: 12px; font-weight: 700; color: rgba(245,247,250,0.7);
+  font-variant-numeric: tabular-nums;
+}
+.mini-lb-divider {
+  height: 1px; background: rgba(245,247,250,0.05); margin: 6px 4px;
+}
+.mini-lb-footer {
+  font-size: 10px; color: rgba(245,247,250,0.2); margin-top: 8px;
+  text-align: center; letter-spacing: 0.3px;
+}
+.mini-lb-footer span { color: #a78bfa; font-weight: 600; }
